@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\Quan_Ly_HomeStay.props" />
+</Project>

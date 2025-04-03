@@ -1,12 +1,11 @@
 ﻿namespace Quan_Ly_HomeStay.Models
 {
-    public class PaymentModel
+    public class CategoryModel
     {
-        public Guid ID { get; set; }
-        public string BookingID { get; set; }
-        public string PaymentMethod { get; set; } // Tiền mặt, Chuyển khoản, Online
-        public DateTime PaymentDate { get; set; }
-        public decimal Amount { get; set; }
-        public string Status { get; set; } // Đã thanh toán, Đang xử lý...
+        public Guid Id { get; set; }
+        public decimal TotalPrice { get; set; }
+        public string Name { get; set; }
+        public DateTime? CreateAt { get; set; } = DateTime.Now;
+        public ICollection<RoomModel> Rooms { get; set; } = new List<RoomModel>();
     }
 }

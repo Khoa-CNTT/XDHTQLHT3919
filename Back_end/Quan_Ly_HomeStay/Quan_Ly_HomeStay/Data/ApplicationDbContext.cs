@@ -1,6 +1,7 @@
 ﻿using Quan_Ly_HomeStay.Models;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using Microsoft.EntityFrameworkCore;
 
 namespace Quan_Ly_HomeStay.Data
 {
@@ -11,7 +12,7 @@ namespace Quan_Ly_HomeStay.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserModel> Users { get; set; }
         public DbSet<RoomModel> Rooms { get; set; }
         public DbSet<RoleModel> Roles { get; set; }
         public DbSet<BookingModel> Bookings { get; set; }

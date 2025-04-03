@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Quan_Ly_HomeStay"
+    "\\Quan_Ly_HomeStay",
+    "\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay"
   ],
-  "SelectedNode": "\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.sln",
+  "SelectedNode": "\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
   "PreviewInSolutionExplorer": false
 }

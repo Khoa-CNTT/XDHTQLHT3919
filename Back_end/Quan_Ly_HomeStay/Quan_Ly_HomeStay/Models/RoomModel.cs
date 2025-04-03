@@ -14,7 +14,7 @@
         public Guid IdCategory { get; set; }
         /*public List<string> Amenities { get; set; }*/ // Ví dụ: Wifi, Điều hòa... 
         /*public virtual ICollection<ReviewModel> Reviews { get; set; }*/
-        public virtual User? IdUserNavigation { get; set; }
+        public virtual UserModel? IdUserNavigation { get; set; }
         public virtual ICollection<BookingDetailModel> BookingDetail { get; set; } = new List<BookingDetailModel>();
         public CategoryModel? IdCategoryNavigation { get; set; }
     }
