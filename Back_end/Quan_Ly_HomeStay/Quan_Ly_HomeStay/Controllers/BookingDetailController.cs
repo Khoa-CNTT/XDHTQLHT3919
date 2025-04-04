@@ -111,7 +111,7 @@ namespace Khoa_Luan_Tot_Nghiep.Controllers
                            dt.CreateAt,
                            rm.BookingDetail,
                            rm.IdUser,
-                           rm.Title,
+                           rm.Name,
                        };
 
             return Ok(new { message = "Lấy dữ liệu thành công!", status = 200, data });

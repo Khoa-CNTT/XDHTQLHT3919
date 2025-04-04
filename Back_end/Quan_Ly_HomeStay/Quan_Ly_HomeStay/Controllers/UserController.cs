@@ -14,6 +14,11 @@ namespace Khoa_Luan_Tot_Nghiep.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+     /*   POST – Create: Tạo dữ liệu mới
+GET – Read: Lấy dữ liệu về
+PUT – Update: Cập nhật dữ liệu
+DELETE – Delete: Xóa dữ liệu*/
+
         private readonly ApplicationDbContext _db;
 
         public UserController(ApplicationDbContext db)

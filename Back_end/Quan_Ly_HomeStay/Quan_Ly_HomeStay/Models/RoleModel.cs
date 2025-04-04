@@ -6,7 +6,7 @@ namespace Quan_Ly_HomeStay.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public DateTime? CreateAt { get; set; }
         public virtual ICollection<UserModel> Users { get; set; } = new List<UserModel>();
     }

@@ -6,30 +6,22 @@ namespace Quan_Ly_HomeStay.Models
     public class UserModel
     {
         [Key]
-        public Guid Id { get; set; }
-
-        [Required]
-        public string? Image { get; set; }
-
-        [Required]
-        public string Name { get; set; }
+        public Guid Id { get; set; }       
+        public string? Name { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = null;
 
-        [Required]
-        public string Password { get; set; }
+        public string Password { get; set; } = null;
 
-        [Required]
-        public string Phone { get; set; }
+         public string? Phone { get; set; }
 
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
-        public DateTime CreateAt { get; set; } = DateTime.Now;
+        public DateTime? CreateAt { get; set; } = DateTime.Now;
 
-        [Required]
-        public Guid IdRole { get; set; }
+        public Guid? IdRole { get; set; }
 
         public string? PathImg { get; set; }
 
