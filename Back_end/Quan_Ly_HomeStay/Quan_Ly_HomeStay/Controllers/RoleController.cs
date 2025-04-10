@@ -1,87 +1,146 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Quan_Ly_HomeStay.Data;
 using Quan_Ly_HomeStay.Models;
 
-namespace Khoa_Luan_Tot_Nghiep.Controllers
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace Quan_Ly_HomeStay.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/role")]
     [ApiController]
     public class RoleController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
-        public RoleController(ApplicationDbContext db)
+        private readonly ApplicationDbContext db;
+        public RoleController(ApplicationDbContext _db)
         {
-            _db = db;
+            db = _db;
         }
-
-        // Lấy tất cả Role
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<RoleModel>>> GetAllRoles()
+        public async Task<ActionResult<IEnumerable<Role>>> GetAllRole()
         {
-            var roles = await _db.Roles.ToListAsync();
-            if (roles == null || roles.Count == 0)
+            if (db.Roles == null)
             {
-                return Ok(new { message = "Không có dữ liệu!", status = 404 });
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
             }
-            return Ok(new { message = "Lấy dữ liệu thành công!", status = 200, data = roles });
+            var _data = await db.Roles.ToListAsync();
+            return Ok(new
+            {
+                message = "Lấy dữ liệu thành công!",
+                status = 200,
+                data = _data
+            }); ;
         }
+        [HttpGet]
 
-        // Lấy Role theo ID
-        [HttpGet("{id}")]
-        public async Task<ActionResult<RoleModel>> GetRole(Guid id)
+        public async Task<ActionResult<IEnumerable<Role>>> GetRole(Guid id)
         {
-            var role = await _db.Roles.FindAsync(id);
-            if (role == null)
+            if (db.Roles == null)
             {
-                return NotFound(new { message = "Không tìm thấy Role!", status = 404 });
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
             }
-            return Ok(new { message = "Lấy dữ liệu thành công!", status = 200, data = role });
+            var _data = await db.Roles.Where(x => x.Id == id).ToListAsync();
+            return Ok(new
+            {
+                message = "Lấy dữ liệu thành công!",
+                status = 200,
+                data = _data
+            }); ;
         }
-
-        // Thêm Role mới
         [HttpPost("add")]
-        public async Task<ActionResult<RoleModel>> AddRole([FromBody] RoleModel role)
+
+        public async Task<ActionResult> AddRole([FromBody] Role role)
         {
-            role.Id = Guid.NewGuid();
-            role.CreateAt = DateTime.UtcNow;
-            _db.Roles.Add(role);
-            await _db.SaveChangesAsync();
-
-            return Ok(new { message = "Tạo Role thành công!", status = 200, data = role });
+            var _role = await db.Roles.FirstOrDefaultAsync(x => String.Compare(x.Name, role.Name, StringComparison.OrdinalIgnoreCase) == 0);
+            if (_role != null)
+            {
+                return Ok(new
+                {
+                    message = "Role đã tồn tại!",
+                    status = 400
+                });
+            }
+            await db.Roles.AddAsync(role);
+            await db.SaveChangesAsync();
+            return Ok(new
+            {
+                message = "Tạo thành công!",
+                status = 200,
+                data = role
+            });
         }
-
-        // Cập nhật Role
         [HttpPut("edit")]
-        public async Task<ActionResult> EditRole([FromBody] RoleModel role)
+
+        public async Task<ActionResult> Edit([FromBody] Role role)
         {
-            var existingRole = await _db.Roles.FindAsync(role.Id);
-            if (existingRole == null)
+            var _role = await db.Roles.FindAsync(role.Id);
+            if (_role == null)
             {
-                return NotFound(new { message = "Role không tồn tại!", status = 404 });
+                return Ok(new
+                {
+                    message = "Dữ liệu không tồn tại!",
+                    status = 400
+                });
             }
+            db.Entry(await db.Roles.FirstOrDefaultAsync(x => x.Id == role.Id)).CurrentValues.SetValues(role);
+            await db.SaveChangesAsync();
+            return Ok(new
+            {
+                message = "Sửa thành công!",
+                status = 200
+            });
+        }
+        [HttpDelete("delete")]
 
-            existingRole.Name = role.Name;
-            existingRole.CreateAt = role.CreateAt;
-            await _db.SaveChangesAsync();
-
-            return Ok(new { message = "Cập nhật Role thành công!", status = 200 });
+        public async Task<ActionResult> Delete([FromBody] Guid id)
+        {
+            if (db.Roles == null)
+            {
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
+            }
+            var _role = await db.Roles.FindAsync(id);
+            if (_role == null)
+            {
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
+            }
+            try
+            {
+                db.Roles.Remove(_role);
+                await db.SaveChangesAsync();
+                return Ok(new
+                {
+                    message = "Xóa thành công!",
+                    status = 200
+                });
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    message = "Lỗi rồi!",
+                    status = 400,
+                    data = e.Message
+                });
+            }
         }
 
-        // Xóa Role
-        [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> DeleteRole(Guid id)
-        {
-            var role = await _db.Roles.FindAsync(id);
-            if (role == null)
-            {
-                return NotFound(new { message = "Role không tồn tại!", status = 404 });
-            }
-
-            _db.Roles.Remove(role);
-            await _db.SaveChangesAsync();
-
-            return Ok(new { message = "Xóa Role thành công!", status = 200 });
-        }
     }
 }

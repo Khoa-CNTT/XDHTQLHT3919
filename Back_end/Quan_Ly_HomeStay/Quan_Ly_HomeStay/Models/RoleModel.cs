@@ -1,13 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Quan_Ly_HomeStay.Models;
+using System;
+using System.Collections.Generic;
 
-namespace Quan_Ly_HomeStay.Models
+namespace Quan_Ly_HomeStay.Models;
+
+public partial class Role
 {
-    public class RoleModel
-    {
-        [Key]
-        public Guid Id { get; set; }
-        public string? Name { get; set; }
-        public DateTime? CreateAt { get; set; }
-        public virtual ICollection<UserModel> Users { get; set; } = new List<UserModel>();
-    }
+    public Guid Id { get; set; }
+
+    public string? Name { get; set; }
+
+    public DateTime? CreateAt { get; set; }=DateTime.Now;
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

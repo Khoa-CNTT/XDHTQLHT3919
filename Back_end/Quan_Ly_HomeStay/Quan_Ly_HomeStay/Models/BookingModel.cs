@@ -1,14 +1,19 @@
-﻿namespace Quan_Ly_HomeStay.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace Quan_Ly_HomeStay.Models;
+
+public partial class Booking
 {
-    public class BookingModel
-    {
-        public Guid Id { get; set; }
-        public int? Status { get; set; }
-        public decimal? Total { get; set; }
-        public DateTime CheckInDate { get; set; }
-        public DateTime CheckOutDate { get; set; }
-        public string? Note { get; set; }
-        public Guid? IdUser { get; set; }
-        public virtual ICollection<BookingDetailModel> BookingDetails { get; set; } = new List<BookingDetailModel>();
-    }
+    public Guid Id { get; set; }
+
+    public int? Status { get; set; }
+
+    public decimal? Total { get; set; }
+
+    public DateTime CreateAt { get; set; }
+
+    public Guid? IdUser { get; set; }
+
+    public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
 }

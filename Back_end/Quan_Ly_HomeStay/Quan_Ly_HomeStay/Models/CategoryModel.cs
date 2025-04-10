@@ -1,11 +1,17 @@
-﻿namespace Quan_Ly_HomeStay.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace Quan_Ly_HomeStay.Models;
+
+public partial class Category
 {
-    public class CategoryModel
-    {
-        public Guid Id { get; set; }
-        public decimal? TotalPrice { get; set; }
-        public string? Name { get; set; }
-        public DateTime? CreateAt { get; set; } = DateTime.Now;
-        public ICollection<RoomModel> Rooms { get; set; } = new List<RoomModel>();
-    }
+    public Guid Id { get; set; }
+
+    public string? Slug { get; set; }
+
+    public string? Name { get; set; }
+
+    public DateTime? CreateAt { get; set; }
+
+    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 }

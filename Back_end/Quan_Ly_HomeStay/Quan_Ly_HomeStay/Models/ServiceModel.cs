@@ -2,7 +2,7 @@
 
 namespace Quan_Ly_HomeStay.Models
 {
-    public class ServiceModel
+    public class Service
     {
         [Key]
         public Guid Id { get; set; }

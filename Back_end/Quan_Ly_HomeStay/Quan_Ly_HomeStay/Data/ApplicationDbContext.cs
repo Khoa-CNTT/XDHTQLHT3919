@@ -12,27 +12,30 @@ namespace Quan_Ly_HomeStay.Data
         {
         }
 
-        public DbSet<UserModel> Users { get; set; }
-        public DbSet<RoomModel> Rooms { get; set; }
-        public DbSet<RoleModel> Roles { get; set; }
-        public DbSet<BookingModel> Bookings { get; set; }
-        public DbSet<BookingDetailModel> BookingsDetails { get; set; }
-        public DbSet<ReviewModel> Reviews { get; set; }
-        public DbSet<CategoryModel> Categories { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<BookingDetail> BookingDetails { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Category> Categories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BookingDetailModel>()
+            modelBuilder.Entity<BookingDetail>()
                 .Property(b => b.Price)
                 .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<BookingModel>()
+            modelBuilder.Entity<Booking>()
                 .Property(b => b.Total)
                 .HasColumnType("decimal(18,2)");
-
-            modelBuilder.Entity<CategoryModel>()
-                .Property(c => c.TotalPrice)
-                .HasColumnType("decimal(18,2)");
+            // Thêm cấu hình quan hệ User - Role
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.IdRoleNavigation)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.IdRole)
+                .OnDelete(DeleteBehavior.Restrict);
         }
+
 
 
     }

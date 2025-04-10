@@ -5,7 +5,6 @@ D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.csproj.CoreCompileInputs.cache
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.MvcApplicationPartsAssemblyInfo.cs
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.MvcApplicationPartsAssemblyInfo.cache
-D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.sourcelink.json
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\bin\Debug\net8.0\appsettings.Development.json
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\bin\Debug\net8.0\appsettings.json
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\bin\Debug\net8.0\Quan_Ly_HomeStay.exe

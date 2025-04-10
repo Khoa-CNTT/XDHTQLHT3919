@@ -1,6 +1,6 @@
 ﻿namespace Quan_Ly_HomeStay.Models
 {
-    public class ReviewModel
+    public class Review
     {
         public Guid Id { get; set; }
         public string AccountID { get; set; }

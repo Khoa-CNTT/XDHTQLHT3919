@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quan_Ly_HomeStay", "Quan_Ly_HomeStay\Quan_Ly_HomeStay.csproj", "{6CAAB8BD-5758-47AF-B065-26F27477DEE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quan_Ly_HomeStay", "Quan_Ly_HomeStay\Quan_Ly_HomeStay.csproj", "{6CAAB8BD-5758-47AF-B065-26F27477DEE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{59844DD0-62B7-4499-9BF3-240BDFCAB3CD}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

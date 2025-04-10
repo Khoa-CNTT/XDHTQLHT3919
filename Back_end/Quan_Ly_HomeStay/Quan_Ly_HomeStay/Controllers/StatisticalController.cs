@@ -1,47 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿
+using Quan_Ly_HomeStay.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Quan_Ly_HomeStay.Data;
 
-namespace Khoa_Luan_Tot_Nghiep.Controllers
+namespace Final.Controllers
 {
     [ApiController]
-    [Route("api/statistical")]
-    public class StatisticalController : ControllerBase
+    [Route("api/thongke")]
+
+    public class ThongKeController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
-        public StatisticalController(ApplicationDbContext db)
+        public ThongKeController(ApplicationDbContext db)
         {
             _db = db;
         }
-
-        /// <summary>
-        /// Thống kê doanh thu theo khoảng thời gian (CheckInDate - CheckOutDate)
-        /// </summary>
-        [HttpGet("revenue")]
-        public async Task<ActionResult> RevenueStatistics(DateTime startDate, DateTime endDate)
+        [HttpGet("doanhthu")]
+        public async Task<ActionResult> DoanhThu()
         {
-            try
+            List<decimal> listTotal = new List<decimal>();
+            DateTime day = DateTime.Now;
+            int year = day.Year;
+            for (int i = 1; i <= 12; i++)
             {
-                decimal totalRevenue = await _db.Bookings
-                    .Where(b => b.CheckInDate >= startDate && b.CheckOutDate <= endDate)
-                    .SumAsync(b => b.Total ?? 0); // Sử dụng Total thay vì TotalPrice
-
-                return Ok(new
-                {
-                    status = 200,
-                    message = "Thống kê doanh thu thành công!",
-                    totalRevenue = totalRevenue
-                });
+                decimal total = 0;
+                total = Convert.ToDecimal((from order in _db.Bookings
+                                           where order.CreateAt.Month == i
+                                           where order.CreateAt.Year == year
+                                           select order.Total).Sum());
+                listTotal.Add(total);
             }
-            catch (Exception ex)
+            decimal min = 0;
+            decimal max = ((listTotal.Max()) * 120) / 100;
+            return Ok(new
             {
-                return BadRequest(new
-                {
-                    status = 400,
-                    message = "Lỗi khi lấy thống kê doanh thu!",
-                    error = ex.Message
-                });
-            }
+                status = 200,
+                message = "Thống kê doanh thu thành công!",
+                data = listTotal
+            });
         }
     }
 }

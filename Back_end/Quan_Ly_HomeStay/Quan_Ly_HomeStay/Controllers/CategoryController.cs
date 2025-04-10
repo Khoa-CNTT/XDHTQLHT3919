@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Quan_Ly_HomeStay.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Quan_Ly_HomeStay.Data;
-using Quan_Ly_HomeStay.Models;
 using Microsoft.EntityFrameworkCore;
+using Quan_Ly_HomeStay.Models;
+using Quan_Ly_HomeStay.Data;
 
 namespace Quan_Ly_HomeStay.Controllers
 {
@@ -15,81 +16,127 @@ namespace Quan_Ly_HomeStay.Controllers
         {
             db = _db;
         }
-
-        // Lấy tất cả danh mục
         [HttpGet("all")]
-        public async Task<ActionResult> GetAllCategories()
+        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategory()
         {
-            var data = await db.Categories.ToListAsync();
-            if (!data.Any())
+            if (db.Categories == null)
             {
-                return Ok(new { message = "Dữ liệu trống!", status = 404 });
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
             }
-
-            return Ok(new { message = "Lấy dữ liệu thành công!", status = 200, data });
+            var _data = await db.Categories.ToListAsync();
+            return Ok(new
+            {
+                message = "Lấy dữ liệu thành công!",
+                status = 200,
+                data = _data
+            }); ;
         }
-
-        // Lấy danh mục theo ID
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetCategoryById(Guid id)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategory(Guid id)
         {
-            var data = await db.Categories.FindAsync(id);
-            if (data == null)
+            if (db.Categories == null)
             {
-                return Ok(new { message = "Không tìm thấy danh mục!", status = 404 });
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
             }
-
-            return Ok(new { message = "Lấy dữ liệu thành công!", status = 200, data });
+            var _data = await db.Categories.Where(x => x.Id == id).ToListAsync();
+            return Ok(new
+            {
+                message = "Lấy dữ liệu thành công!",
+                status = 200,
+                data = _data
+            }); ;
         }
-
-        // Thêm danh mục mới
         [HttpPost("add")]
-        public async Task<ActionResult> AddCategory([FromBody] CategoryModel category)
+        public async Task<ActionResult> AddCategory([FromBody] Category category)
         {
-            var existingCategory = await db.Categories.FirstOrDefaultAsync(x => x.Name == category.Name);
-            if (existingCategory != null)
+            var _category = await db.Categories.Where(x => x.Slug.Equals(category.Slug)).ToListAsync();
+            if (_category.Count != 0)
             {
-                return Ok(new { message = "Danh mục đã tồn tại!", status = 400 });
+                return Ok(new
+                {
+                    message = "Tạo thất bại!",
+                    status = 400,
+                });
             }
-
-            category.Id = Guid.NewGuid();
-            category.CreateAt = DateTime.UtcNow;
             await db.Categories.AddAsync(category);
             await db.SaveChangesAsync();
-
-            return Ok(new { message = "Tạo danh mục thành công!", status = 200, data = category });
+            return Ok(new
+            {
+                message = "Tạo thành công!",
+                status = 200,
+                data = category
+            });
         }
-
-        // Cập nhật danh mục
         [HttpPut("edit")]
-        public async Task<ActionResult> EditCategory([FromBody] CategoryModel category)
+
+        public async Task<ActionResult> Edit([FromBody] Category category)
         {
-            var existingCategory = await db.Categories.FindAsync(category.Id);
-            if (existingCategory == null)
+            var _category = await db.Categories.FindAsync(category.Id);
+            if (_category == null)
             {
-                return Ok(new { message = "Dữ liệu không tồn tại!", status = 400 });
+                return Ok(new
+                {
+                    message = "Dữ liệu không tồn tại!",
+                    status = 400
+                });
             }
-
-            db.Entry(existingCategory).CurrentValues.SetValues(category);
+            db.Entry(await db.Categories.FirstOrDefaultAsync(x => x.Id == category.Id)).CurrentValues.SetValues(category);
             await db.SaveChangesAsync();
-
-            return Ok(new { message = "Sửa thành công!", status = 200 });
+            return Ok(new
+            {
+                message = "Sửa thành công!",
+                status = 200
+            });
         }
-
-        // Xóa danh mục
         [HttpDelete("delete")]
-        public async Task<ActionResult> DeleteCategory([FromBody] Guid id)
+
+        public async Task<ActionResult> Delete([FromBody] Guid id)
         {
-            var category = await db.Categories.FindAsync(id);
-            if (category == null)
+            if (db.Categories == null)
             {
-                return Ok(new { message = "Không tìm thấy danh mục!", status = 404 });
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
             }
-
-            db.Categories.Remove(category);
-            await db.SaveChangesAsync();
-
-            return Ok(new { message = "Xóa thành công!", status = 200 });
+            var _category = await db.Categories.FindAsync(id);
+            if (_category == null)
+            {
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
+            }
+            try
+            {
+                db.Categories.Remove(_category);
+                await db.SaveChangesAsync();
+                return Ok(new
+                {
+                    message = "Xóa thành công!",
+                    status = 200
+                });
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    message = "Lỗi rồi!",
+                    status = 400,
+                    data = e.Message
+                });
+            }
         }
+
     }
 }
