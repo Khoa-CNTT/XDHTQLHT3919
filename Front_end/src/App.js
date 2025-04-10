@@ -1,13 +1,13 @@
 
 import React, { useState } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom"; 
-import Header from "./userSide/components/Header";
+import Header from "./userSide/components/Header/Header";
 import Hero from "./userSide/components/Hero";
 import Rooms from "./userSide/components/Rooms";
 import Amenities from "./userSide/components/Amenities";
 import Gallery from "./userSide/components/Gallery";
 import Testimonials from "./userSide/components/Testimonials";
-import Footer from "./userSide/components/Footer";
+import Footer from "./userSide/components/Footer/Footer";
 import Modal from "./userSide/components/Modal";
 import Login from "./userSide/components/Login";
 import Register from "./userSide/components/Register";

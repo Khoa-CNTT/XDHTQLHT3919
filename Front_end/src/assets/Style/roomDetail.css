@@ -1,0 +1,157 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.back-link {
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.room-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Room Layout */
+.room-layout {
+  display: flex;
+  gap: 20px;
+}
+
+.slider-container {
+  width: 60%;
+  position: relative;
+}
+
+.slider {
+  width: 100%;
+  height: auto;
+}
+
+.slider img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.slider-buttons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+}
+
+.slider-buttons button {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.slider-buttons button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Room Info */
+.room-info {
+  width: 40%;
+}
+
+h2, h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.rating {
+  font-size: 1.2rem;
+  color: #ffbf00;
+}
+
+p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+strong {
+  font-weight: bold;
+  color: #333;
+}
+
+.description {
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.amenities-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.amenities-list li {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #555;
+}
+
+.amenities-list li:before {
+  content: "✔";
+  color: #4CAF50;
+  margin-right: 10px;
+}
+
+/* Booking Section */
+.booking-section {
+  margin-top: 20px;
+}
+
+.price {
+  font-size: 1.3rem;
+  color: #e74c3c;
+  margin-bottom: 10px;
+}
+
+.book-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.book-button:hover {
+  background-color: #218838;
+}
+
+.book-button:active {
+  background-color: #1e7e34;
+}
