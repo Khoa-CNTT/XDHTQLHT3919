@@ -15,10 +15,12 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
+    position: relative;
 }
 
 /* Container chính */
 .auth-container {
+    position: relative;
     width: 100%;
     max-width: 400px;
     padding: 35px;
@@ -86,6 +88,23 @@
 }
 
 /* Nút đăng nhập */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    color: rgba(252, 252, 252, 0.7);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .back-button:hover {
+    color: rgba(252, 252, 252, 0.7);
+  }
+  
 .auth-button {
     width: 100%;
     padding: 12px;
@@ -196,7 +215,7 @@
     color: red;
     cursor: pointer;
   }
-  label{
+  label {
     color: #f9f9f9;
     display: flex;
     justify-content: left;
@@ -204,4 +223,7 @@
   .btn{
     font-size: 15px;
   }
+.auth-subtitle{
+    color: #f9f9f9;
+}
   
