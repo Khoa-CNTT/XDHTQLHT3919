@@ -12,7 +12,7 @@ const getProfile = (token, username) => {
   });
 };
 
-// Cập nhật thông tin người dùng
+// Cập nhật thông tin người dùng (gửi avatar hoặc form-data)
 const updateProfile = (token, data, username) => {
   return axios.put(`${API_URL}/me`, data, {
     headers: {

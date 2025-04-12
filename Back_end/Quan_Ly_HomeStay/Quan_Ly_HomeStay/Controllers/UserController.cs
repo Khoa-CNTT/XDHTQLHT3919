@@ -272,29 +272,37 @@ namespace Quan_Ly_HomeStay.Controllers
             });
         }
         [HttpGet("info")]
-        public ActionResult GetDataFromToken(string token)
+        public ActionResult GetDataFromToken()
         {
-            if (token == "undefined")
+            var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
             {
                 return Ok(new
                 {
-                    message = "Dữ liệu trống!",
+                    message = "Token không hợp lệ!",
                     status = 400
                 });
             }
-            string _token = token.Split(' ')[1];
-            if (_token == null)
+
+            string _token = authHeader.Split(' ')[1];
+
+            var handler = new JwtSecurityTokenHandler();
+            var tokenData = handler.ReadJwtToken(_token);
+
+            string email = tokenData.Claims.FirstOrDefault(c => c.Type == "emailaddress")?.Value;
+
+            if (string.IsNullOrEmpty(email))
             {
                 return Ok(new
                 {
-                    message = "Token không đúng!",
+                    message = "Không tìm thấy email trong token!",
                     status = 400
                 });
             }
-            var handle = new JwtSecurityTokenHandler();
-            string email = Regex.Match(JsonSerializer.Serialize(handle.ReadJwtToken(_token)), "emailaddress\",\"Value\":\"(.*?)\",").Groups[1].Value;
-            var sinhvien = db.Users.Where(x => x.Email == email).FirstOrDefault();
-            if (sinhvien == null)
+
+            var user = db.Users.FirstOrDefault(x => x.Email == email);
+            if (user == null)
             {
                 return Ok(new
                 {
@@ -302,15 +310,18 @@ namespace Quan_Ly_HomeStay.Controllers
                     status = 404
                 });
             }
-            var role = db.Roles.Find(sinhvien.IdRole);
+
+            var role = db.Roles.Find(user.IdRole);
+
             return Ok(new
             {
                 message = "Lấy dữ liệu thành công!",
                 status = 200,
-                data = sinhvien,
-                role = role.Name
+                data = user,
+                role = role?.Name
             });
         }
+
         [HttpPost("changepass")]
         public ActionResult ChangePassword([FromBody] ChangePassword changePassword)
         {

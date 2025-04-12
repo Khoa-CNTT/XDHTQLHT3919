@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAmenities } from '../../../api/amenities';
+import { getAmenities } from '../../../services/api/amenities';
 
 const Amenities = () => {
     const [amenities, setAmenities] = useState([]);

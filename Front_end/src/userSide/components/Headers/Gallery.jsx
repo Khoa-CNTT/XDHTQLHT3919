@@ -1,6 +1,6 @@
 // src/components/Gallery.jsx
 import React, { useState, useEffect } from 'react';
-import { getGalleryImages } from '../../../api/gallery'; // Import API
+import { getGalleryImages } from '../../../services/api/gallery'; // Import API
 
 const Gallery = () => {
     const [galleryImages, setGalleryImages] = useState([]);
