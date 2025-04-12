@@ -1,13 +1,12 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:7193/api/user";
+const API_URL = "https://localhost:7154/api/user";
 
-// Lấy thông tin profile người dùng
-const getProfile = (token, username) => {
-  return axios.get(`${API_URL}/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Username: username,
+// Lấy thông tin người dùng (dựa vào token)
+const getProfile = (token) => {
+  return axios.get(`${API_URL}/info`, {
+    params: {
+      token: `Bearer ${token}`,
     },
   });
 };

@@ -2,30 +2,30 @@
 import React, { useState } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom"; 
 import Header from "./userSide/components/Headers/Header";
-import Hero from "./userSide/components/Headers/Hero";
-import Rooms from "./userSide/components/Headers/Rooms";
-import Amenities from "./userSide/components/Headers/Amenities";
-import Gallery from "./userSide/components/Headers/Gallery";
-import Testimonials from "./userSide/components/Headers/Testimonials";
+import Hero from "./userSide/components/Contents/Hero";
+import Rooms from "./userSide/components/Contents/Rooms";
+import Amenities from "./userSide/components/Contents/Amenities";
+import Gallery from "./userSide/components/Contents/Gallery";
+import Testimonials from "./userSide/components/Contents/Testimonials";
 import Footer from "./userSide/components/Footers/Footer";
-import Modal from "./userSide/components/Headers/Modal";
+import Modal from "./userSide/components/Contents/Modal";
 import Login from "./userSide/components/Auths/Login";
 import Register from "./userSide/components/Auths/Register";
 import ChangePassword from "./userSide/components/Auths/ChangePassword"
 import Contact from "./userSide/components/Other/Contact"
 import RoomDetail from "./userSide/components/Other/RoomDetail"
 import Profile from "./userSide/components/Other/Profile"
-import HomeManager from "./adminSide/components/HomeManage"
-import "./assets/Style/Auth.css";
-import "./assets/Style/profile.css";
-import "./assets/Style/manage.css";
-import "./assets/Style/index.css";
-import "./assets/Style/contact.css";
-import "./assets/Style/roomDetail.css";
+import AdminLayout from "./adminSide/components/AdminLayout"
+import "./assets/Style/Auth-css/auth.css";
+import "./assets/Style/Auth-css/profile.css";
+import "./assets/Style/admin-css/adminLayout.css";
+import "./assets/Style/home-css/index.css";
+import "./assets/Style/home-css/contact.css";
+import "./assets/Style/home-css/roomDetail.css";
 
 const Layout = ({ children }) => {
     const location = useLocation();
-    const hideHeaderRoutes = ["/login", "/register"]; // Ẩn Header và Footer ở trang Login, Register
+    const hideHeaderRoutes = ["/login", "/register", "/change"];
 
     return (
         <>
@@ -47,7 +47,7 @@ const App = () => {
     };
 
     const handleLoginClick = () => {
-        navigate("/login"); // Chuyển hướng đến trang login
+        navigate("/login");
     };
 
     return (
@@ -73,7 +73,8 @@ const App = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/room/:id" element={<RoomDetail />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/homemng" element={<HomeManager />} />
+                <Route path="/adminlayout" element={<AdminLayout />} />
+                
             </Routes>
         </Layout>
     );

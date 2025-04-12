@@ -7,21 +7,23 @@ const Header = () => {
     const [username, setUsername] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [avatarUrl, setAvatarUrl] = useState(''); // Thêm avatarUrl
+    const [avatarUrl, setAvatarUrl] = useState('');
+    const [role, setRole] = useState(''); // <-- Thêm state role
+
     const navigate = useNavigate();
 
-    // Load trạng thái đăng nhập từ localStorage khi Header được render
     useEffect(() => {
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("username");
-        const role = localStorage.getItem("role");
-        const avatar = localStorage.getItem("avatarUrl") || ""; // Lấy avatar từ localStorage
+        const userRole = localStorage.getItem("role");
+        const avatar = localStorage.getItem("avatarUrl") || "";
 
         if (token && user) {
             setIsLoggedIn(true);
             setUsername(user);
-            setIsAdmin(role === "admin");
-            setAvatarUrl(avatar); // Set avatarUrl
+            setRole(userRole);
+            setIsAdmin(userRole === "admin");
+            setAvatarUrl(avatar);
         }
     }, []);
 
@@ -29,11 +31,12 @@ const Header = () => {
         setIsLoggedIn(false);
         setUsername('');
         setIsAdmin(false);
-        setAvatarUrl(''); // Reset avatarUrl khi logout
+        setAvatarUrl('');
+        setRole('');
         localStorage.removeItem("token");
         localStorage.removeItem("username");
         localStorage.removeItem("role");
-        localStorage.removeItem("avatarUrl"); // Remove avatarUrl from localStorage
+        localStorage.removeItem("avatarUrl");
         navigate('/login');
     };
 
@@ -73,11 +76,11 @@ const Header = () => {
                         <li><a href="#">Tiện nghi</a></li>
                         <li><a href="#">Thư viện</a></li>
                         <li><Link to="/contact">Liên hệ</Link></li>
-                        {isAdmin && (
+                        {/* {isAdmin && ( */}
                             <li>
-                                <Link to="/homemng">Quản lý</Link>
+                                <Link to="/adminlayout">Quản lý</Link>
                             </li>
-                        )}
+                        {/* )} */}
                     </ul>
                 </nav>
 
@@ -104,7 +107,7 @@ const Header = () => {
                         <div className="user-menu">
                             <div className="user-avatar">
                                 <img 
-                                    src={avatarUrl || "https://png.pngtree.com/png-clipart/20210608/ourlarge/pngtree-dark-gray-simple-avatar-png-image_3418404.jpg"} 
+                                    src={avatarUrl || "/images/avatar.jpg"} 
                                     alt="Avatar" 
                                     className="avatar-img" 
                                 />

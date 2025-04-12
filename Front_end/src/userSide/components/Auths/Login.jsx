@@ -4,45 +4,51 @@ import { login } from "../../../api/Login";
 import { FaArrowLeft } from "react-icons/fa";
 
 function Login() {
-  const [email, setEmail] = useState("");         
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     if (!email || !password) {
       alert("Vui lòng nhập đầy đủ email và mật khẩu!");
       return;
     }
-  
+
     const credentials = { email, password };
     console.log("Đang gửi dữ liệu: ", credentials);
-  
+
     try {
       const response = await login(credentials);
       console.log("Dữ liệu trả về từ backend: ", response);
-  
-      if (response && response.status === 200 && response.data) {
+
+      if (response && response.status === 200 && response.data && response.data.length > 0) {
+        const user = response.data[0];
+
         alert("Đăng nhập thành công!");
-  
-        
-        localStorage.setItem("userId", response.data.id);
-        localStorage.setItem("email", response.data.email);
-        localStorage.setItem("role", response.data.idRole);
-        localStorage.setItem("username", response.data.username || response.data.email);
-  
+
+        // Nếu chưa có token thật thì lưu tạm token giả
+        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("userId", user.id);
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("username", user.name || user.email);
+        localStorage.setItem("role", user.role);
+        localStorage.setItem("avatarUrl", user.pathImg || "");
+
         navigate("/home");
       } else {
         alert("Đăng nhập thất bại! Tài khoản hoặc mật khẩu không đúng.");
       }
+
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
       const errorMessage = error.response?.data?.message || "Đăng nhập thất bại, vui lòng kiểm tra lại!";
       alert(errorMessage);
     }
   };
+
 
   return (
     <div className="auth-wrapper">

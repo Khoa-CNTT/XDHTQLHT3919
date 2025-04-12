@@ -9,13 +9,15 @@ const Profile = () => {
     fullName: "",
     phoneNumber: "",
     address: "",
-    avatarUrl: "",
+    avatarFile: null, // File ảnh thật sự
   });
+  const [previewAvatar, setPreviewAvatar] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (!token) {
       setErrorMessage("Bạn chưa đăng nhập. Vui lòng đăng nhập để xem thông tin.");
       return;
@@ -23,19 +25,21 @@ const Profile = () => {
 
     userApi.getProfile(token)
       .then((res) => {
-        setUser(res.data);
+        const data = res.data.data || res.data; // xử lý cả 2 kiểu response
+        setUser(data);
         setUpdatedInfo({
-          fullName: res.data.fullName || "",
-          phoneNumber: res.data.phoneNumber || "",
-          address: res.data.address || "",
-          avatarUrl: res.data.avatarUrl || "",
+          fullName: data.fullName || "",
+          phoneNumber: data.phoneNumber || "",
+          address: data.address || "",
+          avatarFile: null,
         });
+        setPreviewAvatar(data.avatarUrl || "");
       })
       .catch((err) => {
         console.error("Lỗi khi lấy thông tin người dùng:", err);
         setErrorMessage("Lỗi khi lấy thông tin người dùng. Vui lòng thử lại.");
       });
-  }, []);
+  }, [token]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -48,37 +52,53 @@ const Profile = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setUpdatedInfo((prev) => ({
+        ...prev,
+        avatarFile: file,
+      }));
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUpdatedInfo((prev) => ({
-          ...prev,
-          avatarUrl: reader.result,
-        }));
+        setPreviewAvatar(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleEditClick = () => setIsEditing(true);
+
   const handleCancelEdit = () => {
     setIsEditing(false);
     setUpdatedInfo({
       fullName: user.fullName || "",
       phoneNumber: user.phoneNumber || "",
       address: user.address || "",
-      avatarUrl: user.avatarUrl || "",
+      avatarFile: null,
     });
+    setPreviewAvatar(user.avatarUrl || "");
   };
 
   const handleSaveChanges = () => {
-    const token = localStorage.getItem("token");
-    userApi.updateProfile(token, updatedInfo)
+    const formData = new FormData();
+    formData.append("FullName", updatedInfo.fullName);
+    formData.append("PhoneNumber", updatedInfo.phoneNumber);
+    formData.append("Address", updatedInfo.address);
+    if (updatedInfo.avatarFile) {
+      formData.append("Avatar", updatedInfo.avatarFile);
+    }
+
+    const username = user.username || user.email || user.phoneNumber || "unknown";
+
+    userApi.updateProfile(token, formData, username)
       .then((res) => {
-        setUser(res.data);
+        const updatedUser = res.data.data || res.data;
+        setUser(updatedUser);
         setIsEditing(false);
+        alert("Cập nhật thông tin thành công!");
       })
       .catch((err) => {
         console.error("Lỗi khi cập nhật thông tin:", err);
+        alert("Đã xảy ra lỗi khi cập nhật thông tin.");
       });
   };
 
@@ -98,13 +118,19 @@ const Profile = () => {
           <input name="address" value={updatedInfo.address} onChange={handleInputChange} />
           <label>Ảnh đại diện:</label>
           <input type="file" onChange={handleFileChange} />
-          {updatedInfo.avatarUrl && <img src={updatedInfo.avatarUrl} alt="Avatar" className="profile-avatar-preview" />}
+          {previewAvatar && (
+            <img src={previewAvatar} alt="Avatar preview" className="profile-avatar-preview" />
+          )}
           <button onClick={handleSaveChanges}>Lưu thay đổi</button>
           <button onClick={handleCancelEdit}>Hủy</button>
         </div>
       ) : (
         <div>
-          <img src={user.avatarUrl || "/images/default-avatar.jpg"} alt="Avatar" className="profile-avatar" />
+          <img
+            src={user.avatarUrl || "/images/avatar.jpg"}
+            alt="Avatar"
+            className="profile-avatar"
+          />
           <p><strong>Tên:</strong> {user.fullName || "Chưa có thông tin"}</p>
           <p><strong>SĐT:</strong> {user.phoneNumber || "Chưa có thông tin"}</p>
           <p><strong>Địa chỉ:</strong> {user.address || "Chưa có thông tin"}</p>
