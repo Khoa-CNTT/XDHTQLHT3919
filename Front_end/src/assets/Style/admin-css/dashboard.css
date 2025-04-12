@@ -1,0 +1,14 @@
+.dashboard-container {
+    background-color: #0d1b4c;
+    height: 100vh;
+    padding: 30px;
+    color: white;
+  }
+  
+  .chart-box {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    color: black;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  }

@@ -16,9 +16,15 @@ import Contact from "./userSide/components/Other/Contact"
 import RoomDetail from "./userSide/components/Other/RoomDetail"
 import Profile from "./userSide/components/Other/Profile"
 import AdminLayout from "./adminSide/components/AdminLayout"
+import Sidebar from "./adminSide/components/Sidebar";
+import Dashboard from "./adminSide/components/Dashboard";
+import ProductList from "./adminSide/components/ProductList";
 import "./assets/Style/Auth-css/auth.css";
 import "./assets/Style/Auth-css/profile.css";
 import "./assets/Style/admin-css/adminLayout.css";
+import "./assets/Style/admin-css/sidebar.css";
+import "./assets/Style/admin-css/dashboard.css";
+import "./assets/Style/admin-css/productList.css";
 import "./assets/Style/home-css/index.css";
 import "./assets/Style/home-css/contact.css";
 import "./assets/Style/home-css/roomDetail.css";
@@ -74,6 +80,17 @@ const App = () => {
                 <Route path="/room/:id" element={<RoomDetail />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/adminlayout" element={<AdminLayout />} />
+                <Route path="/sidebar" element={<Sidebar />} />
+                <Route path="/dashboard" element={
+                    <AdminLayout>
+                        <Dashboard />
+                    </AdminLayout>
+                } />
+                <Route path="/productlist" element={
+                    <AdminLayout>
+                        <ProductList />
+                    </AdminLayout>
+                } />
                 
             </Routes>
         </Layout>
