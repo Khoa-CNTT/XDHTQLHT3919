@@ -32,11 +32,20 @@ const changePassword = (token, data, username) => {
     },
   });
 };
-
+export const getAllUsers = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/getall`);
+    return response.data;
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách người dùng:', error);
+    throw error;
+  }
+}
 const userApi = {
   getProfile,
   updateProfile,
   changePassword,
+  getAllUsers,
 };
 
 export default userApi;

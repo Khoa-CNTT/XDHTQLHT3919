@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom"; 
 import Header from "./userSide/components/Headers/Header";
@@ -19,12 +18,14 @@ import AdminLayout from "./adminSide/components/AdminLayout"
 import Sidebar from "./adminSide/components/Sidebar";
 import Dashboard from "./adminSide/components/Dashboard";
 import ProductList from "./adminSide/components/ProductList";
+import UserList from "./adminSide/components/UserList";
 import "./assets/Style/Auth-css/auth.css";
 import "./assets/Style/Auth-css/profile.css";
 import "./assets/Style/admin-css/adminLayout.css";
 import "./assets/Style/admin-css/sidebar.css";
 import "./assets/Style/admin-css/dashboard.css";
 import "./assets/Style/admin-css/productList.css";
+import "./assets/Style/admin-css/userList.css";
 import "./assets/Style/home-css/index.css";
 import "./assets/Style/home-css/contact.css";
 import "./assets/Style/home-css/roomDetail.css";
@@ -91,7 +92,11 @@ const App = () => {
                         <ProductList />
                     </AdminLayout>
                 } />
-                
+                <Route path="/userlist" element={
+                    <AdminLayout>
+                        <UserList />
+                    </AdminLayout>
+                } />
             </Routes>
         </Layout>
     );
