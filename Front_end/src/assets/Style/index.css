@@ -45,9 +45,10 @@ h1, h2, h3, h4 {
 }
 
 /* Header Styles */
+/* CSS cho Header */
 .header {
     background-color: rgba(255,255,255,0.98);
-    padding: 15px 0;
+    padding: 0px 15px;
     position: relative;
     width: 100%;
     top: 0;
@@ -75,13 +76,10 @@ h1, h2, h3, h4 {
     position: relative;
 }
 
-.header__logo h1 {
-    color: var(--primary);
+.header__logo img {
     margin-right: 40px;
-    font-size: 1,5rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    transition: var(--transition);
+    width: 150px;
+    transition: transform 0.3s ease-in-out;
 }
 
 .header__nav ul {
@@ -127,13 +125,20 @@ h1, h2, h3, h4 {
     gap: 25px;
     margin-left: 10px;
 }
+
 .user-menu {
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .user-menu .dropdown {
     display: none;
     position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 100px;
     background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
@@ -147,6 +152,7 @@ h1, h2, h3, h4 {
     background-color: var(--primary);
     color: white;
     padding: 12px 25px;
+    width: 120px;
     font-weight: 600;
     letter-spacing: 0.5px;
     box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
@@ -156,6 +162,87 @@ h1, h2, h3, h4 {
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
 }
+
+input[type="text"] {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 500px;
+    margin: 20px auto;
+    border-radius: 8px;
+    background-color: transparent;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 10px 40px 10px 15px; 
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+    background-color: transparent;
+    transition: border-color 0.3s ease;
+}
+
+.search-container input:focus {
+    border-color: #4CAF50;
+}
+
+.search-container button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #070707;
+    display: flex;
+    align-items: center;
+}
+
+.search-container button:hover {
+    color: #45a049;
+}
+
+.search-container button:disabled {
+    color: #c0c0c0;
+    cursor: not-allowed;
+}
+
+.search-container input::placeholder {
+    color: #999; 
+}
+
+.search-container button svg {
+    font-size: 18px; 
+}
+.user-avatar {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+
 
 /* Button Styles */
 .btn {
@@ -239,6 +326,7 @@ h1, h2, h3, h4 {
 
 .hero__subtitle {
     font-size: 1.2rem;
+    color: white;
     margin-bottom: 30px;
     animation: fadeInUp 1s ease 0.3s both;
 }
@@ -254,11 +342,26 @@ h1, h2, h3, h4 {
     background: transparent;
     border: 2px solid white;
     color: white;
+    width: 180px;
 }
 
 .btn--outline:hover {
     background: white;
     color: var(--dark);
+}
+.btn--primary1 {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 25px;
+    font-weight: 600;
+    width: 180px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+}
+
+.btn--primary1:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
 }
 
 /* Section Styling */
@@ -863,17 +966,17 @@ h1, h2, h3, h4 {
         padding-top: 30px;
     }
     .btn--secondary {
-        background-color: transparent; /* Hoặc màu nền bạn muốn */
-        color: #fff; /* Màu chữ */
-        border: 1px solid #fff; /* Đường viền */
-        padding: 10px 20px; /* Khoảng cách bên trong */
-        margin-left: 10px; /* Khoảng cách giữa các nút */
-        cursor: pointer; /* Con trỏ khi di chuột qua */
-        transition: background-color 0.3s; /* Hiệu ứng chuyển tiếp */
+        background-color: transparent;
+        color: #fff; 
+        border: 1px solid #fff;
+        padding: 10px 20px; 
+        margin-left: 10px; 
+        cursor: pointer;
+        transition: background-color 0.3s;
     }
     
     .btn--secondary:hover {
-        background-color: rgba(255, 255, 255, 0.2); /* Hiệu ứng hover */
+        background-color: rgba(255, 255, 255, 0.2);
     }
     .header__nav.active {
         left: 0;
