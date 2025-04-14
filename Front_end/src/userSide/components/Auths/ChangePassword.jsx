@@ -17,15 +17,15 @@ function ChangePassword() {
     }
 
     try {
-      const token = localStorage.getItem("token"); // ✅ Lấy token từ localStorage
-      const username = localStorage.getItem("username"); // ✅ Nếu backend cần Username
+      const token = localStorage.getItem("token"); 
+      const username = localStorage.getItem("username"); 
 
       const data = {
         oldPassword,
         newPassword,
       };
 
-      const response = await userApi.changePassword(token, data, username); // ✅ Gọi đúng API
+      const response = await userApi.changePassword(token, data, username);
 
       if (response.status === 200) {
         alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");

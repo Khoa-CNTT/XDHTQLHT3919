@@ -8,19 +8,21 @@ const Header = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
-    const [showDropdown, setShowDropdown] = useState(false);
+    const [role, setRole] = useState(''); // <-- Thêm state role
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        const user = localStorage.getItem("name");
-        const role = localStorage.getItem("role");
+        const user = localStorage.getItem("username");
+        const userRole = localStorage.getItem("role");
         const avatar = localStorage.getItem("avatarUrl") || "";
 
         if (token && user) {
             setIsLoggedIn(true);
             setUsername(user);
-            setIsAdmin(role === "admin");
+            setRole(userRole);
+            setIsAdmin(userRole === "admin");
             setAvatarUrl(avatar);
         }
     }, []);
@@ -30,6 +32,7 @@ const Header = () => {
         setUsername('');
         setIsAdmin(false);
         setAvatarUrl('');
+        setRole('');
         localStorage.removeItem("token");
         localStorage.removeItem("name");
         localStorage.removeItem("role");
@@ -61,9 +64,9 @@ const Header = () => {
                         <li><a href="#">Tiện nghi</a></li>
                         <li><a href="#">Thư viện</a></li>
                         <li><Link to="/contact">Liên hệ</Link></li>
-                        {isAdmin && (
-                            <li><Link to="/homemng">Quản lý</Link></li>
-                        )}
+                        <li>
+                            <Link to="/adminlayout">Quản lý</Link>
+                        </li>
                     </ul>
                 </nav>
 
@@ -87,37 +90,15 @@ const Header = () => {
                             <button className="btn btn--primary" onClick={() => navigate("/login")}>Đăng nhập</button>
                         </>
                     ) : (
-                        <div
-                            className="user-menu relative"
-                            onMouseEnter={() => setShowDropdown(true)}
-                            onMouseLeave={() => setShowDropdown(false)}
-                        >
-                            <div className="flex items-center gap-2 cursor-pointer">
-                                <img
-                                    src={avatarUrl || "https://png.pngtree.com/png-clipart/20210608/ourlarge/pngtree-dark-gray-simple-avatar-png-image_3418404.jpg"}
-                                    alt="Avatar"
-                                    className="avatar-img"
-                                    style={{ width: "35px", height: "35px", borderRadius: "50%" }}
+                        <div className="user-menu">
+                            <div className="user-avatar">
+                                <img 
+                                    src={avatarUrl || "/images/avatar.jpg"} 
+                                    alt="Avatar" 
+                                    className="avatar-img" 
                                 />
                                 <span className="font-semibold">{name}</span>
                             </div>
-
-                            {showDropdown && (
-                                <div className="absolute top-full right-0 bg-white border rounded shadow-md mt-2 w-32 z-10">
-                                    <button
-                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                                        onClick={() => navigate("/profile")}
-                                    >
-                                        Hồ sơ
-                                    </button>
-                                    <button
-                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                                        onClick={handleLogout}
-                                    >
-                                        Đăng xuất
-                                    </button>
-                                </div>
-                            )}
                         </div>
                     )}
                 </div>
