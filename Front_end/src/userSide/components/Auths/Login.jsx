@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../../services/api/Login";
+
+import { login } from "../../../services/api/AuthAPI/Login";
 import { FaArrowLeft } from "react-icons/fa";
-import SHA256 from "crypto-js/sha256"; // ✅ Thêm dòng này
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -18,40 +18,33 @@ function Login() {
       return;
     }
 
-    // ✅ Mã hóa mật khẩu bằng SHA256 trước khi gửi
-    const hashedPassword = SHA256(password).toString();
-    const credentials = { email, password: hashedPassword };
+    const credentials = { email, password };
     console.log("Đang gửi dữ liệu: ", credentials);
 
     try {
       const response = await login(credentials);
       console.log("Dữ liệu trả về từ backend: ", response);
 
-      const res = response?.data;
-      const status = res?.status;
-      const message = res?.message;
-      const user = res?.data;
-
-      if (status === 200 && user) {
+      if (response && response.status === 200 && response.data) {
         alert("Đăng nhập thành công!");
 
-        localStorage.setItem("userId", user.id);
-        localStorage.setItem("email", user.email);
-        localStorage.setItem("username", user.name || user.email);
-        localStorage.setItem("role", user.role);
-        localStorage.setItem("avatarUrl", user.pathImg || "");
+
+        localStorage.setItem("userId", response.data.id);
+        localStorage.setItem("email", response.data.email);
+        localStorage.setItem("role", response.data.idRole);
+        localStorage.setItem("username", response.data.username || response.data.email);
 
         navigate("/home");
       } else {
-        alert(message || "Đăng nhập thất bại! Tài khoản hoặc mật khẩu không đúng.");
+        alert("Đăng nhập thất bại! Tài khoản hoặc mật khẩu không đúng.");
       }
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
-      const errorMessage =
-        error.response?.data?.message || "Đăng nhập thất bại, vui lòng thử lại!";
+      const errorMessage = error.response?.data?.message || "Đăng nhập thất bại, vui lòng kiểm tra lại!";
       alert(errorMessage);
     }
   };
+
 
   return (
     <div className="auth-wrapper">

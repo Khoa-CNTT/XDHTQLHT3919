@@ -18,7 +18,7 @@ const Sidebar = () => {
         <Link to="/dashboard" className={isActive('/dashboard')}>
           <li>Quản lý danh mục</li>
         </Link>
-        <Link to="/userList" className={isActive('/userList')}>
+        <Link to="/userlist" className={isActive('/userlist')}>
           <li>Quản lý tài khoản</li>
         </Link>
       </ul>

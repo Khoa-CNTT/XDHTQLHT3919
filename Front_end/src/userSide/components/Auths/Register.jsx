@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "../../../services/api/Register";
+
+import { register } from "../../../services/api/AuthAPI/Register";
+
 import { FaEnvelope, FaPhone } from "react-icons/fa";
 
 function Register() {

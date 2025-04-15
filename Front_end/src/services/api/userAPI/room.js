@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://localhost:7193/api/Rooms';
+const API_BASE_URL = 'https://localhost:7154/api/room';
 
 export const fetchRoomDetails = async (roomId) => {
     try {

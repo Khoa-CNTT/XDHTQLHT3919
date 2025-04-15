@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getAllUsers } from '../../services/api/user';
+
+import { getAllUsers } from '../../services/api/AuthAPI/User';
+
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -26,6 +28,7 @@ const UserList = () => {
       <table className="user-table">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Email</th>
             <th>Tên tài khoản</th>
             <th>Địa chỉ</th>
@@ -42,6 +45,7 @@ const UserList = () => {
           ) : (
             users.map((user, i) => (
               <tr key={i}>
+                <td>{user.img}</td>
                 <td>{user.email}</td>
                 <td>{user.name}</td>
                 <td>{user.address}</td>

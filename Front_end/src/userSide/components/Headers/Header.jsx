@@ -1,15 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaBars } from "react-icons/fa";
+import { useIsMobile } from '../../../hooks/useIsMobile';
 
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [name, setUsername] = useState('');
+    const [username, setUsername] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
-    const [showDropdown, setShowDropdown] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
+
+    const isMobile = useIsMobile();
     const navigate = useNavigate();
+    const searchRef = useRef(null);
+    const dropdownRef = useRef(null);
 
     const getUserInfo = () => {
         return {
@@ -22,13 +29,25 @@ const Header = () => {
 
     useEffect(() => {
         const { token, name, role, avatar } = getUserInfo();
-
         if (token && name) {
             setIsLoggedIn(true);
             setUsername(name);
             setIsAdmin(role === "admin");
-            setAvatarUrl(avatar);
+            setAvatarUrl(avatar || "/images/avatar.png");
         }
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (searchRef.current && !searchRef.current.contains(e.target)) {
+                setShowSearch(false);
+            }
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setDropdownOpen(false);
+            }
+        };
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
     const handleLogout = () => {
@@ -41,25 +60,48 @@ const Header = () => {
     };
 
     const handleSearch = () => {
-        console.log('Tìm kiếm:', searchQuery);
-        // navigate(`/search?q=${searchQuery}`); // nếu bạn có trang tìm kiếm
+        console.log("Tìm kiếm:", searchQuery);
     };
 
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
             handleSearch();
+            setShowSearch(false);
         }
     };
 
-    // Dropdown delay (mượt hơn)
-    let timeoutId;
-    const handleMouseEnter = () => {
-        clearTimeout(timeoutId);
-        setShowDropdown(true);
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
     };
-    const handleMouseLeave = () => {
-        timeoutId = setTimeout(() => setShowDropdown(false), 150);
-    };
+
+    const renderMenuItems = () => (
+        <ul className="header__menu">
+            <li><Link to="/home">Trang chủ</Link></li>
+            <li><Link to="/rooms">Phòng</Link></li>
+            <li><Link to="/services">Tiện nghi</Link></li>
+            <li><Link to="/gallery">Thư viện</Link></li>
+            <li><Link to="/contact">Liên hệ</Link></li>
+            {isAdmin && <li><Link to="/adminlayout">Quản lý</Link></li>}
+        </ul>
+    );
+
+    const renderMobileDropdown = () => (
+        <div className="mobile-dropdown">
+            {renderMenuItems()}
+            {!isLoggedIn ? (
+                <div className="mobile-auth">
+                    <button className="btn btn--primary" onClick={() => navigate('/register')}>Đăng ký</button>
+                    <button className="btn btn--primary" onClick={() => navigate('/login')}>Đăng nhập</button>
+                </div>
+            ) : (
+                <div className="mobile-user-info">
+                    <p className="user-name">Xin chào, {username}</p> {/* Hiển thị tên người dùng */}
+                    <button className="btn btn--secondary" onClick={() => navigate("/profile")}>Hồ sơ</button>
+                    <button className="btn btn--secondary" onClick={handleLogout}>Đăng xuất</button>
+                </div>
+            )}
+        </div>
+    );
 
     return (
         <header className="header">
@@ -68,71 +110,63 @@ const Header = () => {
                     <img src="/logo.png" alt="Logo" />
                 </div>
 
-                <nav className="header__nav">
-                    <ul>
-                        <li><Link to="/home">Trang chủ</Link></li>
-                        <li><Link to="/rooms">Phòng</Link></li>
-                        <li><Link to="/services">Tiện nghi</Link></li>
-                        <li><Link to="/gallery">Thư viện</Link></li>
-                        <li><Link to="/contact">Liên hệ</Link></li>
-                        {isAdmin && (
-                            <li><Link to="/homemng">Quản lý</Link></li>
-                        )}
-                    </ul>
-                </nav>
+                {!isMobile && (
+                    <nav className="header__nav">
+                        {renderMenuItems()}
+                    </nav>
+                )}
 
                 <div className="header__actions">
-                    <div className="search-container">
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                        />
-                        <button className="btn btn--secondary" onClick={handleSearch}>
-                            <FaSearch />
-                        </button>
+                    <div className="search-container" ref={searchRef}>
+                        {!showSearch ? (
+                            <button className="btn btn--icon" onClick={() => setShowSearch(true)}>
+                                <FaSearch />
+                            </button>
+                        ) : (
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={handleKeyPress}
+                                className="search-input"
+                                autoFocus
+                            />
+                        )}
                     </div>
 
-                    {!isLoggedIn ? (
-                        <>
-                            <button className="btn btn--primary" onClick={() => navigate("/register")}>Đăng ký</button>
-                            <button className="btn btn--primary" onClick={() => navigate("/login")}>Đăng nhập</button>
-                        </>
-                    ) : (
-                        <div
-                            className="user-menu relative"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                        >
-                            <div className="flex items-center gap-2 cursor-pointer">
-                                <img
-                                    src={avatarUrl || "https://png.pngtree.com/png-clipart/20210608/ourlarge/pngtree-dark-gray-simple-avatar-png-image_3418404.jpg"}
-                                    alt="Avatar"
-                                    className="avatar-img"
-                                    style={{ width: "35px", height: "35px", borderRadius: "50%" }}
-                                />
-                                <span className="font-semibold">{name}</span>
-                            </div>
-
-                            {showDropdown && (
-                                <div className="absolute top-full right-0 bg-white border rounded shadow-md mt-2 w-32 z-10 dropdown">
-                                    <button
-                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                                        onClick={() => navigate("/profile")}
-                                    >
-                                        Hồ sơ
-                                    </button>
-                                    <button
-                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                                        onClick={handleLogout}
-                                    >
-                                        Đăng xuất
-                                    </button>
-                                </div>
-                            )}
+                    {isMobile ? (
+                        <div className="mobile-menu">
+                            <button className="btn btn--icon" onClick={toggleMenu}>
+                                <FaBars size={20} />
+                            </button>
+                            {menuOpen && renderMobileDropdown()}
                         </div>
+                    ) : (
+                        !isLoggedIn ? (
+                            <>
+                                <button className="btn btn--primary" onClick={() => navigate('/register')}>Đăng ký</button>
+                                <button className="btn btn--primary" onClick={() => navigate('/login')}>Đăng nhập</button>
+                            </>
+                        ) : (
+                            <div className="user-menu" ref={dropdownRef}>
+                                <div className="user-avatar" onClick={() => setDropdownOpen(!dropdownOpen)} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                                    <img
+                                        src={avatarUrl} // Hiển thị avatar người dùng
+                                        alt="Avatar"
+                                        className="avatar-img"
+                                        style={{ width: "35px", height: "35px", borderRadius: "50%" }}
+                                    />
+                                    <span>{username}</span> {/* Hiển thị tên người dùng */}
+                                </div>
+                                {dropdownOpen && (
+                                    <div className="dropdown">
+                                        <button className="btn btn--secondary" onClick={() => navigate("/profile")}>Hồ sơ</button>
+                                        <button className="btn btn--secondary" onClick={handleLogout}>Đăng xuất</button>
+                                    </div>
+                                )}
+                            </div>
+                        )
                     )}
                 </div>
             </div>

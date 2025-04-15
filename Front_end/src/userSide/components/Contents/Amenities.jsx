@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getAmenities } from '../../../services/api/amenities';
+
+import { getAmenities } from '../../../services/api/userAPI/Amenities';
+
 
 const Amenities = () => {
     const [amenities, setAmenities] = useState([]);

@@ -1,6 +1,7 @@
-// src/components/Gallery.jsx
 import React, { useState, useEffect } from 'react';
-import { getGalleryImages } from '../../../services/api/gallery'; // Import API
+
+import { getGalleryImages } from '../../../services/api/userAPI/Gallery';
+
 
 const Gallery = () => {
     const [galleryImages, setGalleryImages] = useState([]);
@@ -10,17 +11,17 @@ const Gallery = () => {
     useEffect(() => {
         const fetchGalleryImages = async () => {
             try {
-                const data = await getGalleryImages(); // Gọi API từ file API
-                setGalleryImages(data); // Cập nhật state với dữ liệu nhận được
+                const data = await getGalleryImages();
+                setGalleryImages(data);
             } catch (err) {
                 setError('Lỗi khi tải ảnh thư viện');
             } finally {
-                setLoading(false); // Đảm bảo loading = false khi dữ liệu đã được tải xong
+                setLoading(false);
             }
         };
 
         fetchGalleryImages();
-    }, []); // Chỉ gọi khi component mount
+    }, []);
 
     if (loading) return <div>Đang tải...</div>;
     if (error) return <div>{error}</div>;

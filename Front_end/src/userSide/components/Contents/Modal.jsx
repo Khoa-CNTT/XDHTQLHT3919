@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { fetchRoomDetails, fetchRoomImages } from '../../../services/api/room';
+
+import { fetchRoomDetails, fetchRoomImages } from '../../../services/api/userAPI/Room';
+
 
 const Modal = ({ isOpen, onClose, roomId }) => {
     const [room, setRoom] = useState(null); // Lưu trữ dữ liệu phòng

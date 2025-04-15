@@ -87,7 +87,6 @@
     margin-right: 8px;
 }
 
-/* Nút đăng nhập */
 .back-button {
     position: absolute;
     top: 20px;
@@ -129,7 +128,6 @@
     transform: scale(0.98);
 }
 
-/* Nút chuyển đổi giữa đăng nhập / đăng ký */
 .auth-toggle {
     color: #00c3ff;
     cursor: pointer;
@@ -143,7 +141,6 @@
 }
 
 
-/* Responsive - Điều chỉnh trên mobile */
 @media screen and (max-width: 480px) {
     .auth-container {
         width: 90%;
@@ -223,7 +220,7 @@
   .btn{
     font-size: 15px;
   }
-.auth-subtitle{
+    .auth-subtitle{
     color: #f9f9f9;
 }
   

@@ -35,3 +35,4 @@ let mockProducts = [
     mockProducts = mockProducts.filter(p => p.id !== id);
     return true;
   };
+  

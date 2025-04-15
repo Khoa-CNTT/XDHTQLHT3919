@@ -9,39 +9,42 @@ using Swashbuckle.AspNetCore.Filters; // Thêm namespace của DbContext
 var builder = WebApplication.CreateBuilder(args);
 
 // Cấu hình JWT Authentication
-builder.Services.AddAuthentication().AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication("Bearer") // Thêm "Bearer" vào để chỉ định sử dụng Bearer token
+    .AddJwtBearer(options =>
     {
-        ValidateIssuerSigningKey = true,
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                builder.Configuration.GetSection("AppSettings:Token").Value!))
-    };
-});
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true, // Kiểm tra tính hợp lệ của khóa ký
+            ValidateAudience = false, // Không cần kiểm tra Audience
+            ValidateIssuer = false, // Không cần kiểm tra Issuer
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                builder.Configuration.GetSection("AppSettings:Token").Value!)) // Khóa bí mật từ appsettings.json
+        };
+    });
 
 // Cấu hình JSON options để bỏ qua vòng lặp trong các liên kết
 builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); // Tránh vòng lặp trong đối tượng liên kết
 
 // Thêm Swagger cho API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
+        Type = SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT", // Định dạng token là JWT
+        Description = "Enter 'Bearer' followed by your token"
     });
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
+    options.OperationFilter<SecurityRequirementsOperationFilter>(); // Áp dụng filter Swagger để yêu cầu Authorization Header
 });
 
 // Cấu hình DbContext với SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-    sqlOptions => sqlOptions.EnableRetryOnFailure())
+        sqlOptions => sqlOptions.EnableRetryOnFailure())
 );
 
 // Thêm CORS để cho phép kết nối từ React App (localhost:3000)
@@ -70,10 +73,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Bắt buộc sử dụng HTTPS
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // Kích hoạt Authentication
+app.UseAuthorization(); // Kích hoạt Authorization
 
 // Cấu hình CORS
 app.UseCors("AllowReactApp");
