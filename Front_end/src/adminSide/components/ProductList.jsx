@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {getProducts, addOrUpdateProduct, deleteProduct} from '../../api/productApi';
+import {getProducts, addOrUpdateProduct, deleteProduct} from '../../api/adminAPI/productApi';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -103,7 +103,7 @@ const ProductList = () => {
           <input
             type="number"
             value={form.quantity}
-onChange={(e) => setForm({ ...form, quantity: parseInt(e.target.value) || 0 })}
+            onChange={(e) => setForm({ ...form, quantity: parseInt(e.target.value) || 0 })}
             min="0"
           />
           <button onClick={() => handleQuantityChange('inc')}>+</button>

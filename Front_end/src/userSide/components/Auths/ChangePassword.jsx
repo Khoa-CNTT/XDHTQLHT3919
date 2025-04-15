@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userApi from "../../../api/user"; // ✅ Đúng export
+import userApi from "../../../api/AuthAPI/user";
 
 function ChangePassword() {
   const [oldPassword, setOldPassword] = useState("");

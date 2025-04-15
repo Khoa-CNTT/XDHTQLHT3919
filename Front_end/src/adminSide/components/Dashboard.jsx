@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { getMonthlyRevenue } from '../../api/homeAdmin.js';
+import { getMonthlyRevenue } from '../../api/adminAPI/homeAdmin';
 
 const Dashboard = () => {
   const [data, setData] = useState([]);

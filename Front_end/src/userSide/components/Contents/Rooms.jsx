@@ -1,7 +1,7 @@
 // src/Rooms.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';  // Sử dụng useNavigate thay vì useHistory
-import { fetchRoomsData } from '../../../api/room';
+import { fetchRoomsData } from '../../../api/userAPI/room';
 
 const Rooms = ({ onRoomClick }) => {
   const [roomsData, setRoomsData] = useState([]);

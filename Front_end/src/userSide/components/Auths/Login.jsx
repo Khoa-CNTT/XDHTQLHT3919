@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../../api/Login";
+import { login } from "../../../api/AuthAPI/Login";
 import { FaArrowLeft } from "react-icons/fa";
 
 function Login() {
@@ -29,8 +29,7 @@ function Login() {
 
         alert("Đăng nhập thành công!");
 
-        // Nếu chưa có token thật thì lưu tạm token giả
-        localStorage.setItem("token", "fake-token");
+        localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", user.id);
         localStorage.setItem("email", user.email);
         localStorage.setItem("username", user.name || user.email);

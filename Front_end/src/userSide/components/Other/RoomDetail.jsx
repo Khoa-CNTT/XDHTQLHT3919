@@ -10,17 +10,14 @@ const RoomDetails = () => {
   const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Fetch room details and images
   useEffect(() => {
     const fetchRoomData = async () => {
       try {
-        // Lấy thông tin phòng từ API
         const roomResponse = await axios.get(`https://example.com/api/rooms/${id}`);
-        setRoom(roomResponse.data); // Lưu thông tin phòng
+        setRoom(roomResponse.data);
 
-        // Lấy ảnh phòng từ API
         const imagesResponse = await axios.get(`https://example.com/api/rooms/${id}/images`);
-        setImages(imagesResponse.data); // Lưu ảnh phòng
+        setImages(imagesResponse.data);
       } catch (err) {
         setError("Lỗi khi tải dữ liệu phòng");
       } finally {
