@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Quan_Ly_HomeStay.Data;
+using Quan_Ly_HomeStay.Helpers;
 using Quan_Ly_HomeStay.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
@@ -18,11 +19,12 @@ namespace Quan_Ly_HomeStay.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly IConfiguration _config;
-
+        
         public UserController(ApplicationDbContext _db, IConfiguration cf)
         {
             db = _db;
             _config = cf;
+            
         }
         [HttpGet("all")]
 
@@ -103,7 +105,6 @@ namespace Quan_Ly_HomeStay.Controllers
                     status = 400
                 });
             }
-
             // Kiểm tra email đã tồn tại chưa
             var existingUser = await db.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
             if (existingUser != null)
@@ -114,17 +115,14 @@ namespace Quan_Ly_HomeStay.Controllers
                     status = 400
                 });
             }
-
-            // Gán ID mới
+            user.Password = SHA256Helper.Encrypt(user.Password);
+            
             user.Id = Guid.NewGuid();
-
-            // Gán ngày tạo nếu chưa có
+            
             user.CreateAt ??= DateTime.Now;
-
-            // Gán PathImg mặc định
-            user.PathImg ??= "default-avatar.png"; // bạn có thể đổi thành URL nếu cần
-
-            // Gán Role mặc định là "Member"
+            
+            user.PathImg ??= "default-avatar.png"; 
+            
             var role = await db.Roles.FirstOrDefaultAsync(x => x.Name == "Member");
             if (role == null)
             {
@@ -233,22 +231,23 @@ namespace Quan_Ly_HomeStay.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] Login user)
         {
-            var _user = (from nv in db.Users
-                         where nv.Email == user.email
-                         select new
-                         {
-                             nv.Id,
-                             nv.Password,
-                             nv.Email,
-                             nv.PathImg,
-                             nv.IdRole,
-                             nv.Address,
-                             nv.Name,
-                             nv.CreateAt,
-                             nv.Phone,
-                             role = db.Roles.Where(x => x.Id == nv.IdRole).FirstOrDefault().Name
-                         }).ToList();
-            if (_user.Count == 0)
+            var userData = (from nv in db.Users
+                            where nv.Email == user.email
+                            select new
+                            {
+                                nv.Id,
+                                nv.Password,
+                                nv.Email,
+                                nv.PathImg,
+                                nv.IdRole,
+                                nv.Address,
+                                nv.Name,
+                                nv.CreateAt,
+                                nv.Phone,
+                                role = db.Roles.FirstOrDefault(x => x.Id == nv.IdRole).Name
+                            }).FirstOrDefault();
+
+            if (userData == null)
             {
                 return Ok(new
                 {
@@ -256,7 +255,10 @@ namespace Quan_Ly_HomeStay.Controllers
                     status = 404
                 });
             }
-            if (user.password != _user[0].Password)
+
+            string encryptedPassword = SHA256Helper.Encrypt(user.password);
+
+            if (encryptedPassword != userData.Password)
             {
                 return Ok(new
                 {
@@ -264,13 +266,16 @@ namespace Quan_Ly_HomeStay.Controllers
                     status = 400
                 });
             }
+
             return Ok(new
             {
                 message = "Thành công",
                 status = 200,
-                data = _user,
+                data = userData
             });
         }
+
+
         [HttpGet("info")]
         public ActionResult GetDataFromToken()
         {

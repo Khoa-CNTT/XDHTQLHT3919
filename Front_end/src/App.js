@@ -27,13 +27,15 @@ import Sidebar from "./adminSide/components/Sidebar";
 import Dashboard from "./adminSide/components/Dashboard";
 import ProductList from "./adminSide/components/ProductList";
 
-// Style import
+import UserList from "./adminSide/components/UserList";
+
 import "./assets/Style/Auth-css/auth.css";
 import "./assets/Style/Auth-css/profile.css";
 import "./assets/Style/admin-css/adminLayout.css";
 import "./assets/Style/admin-css/sidebar.css";
 import "./assets/Style/admin-css/dashboard.css";
 import "./assets/Style/admin-css/productList.css";
+import "./assets/Style/admin-css/userList.css";
 import "./assets/Style/home-css/index.css";
 import "./assets/Style/home-css/contact.css";
 import "./assets/Style/home-css/roomDetail.css";
@@ -96,22 +98,23 @@ const App = () => {
                 {/* Admin Side Routes */}
                 <Route path="/adminlayout" element={<AdminLayout />} />
                 <Route path="/sidebar" element={<Sidebar />} />
-                <Route
-                    path="/dashboard"
-                    element={
-                        <AdminLayout>
-                            <Dashboard />
-                        </AdminLayout>
-                    }
-                />
-                <Route
-                    path="/productlist"
-                    element={
-                        <AdminLayout>
-                            <ProductList />
-                        </AdminLayout>
-                    }
-                />
+
+                <Route path="/dashboard" element={
+                    <AdminLayout>
+                        <Dashboard />
+                    </AdminLayout>
+                } />
+                <Route path="/productlist" element={
+                    <AdminLayout>
+                        <ProductList />
+                    </AdminLayout>
+                } />
+                <Route path="/userlist" element={
+                    <AdminLayout>
+                        <UserList />
+                    </AdminLayout>
+                } />
+
             </Routes>
         </Layout>
     );
