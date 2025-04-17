@@ -1,162 +1,132 @@
 ﻿using Quan_Ly_HomeStay.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 using Quan_Ly_HomeStay.Data;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Quan_Ly_HomeStay.Controllers
 {
-    [Route("api/product")]
+    [Route("api/room")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class RoomController : ControllerBase
     {
-        private readonly ApplicationDbContext db;
-        public ProductController(ApplicationDbContext _db)
+        private readonly ApplicationDbContext _db;
+
+        public RoomController(ApplicationDbContext db)
         {
-            db = _db;
+            _db = db;
         }
+
+        // GET: api/room/all
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Room>>> GetAllProduct()
+        public async Task<ActionResult> GetAllRooms()
         {
-            if (db.Rooms == null)
+            if (_db.Rooms == null)
             {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
+                return NotFound(new { message = "Dữ liệu trống!", status = 404 });
             }
-            var _data = from product in db.Rooms
-                        join category in db.Categories on product.IdCategory equals category.Id
-                        orderby product.CreateAt descending
-                        select new
-                        {
-                            product.Id,
-                            product.Name,
-                            product.Price,
-                            product.Quantity,
-                            product.CreateAt,
-                            product.Detail,
-                            product.IdUser,
-                            product.PathImg,
-                            category.Slug,
-                            product.Type,
-                            product.IdCategory,
-                            categoryName = category.Name
-                        };
+
+            var rooms = await _db.Rooms
+                .OrderByDescending(r => r.CreateAt)
+                .Select(room => new
+                {
+                    room.Id,
+                    room.Name,
+                    room.Detail,
+                    room.Quantity,
+                    room.Price,
+                    room.Type,
+                    room.IdUser,
+                    room.CreateAt,
+                    room.PathImg,
+                    room.IdCategory,
+                    categoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : null,
+                    categorySlug = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Slug : null
+                })
+                .ToListAsync();
+
             return Ok(new
             {
                 message = "Lấy dữ liệu thành công!",
                 status = 200,
-                data = _data
-            }); ;
+                data = rooms
+            });
         }
+
+
+        // GET: api/room?id=xxxx
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Room>>> GetProduct(Guid id)
+        public async Task<ActionResult> GetRoomById([FromQuery] Guid id)
         {
-            if (db.Rooms == null)
+            var room = await _db.Rooms.FindAsync(id);
+            if (room == null)
             {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
+                return NotFound(new { message = "Không tìm thấy phòng!", status = 404 });
             }
-            var _data = await db.Rooms.Where(x => x.Id == id).FirstOrDefaultAsync();
-            if (_data == null)
-            {
-                return Ok(new
-                {
-                    message = "Lấy dữ liệu thất bại!",
-                    status = 400
-                });
-            }
-            var category = db.Categories.Find(_data.IdCategory);
+
+            var category = await _db.Categories.FindAsync(room.IdCategory);
+
             return Ok(new
             {
                 message = "Lấy dữ liệu thành công!",
                 status = 200,
-                data = _data,
+                data = room,
                 category
             });
         }
+
+        // POST: api/room/add
         [HttpPost("add")]
-        public async Task<ActionResult> AddProduct([FromBody] Room product)
+        public async Task<ActionResult> AddRoom([FromBody] Room room)
         {
-            await db.Rooms.AddAsync(product);
-            await db.SaveChangesAsync();
+            room.CreateAt = DateTime.Now;
+            await _db.Rooms.AddAsync(room);
+            await _db.SaveChangesAsync();
+
             return Ok(new
             {
-                message = "Tạo thành công!",
+                message = "Tạo phòng thành công!",
                 status = 200,
-                data = product
+                data = room
             });
         }
+
+        // PUT: api/room/edit
         [HttpPut("edit")]
-
-        public async Task<ActionResult> Edit([FromBody] Room product)
+        public async Task<ActionResult> EditRoom([FromBody] Room room)
         {
-            var _product = await db.Rooms.FindAsync(product.Id);
-            if (_product == null)
+            var existingRoom = await _db.Rooms.FindAsync(room.Id);
+            if (existingRoom == null)
             {
-                return Ok(new
-                {
-                    message = "Dữ liệu không tồn tại!",
-                    status = 400
-                });
+                return NotFound(new { message = "Phòng không tồn tại!", status = 404 });
             }
-            db.Entry(await db.Rooms.FirstOrDefaultAsync(x => x.Id == _product.Id)).CurrentValues.SetValues(product);
-            await db.SaveChangesAsync();
-            return Ok(new
-            {
-                message = "Sửa thành công!",
-                status = 200
-            });
+
+            _db.Entry(existingRoom).CurrentValues.SetValues(room);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Sửa thành công!", status = 200 });
         }
-        [HttpDelete("delete")]
 
-        public async Task<ActionResult> Delete([FromBody] Guid id)
+        // DELETE: api/room/delete
+        [HttpDelete("delete")]
+        public async Task<ActionResult> DeleteRoom([FromBody] Guid id)
         {
-            if (db.Rooms == null)
+            var room = await _db.Rooms.FindAsync(id);
+            if (room == null)
             {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
+                return NotFound(new { message = "Không tìm thấy phòng!", status = 404 });
             }
-            var _product = await db.Rooms.FindAsync(id);
-            if (_product == null)
-            {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
-            }
+
             try
             {
-                db.Rooms.Remove(_product);
-                await db.SaveChangesAsync();
-                return Ok(new
-                {
-                    message = "Xóa thành công!",
-                    status = 200
-                });
+                _db.Rooms.Remove(room);
+                await _db.SaveChangesAsync();
+
+                return Ok(new { message = "Xóa thành công!", status = 200 });
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return Ok(new
-                {
-                    message = "Lỗi rồi!",
-                    status = 400,
-                    data = e.Message
-                });
+                return BadRequest(new { message = "Xảy ra lỗi khi xóa!", status = 400, error = ex.Message });
             }
         }
-
     }
 }
