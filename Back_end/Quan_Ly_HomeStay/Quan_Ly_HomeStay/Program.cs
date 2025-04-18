@@ -4,9 +4,13 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using Quan_Ly_HomeStay.Data;
-using Swashbuckle.AspNetCore.Filters; // Thêm namespace của DbContext
+using Swashbuckle.AspNetCore.Filters;
+using Quan_Ly_HomeStay.Services.Vnpay; // Thêm namespace của DbContext
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+
 
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication("Bearer") // Thêm "Bearer" vào để chỉ định sử dụng Bearer token

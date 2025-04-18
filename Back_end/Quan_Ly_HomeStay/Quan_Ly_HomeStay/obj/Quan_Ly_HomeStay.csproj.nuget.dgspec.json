@@ -1,26 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {}
+    "D:\\Git_KLTN\\1\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {}
   },
   "projects": {
-    "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {
+    "D:\\Git_KLTN\\1\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
+        "projectUniqueName": "D:\\Git_KLTN\\1\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
         "projectName": "Quan_Ly_HomeStay",
-        "projectPath": "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
-        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\obj\\",
+        "projectPath": "D:\\Git_KLTN\\1\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
+        "packagesPath": "C:\\Users\\ndqti\\.nuget\\packages\\",
+        "outputPath": "D:\\Git_KLTN\\1\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\DevExpress 24.1\\Components\\Offline Packages",
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\He_Quan_Tri_Co_So_Du_Lieu\\Components\\Offline Packages"
         ],
         "configFilePaths": [
-          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.1.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\ndqti\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 23.2.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -28,7 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\DevExpress 24.1\\Components\\System\\Components\\Packages": {},
+          "D:\\He_Quan_Tri_Co_So_Du_Lieu\\Components\\System\\Components\\Packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

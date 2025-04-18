@@ -1,0 +1,36 @@
+﻿@model Quan_Ly_HomeStay.Models.Vnpay.PaymentInformationModel
+
+@{
+    ViewData["Title"] = "Test Thanh Toán VNPay";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="CreatePaymentUrlVnpay" method="post">
+    <div class="form-group">
+        <label for="Name">Tên người thanh toán:</label>
+        <input type="text" class="form-control" name="Name" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Amount">Số tiền (VNĐ):</label>
+        <input type="number" class="form-control" name="Amount" value="1000000" required />
+    </div>
+
+    <div class="form-group">
+        <label for="OrderDescription">Nội dung thanh toán:</label>
+        <input type="text" class="form-control" name="OrderDescription" value="Thanh toán đơn hàng ABC" required />
+    </div>
+
+    <div class="form-group">
+        <label for="OrderType">Loại đơn hàng:</label>
+        <select class="form-control" name="OrderType">
+            <option value="billpayment">Thanh toán hóa đơn</option>
+            <option value="topup">Nạp tiền</option>
+            <option value="fashion">Mua sắm</option>
+            <option value="other">Khác</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Thanh toán qua VNPay</button>
+</form>
