@@ -238,6 +238,22 @@ h1, h2, h3, h4 {
     border-radius: 6px;
     cursor: pointer;
   }
+  @media (max-width: 768px) {
+    .header__actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+  
+    .search-container {
+      margin: 0;
+    }
+  
+    .mobile-menu {
+      margin-left: 0;
+    }
+  }
   
   /* ==== USER MENU & AVATAR ==== */
   .user-menu {

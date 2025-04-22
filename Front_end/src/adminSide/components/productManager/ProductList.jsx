@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 
-import {getProducts, addOrUpdateProduct, deleteProduct} from '../../services/api/adminAPI/ProductApi';
+import {getProducts, addOrUpdateProduct, deleteProduct} from '../../../services/api/adminAPI/productApi';
 
 
 const ProductList = () => {

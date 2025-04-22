@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { fetchRoomDetails, fetchRoomImages } from '../../../services/api/userAPI/Room';
+import { fetchRoomDetails } from '../../../services/api/userAPI/room';
 
 
 const Modal = ({ isOpen, onClose, roomId }) => {
@@ -18,8 +18,8 @@ const Modal = ({ isOpen, onClose, roomId }) => {
                 const roomData = await fetchRoomDetails(roomId);
                 setRoom(roomData);
 
-                const imagesData = await fetchRoomImages(roomId);
-                setGalleryImages(imagesData);
+                // const imagesData = await fetchRoomImages(roomId);
+                // setGalleryImages(imagesData);
             } catch (err) {
                 setError(err.message);
             } finally {

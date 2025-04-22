@@ -1,20 +1,28 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { login } from "../../../services/api/AuthAPI/Login";
 import { FaArrowLeft } from "react-icons/fa";
+
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [showNoti, setShowNoti] = useState(false);
+  const [notiMessage, setNotiMessage] = useState("");
+
   const navigate = useNavigate();
+
+  const showNotification = (message) => {
+    setNotiMessage(message);
+    setShowNoti(true);
+    setTimeout(() => setShowNoti(false), 3000);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Vui lòng nhập đầy đủ email và mật khẩu!");
+      showNotification("Vui lòng nhập đầy đủ email và mật khẩu!");
       return;
     }
 
@@ -25,29 +33,40 @@ function Login() {
       const response = await login(credentials);
       console.log("Dữ liệu trả về từ backend: ", response);
 
-      if (response && response.status === 200 && response.data) {
-        alert("Đăng nhập thành công!");
+      const { status, token, user } = response;
 
+      if (status === 200 && token) {
+        showNotification("Đăng nhập thành công!");
 
-        localStorage.setItem("userId", response.data.id);
-        localStorage.setItem("email", response.data.email);
-        localStorage.setItem("role", response.data.idRole);
-        localStorage.setItem("username", response.data.username || response.data.email);
+        const userImg = user.pathImg || "default-avatar.jpg";  // Đảm bảo pathImg có giá trị mặc định nếu không có ảnh
 
-        navigate("/home");
+        // Lưu trữ thông tin vào localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("email", user.email);  // Lưu email vào localStorage
+        localStorage.setItem("username", user.name); // Nếu có name, dùng name, ngược lại dùng email
+        localStorage.setItem("img", userImg); // Lưu ảnh vào localStorage nếu có
+        localStorage.setItem("role", user.role || "user"); // Lưu role vào localStorage nếu có
+        localStorage.setItem("idRole", user.idRole); // Lưu idRole vào localStorage
+        localStorage.setItem("address", user.address || ""); // Lưu địa chỉ vào localStorage
+        localStorage.setItem("phone", user.phone || ""); // Lưu số điện thoại vào localStorage
+        // Chuyển hướng tới trang chính
+        setTimeout(() => navigate("/home"), 1000);
       } else {
-        alert("Đăng nhập thất bại! Tài khoản hoặc mật khẩu không đúng.");
+        showNotification("Đăng nhập thất bại! Tài khoản hoặc mật khẩu không đúng.");
       }
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
-      const errorMessage = error.response?.data?.message || "Đăng nhập thất bại, vui lòng kiểm tra lại!";
-      alert(errorMessage);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Đăng nhập thất bại, vui lòng kiểm tra lại!";
+      showNotification(errorMessage);
     }
   };
 
-
   return (
     <div className="auth-wrapper">
+      <Notification message={notiMessage} show={showNoti} onClose={() => setShowNoti(false)} />
+
       <div className="auth-container">
         <button className="back-button" onClick={() => navigate("/")}>
           <FaArrowLeft />
@@ -76,7 +95,6 @@ function Login() {
           </div>
           <button type="submit" className="auth-button">Đăng nhập</button>
         </form>
-        {message && <p className="auth-message">{message}</p>}
         <p className="auth-footer">
           Bạn chưa có tài khoản?{" "}
           <button className="btn" onClick={() => navigate("/register")}>

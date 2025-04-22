@@ -12,6 +12,8 @@ import Testimonials from "./userSide/components/Contents/Testimonials";
 import Footer from "./userSide/components/Footers/Footer";
 import Modal from "./userSide/components/Contents/Modal";
 
+
+
 // Auth
 import Login from "./userSide/components/Auths/Login";
 import Register from "./userSide/components/Auths/Register";
@@ -23,12 +25,12 @@ import RoomDetail from "./userSide/components/Other/RoomDetail";
 import Profile from "./userSide/components/Other/Profile";
 
 // Admin side
-import AdminLayout from "./adminSide/components/AdminLayout";
-import Sidebar from "./adminSide/components/Sidebar";
-import Dashboard from "./adminSide/components/Dashboard";
-import ProductList from "./adminSide/components/ProductList";
+import AdminLayout from "./adminSide/components/adminSide/AdminLayout";
+import Sidebar from "./adminSide/components/adminSide/Sidebar";
+import Dashboard from "./adminSide/components/adminSide/Dashboard";
+import ProductList from "./adminSide/components/productManager/ProductList";
 
-import UserList from "./adminSide/components/UserList";
+import UserList from "./adminSide/components/UserManager/UserList";
 
 import "./assets/Style/Auth-css/auth.css";
 import "./assets/Style/Auth-css/profile.css";
@@ -39,7 +41,10 @@ import "./assets/Style/admin-css/productList.css";
 import "./assets/Style/admin-css/userList.css";
 import "./assets/Style/home-css/index.css";
 import "./assets/Style/home-css/contact.css";
-import "./assets/Style/home-css/roomDetail.css";
+
+
+// import "./assets/Style/roomDetail/RoomDetailPage.css";
+
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -96,7 +101,6 @@ const App = () => {
                 <Route path="/room/:id" element={<RoomDetail />} />
                 <Route path="/profile" element={<Profile />} />
 
-                {/* Admin Side Routes */}
                 <Route path="/adminlayout" element={<AdminLayout />} />
                 <Route path="/sidebar" element={<Sidebar />} />
 
@@ -115,6 +119,8 @@ const App = () => {
                         <UserList />
                     </AdminLayout>
                 } />
+                {/* <Route path="/detail" element={<RoomDetailPage />} /> */}
+                <Route path="/detail" element={<RoomDetail />} />
 
             </Routes>
         </Layout>

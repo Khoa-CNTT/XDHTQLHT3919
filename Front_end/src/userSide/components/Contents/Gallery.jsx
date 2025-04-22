@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { getGalleryImages } from '../../../services/api/userAPI/Gallery';
+import { getGalleryImages } from '../../../services/api/userAPI/gallery';
 
 
 const Gallery = () => {

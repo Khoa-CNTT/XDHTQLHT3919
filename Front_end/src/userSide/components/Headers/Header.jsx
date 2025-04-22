@@ -9,43 +9,57 @@ const Header = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
+    const [role, setRole] = useState('');
     const [menuOpen, setMenuOpen] = useState(false);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
 
     const isMobile = useIsMobile();
     const navigate = useNavigate();
     const searchRef = useRef(null);
-    const dropdownRef = useRef(null);
 
-    const getUserInfo = () => {
-        return {
-            token: localStorage.getItem("token"),
-            name: localStorage.getItem("name"),
-            role: localStorage.getItem("role"),
-            avatar: localStorage.getItem("avatarUrl") || ""
-        };
-    };
-
+    // Lấy thông tin người dùng khi load trang
     useEffect(() => {
-        const { token, name, role, avatar } = getUserInfo();
-        if (token && name) {
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("username");
+        const userRole = localStorage.getItem("role");
+        const avatar = localStorage.getItem("avatarUrl") || "";
+        
+
+        if (token && user) {
             setIsLoggedIn(true);
-            setUsername(name);
-            setIsAdmin(role === "admin");
-            setAvatarUrl(avatar || "/images/avatar.png");
+            setUsername(user);
+            setRole(userRole);
+            setIsAdmin(userRole === "admin");
+            setAvatarUrl(avatar);
         }
     }, []);
 
+    // Nghe sự kiện đăng nhập từ Login.jsx
+    useEffect(() => {
+        const handleUserLoggedIn = () => {
+            const user = localStorage.getItem("username");
+            const userRole = localStorage.getItem("role");
+            const avatar = localStorage.getItem("avatarUrl") || "";
+
+            setIsLoggedIn(true);
+            setUsername(user);
+            setRole(userRole);
+            setIsAdmin(userRole === "admin");
+            setAvatarUrl(avatar);
+        };
+
+        window.addEventListener("userLoggedIn", handleUserLoggedIn);
+        return () => window.removeEventListener("userLoggedIn", handleUserLoggedIn);
+    }, []);
+
+    // Click ngoài input sẽ ẩn tìm kiếm
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (searchRef.current && !searchRef.current.contains(e.target)) {
                 setShowSearch(false);
             }
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-                setDropdownOpen(false);
-            }
         };
+
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
@@ -55,19 +69,13 @@ const Header = () => {
         setUsername('');
         setIsAdmin(false);
         setAvatarUrl('');
+        setRole('');
         localStorage.clear();
         navigate('/login');
     };
 
     const handleSearch = () => {
         console.log("Tìm kiếm:", searchQuery);
-    };
-
-    const handleKeyPress = (e) => {
-        if (e.key === "Enter") {
-            handleSearch();
-            setShowSearch(false);
-        }
     };
 
     const toggleMenu = () => {
@@ -77,11 +85,11 @@ const Header = () => {
     const renderMenuItems = () => (
         <ul className="header__menu">
             <li><Link to="/home">Trang chủ</Link></li>
-            <li><Link to="/rooms">Phòng</Link></li>
-            <li><Link to="/services">Tiện nghi</Link></li>
-            <li><Link to="/gallery">Thư viện</Link></li>
+            <li><a href="#">Phòng</a></li>
+            <li><a href="#">Tiện nghi</a></li>
+            <li><a href="#">Thư viện</a></li>
             <li><Link to="/contact">Liên hệ</Link></li>
-            {isAdmin && <li><Link to="/adminlayout">Quản lý</Link></li>}
+            <li><Link to="/adminlayout">Quản lý</Link></li>
         </ul>
     );
 
@@ -95,8 +103,7 @@ const Header = () => {
                 </div>
             ) : (
                 <div className="mobile-user-info">
-                    <p className="user-name">Xin chào, {username}</p> {/* Hiển thị tên người dùng */}
-                    <button className="btn btn--secondary" onClick={() => navigate("/profile")}>Hồ sơ</button>
+                    <button className="btn btn--secondary" onClick={() => navigate("/profile")}>Profile</button>
                     <button className="btn btn--secondary" onClick={handleLogout}>Đăng xuất</button>
                 </div>
             )}
@@ -117,22 +124,28 @@ const Header = () => {
                 )}
 
                 <div className="header__actions">
-                    <div className="search-container" ref={searchRef}>
-                        {!showSearch ? (
-                            <button className="btn btn--icon" onClick={() => setShowSearch(true)}>
-                                <FaSearch />
-                            </button>
-                        ) : (
-                            <input
-                                type="text"
-                                placeholder="Tìm kiếm..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={handleKeyPress}
-                                className="search-input"
-                                autoFocus
-                            />
-                        )}
+                    <div className={`search-container ${showSearch ? "active" : ""}`} ref={searchRef}>
+                        <button
+                            className="btn btn--icon"
+                            onClick={() => setShowSearch((prev) => !prev)}
+                        >
+                            <FaSearch />
+                        </button>
+
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    handleSearch();
+                                    setShowSearch(false);
+                                }
+                            }}
+                            className="search-input"
+                            autoFocus={showSearch}
+                        />
                     </div>
 
                     {isMobile ? (
@@ -149,22 +162,25 @@ const Header = () => {
                                 <button className="btn btn--primary" onClick={() => navigate('/login')}>Đăng nhập</button>
                             </>
                         ) : (
-                            <div className="user-menu" ref={dropdownRef}>
-                                <div className="user-avatar" onClick={() => setDropdownOpen(!dropdownOpen)} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                            <div className="user-menu">
+                                <div className="user-avatar">
                                     <img
-                                        src={avatarUrl} // Hiển thị avatar người dùng
+                                        src={avatarUrl || "/images/avatar.jpg"}
                                         alt="Avatar"
                                         className="avatar-img"
-                                        style={{ width: "35px", height: "35px", borderRadius: "50%" }}
                                     />
-                                    <span>{username}</span> {/* Hiển thị tên người dùng */}
                                 </div>
-                                {dropdownOpen && (
-                                    <div className="dropdown">
-                                        <button className="btn btn--secondary" onClick={() => navigate("/profile")}>Hồ sơ</button>
-                                        <button className="btn btn--secondary" onClick={handleLogout}>Đăng xuất</button>
-                                    </div>
-                                )}
+                                <div className="user-info">
+                                    <span>{username}</span>
+                                </div>
+                                <div className="dropdown">
+                                    <button className="btn btn--secondary" onClick={() => navigate("/profile")}>
+                                        Profile
+                                    </button>
+                                    <button className="btn btn--secondary" onClick={handleLogout}>
+                                        Đăng xuất
+                                    </button>
+                                </div>
                             </div>
                         )
                     )}

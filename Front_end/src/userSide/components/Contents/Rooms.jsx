@@ -1,22 +1,26 @@
-// src/Rooms.jsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';  // Sử dụng useNavigate thay vì useHistory
-import { fetchRoomsData } from '../../../services/api/userAPI/Room';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchRoomsData } from '../../../services/api/userAPI/room';
 
 const Rooms = ({ onRoomClick }) => {
   const [roomsData, setRoomsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();  // Sử dụng useNavigate để điều hướng
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getRoomsData = async () => {
       try {
-        const data = await fetchRoomsData();
-        setRoomsData(data);
+        const response = await fetchRoomsData();
+
+        // Kiểm tra nếu response có dạng { data: [...] }
+        const rooms = Array.isArray(response)
+          ? response
+          : response.data || [];
+
+        setRoomsData(rooms);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || 'Có lỗi xảy ra');
       } finally {
         setLoading(false);
       }
@@ -41,16 +45,17 @@ const Rooms = ({ onRoomClick }) => {
           {roomsData.map((room) => (
             <div className="room-card" key={room.id}>
               <div className="room-card__image">
-                <img src={room.image} alt={room.title} />
+                <img src={room.image || room.pathImg} alt={room.title || room.name} />
               </div>
               <div className="room-card__content">
-                <h3>{room.title}</h3>
-                <p className="room-price">{room.price}</p>
+                <h3>{room.title || room.name}</h3>
+                <p className="room-price">{room.price} VND</p>
                 <button
                   className="btn btn--primary"
                   onClick={() => handleRoomClick(room)}
                 >
                   Chi tiết
+                {/* <Link to="/detail">Chi tiet</Link> */}
                 </button>
               </div>
             </div>

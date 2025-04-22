@@ -2,33 +2,27 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://localhost:7154/api/room';
 
-export const fetchRoomDetails = async (roomId) => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/${roomId}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching room details:', error);
-        throw new Error(`Không thể lấy dữ liệu phòng: ${error.response ? error.response.data : error.message}`);
-    }
+const handleError = (error, message) => {
+  console.error(message, error);
+  throw new Error(`${message}: ${error.response?.data || error.message}`);
 };
 
-export const fetchRoomImages = async (roomId) => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/${roomId}/images`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching room images:', error);
-        throw new Error(`Không thể lấy hình ảnh phòng: ${error.response ? error.response.data : error.message}`);
-    }
-};
-
-// Lấy tất cả dữ liệu phòng
+// Lấy tất cả phòng
 export const fetchRoomsData = async () => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching rooms data:', error);
-        throw new Error(`Không thể lấy dữ liệu phòng: ${error.response ? error.response.data : error.message}`);
-    }
+  try {
+    const response = await axios.get(`${API_BASE_URL}/all`);
+    return response.data;
+  } catch (error) {
+    handleError(error, 'Không thể lấy dữ liệu danh sách phòng');
+  }
+};
+
+// Lấy chi tiết phòng theo ID
+export const fetchRoomDetails = async (roomId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/${roomId}`);
+    return response.data;
+  } catch (error) {
+    handleError(error, 'Không thể lấy chi tiết phòng');
+  }
 };

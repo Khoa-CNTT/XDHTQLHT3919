@@ -3,7 +3,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 
-import { getMonthlyRevenue } from '../../services/api/adminAPI/HomeAdmin';
+import { getMonthlyRevenue } from '../../../services/api/adminAPI/homeAdmin';
 
 const Dashboard = () => {
   const [data, setData] = useState([]);

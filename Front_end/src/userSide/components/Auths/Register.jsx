@@ -50,7 +50,7 @@ function Register() {
       address,
       PathImg: "",
       createAt: new Date().toISOString(),
-      idRole: "0c12b645-4b6e-4ddf-99ae-a493eb2a3a52" // thay bằng ID Role "Member" trong DB nếu khác
+      idRole: "0c12b645-4b6e-4ddf-99ae-a493eb2a3a52"
     };
 
     try {

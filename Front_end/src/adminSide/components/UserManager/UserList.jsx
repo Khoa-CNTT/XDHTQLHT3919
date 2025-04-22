@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { getAllUsers } from '../../services/api/AuthAPI/User';
+import { getAllUsers } from '../../../services/api/AuthAPI/user';
 
 
 const UserList = () => {
