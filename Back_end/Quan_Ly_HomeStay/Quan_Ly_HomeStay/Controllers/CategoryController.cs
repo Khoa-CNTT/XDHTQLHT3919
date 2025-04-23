@@ -54,7 +54,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 data = _data
             }); ;
         }
-        [HttpPost("add")]
+        /*[HttpPost("add")]
         public async Task<ActionResult> AddCategory([FromBody] Category category)
         {
             var _category = await db.Categories.Where(x => x.Slug.Equals(category.Slug)).ToListAsync();
@@ -74,7 +74,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 status = 200,
                 data = category
             });
-        }
+        }*/
         [HttpPut("edit")]
 
         public async Task<ActionResult> Edit([FromBody] Category category)

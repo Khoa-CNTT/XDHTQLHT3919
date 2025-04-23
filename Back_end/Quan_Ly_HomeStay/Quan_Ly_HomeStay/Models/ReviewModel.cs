@@ -1,12 +1,26 @@
-﻿namespace Quan_Ly_HomeStay.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace Quan_Ly_HomeStay.Models
 {
-    public class Review
+    public partial class Review
     {
+        [Key]
         public Guid Id { get; set; }
-        public string AccountID { get; set; }
-        public string HomestayID { get; set; }
-        public int Rating { get; set; } // 1-5 (sao)
+
         public string? Comment { get; set; }
-        public DateTime ReviewDate { get; set; }
+
+        public DateTime? CreateAt { get; set; } = DateTime.Now;
+
+        public Guid? IdUser { get; set; }
+
+        public Guid? IdRoom { get; set; }
+
+        [ForeignKey("IdUser")]
+        public virtual User? IdUserNavigation { get; set; }
+
+        [ForeignKey("IdRoom")]
+        public virtual Room? IdRoomNavigation { get; set; }
+
     }
 }

@@ -1,22 +1,31 @@
 ﻿using Quan_Ly_HomeStay.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace Quan_Ly_HomeStay.Models;
 
 public partial class Room
 {
-    public Guid Id { get; set; }
+
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    [Required]
 
     public string Name { get; set; } = null!;
 
     public string? Detail { get; set; }
 
-    public int? Quantity { get; set; }
+
+    public string? Note { get; set; }
 
     public decimal? Price { get; set; }
 
-    public string? Type { get; set; }
+    public string? Status { get; set; } // trống, đã đặt, đang bảo trì 
+
 
     public DateTime? CreateAt { get; set; } = DateTime.Now;
 
@@ -26,9 +35,10 @@ public partial class Room
 
     public Guid? IdCategory { get; set; }
 
-    public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
-
+    [ForeignKey("IdCategory")]
     public virtual Category? IdCategoryNavigation { get; set; }
 
-    public virtual User? IdUserNavigation { get; set; }
+    public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
+    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+
 }

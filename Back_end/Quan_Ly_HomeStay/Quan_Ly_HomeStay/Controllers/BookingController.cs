@@ -88,7 +88,7 @@ namespace backend.Controllers
                 status = 200
             });
         }
-        [HttpPost("add")]
+        /*[HttpPost("add")]
 
         public async Task<ActionResult> AddOrder([FromBody] Booking order)
         {
@@ -101,7 +101,7 @@ namespace backend.Controllers
                 status = 200,
                 data = _data
             });
-        }
+        }*/
         [HttpDelete("delete")]
 
         public async Task<ActionResult> Delete([FromBody] Guid id)
@@ -144,7 +144,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("getOrderNotPay")]
+        /*[HttpGet("getOrderNotPay")]
 
         public async Task<ActionResult<Booking>> GetOrderNotPayment(Guid idUser)
         {
@@ -173,8 +173,8 @@ namespace backend.Controllers
                 data = _data,
                 total = amount
             });
-        }
-        [HttpGet("confirm")]
+        }*/
+        /*[HttpGet("confirm")]
 
         public async Task<ActionResult> Confirm(Guid idUser, int status, int type)
         {
@@ -206,7 +206,7 @@ namespace backend.Controllers
                 message = "Sửa thành công!",
                 status = 200
             });
-        }
+        }*/
         [HttpGet("getAllOrder")]
 
         public async Task<ActionResult<IEnumerable<Booking>>> GetAllOrderByIdUser(Guid idUser)
@@ -227,7 +227,7 @@ namespace backend.Controllers
                 data = _data
             }); ;
         }
-        [HttpGet("confirmOrder")]
+        /*[HttpGet("confirmOrder")]
 
         public async Task<ActionResult> ConfirmOrder(Guid idOrder, int status)
         {
@@ -245,8 +245,8 @@ namespace backend.Controllers
             var listProduct = await db.BookingDetails.Where(x => x.IdOrder == idOrder).ToListAsync();
             foreach (var item in listProduct)
             {
-                var product = await db.Rooms.FindAsync(item.IdProduct);
-                product.Quantity -= item.Quantity;
+                var product = await db.Rooms.FindAsync(item.IdRoom);
+                Room.Quantity -= item.Quantity;
                 db.Entry(await db.Rooms.FirstOrDefaultAsync(x => x.Id == product.Id)).CurrentValues.SetValues(product);
             }
             await db.SaveChangesAsync();
@@ -255,6 +255,6 @@ namespace backend.Controllers
                 message = "Sửa thành công!",
                 status = 200
             });
-        }
+        }*/
     }
 }

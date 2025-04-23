@@ -1,12 +1,14 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Quan_Ly_HomeStay.Data;
-using Quan_Ly_HomeStay.Helpers;
 using Quan_Ly_HomeStay.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -20,12 +22,11 @@ namespace Quan_Ly_HomeStay.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly IConfiguration _config;
-        
+
         public UserController(ApplicationDbContext _db, IConfiguration cf)
         {
             db = _db;
             _config = cf;
-            
         }
         [HttpGet("all")]
 
@@ -97,39 +98,67 @@ namespace Quan_Ly_HomeStay.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> AddUser([FromBody] User user)
         {
-            if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
+            // Kiểm tra nếu cả email và phone đều trống
+            if (string.IsNullOrWhiteSpace(user.Email) && string.IsNullOrWhiteSpace(user.Phone))
             {
                 return BadRequest(new
                 {
-                    message = "Email và mật khẩu không được để trống!",
+                    message = "Vui lòng nhập Email hoặc Số điện thoại!",
                     status = 400
                 });
             }
 
-            var existingUser = await db.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
-            if (existingUser != null)
+            if (string.IsNullOrWhiteSpace(user.Password))
             {
                 return BadRequest(new
                 {
-                    message = "Email đã tồn tại!",
+                    message = "Mật khẩu không được để trống!",
                     status = 400
                 });
             }
 
-            // Không mã hóa mật khẩu
-            // user.Password = SHA256Helper.Encrypt(user.Password); ❌ Bỏ
+            // Kiểm tra email đã tồn tại nếu có nhập
+            if (!string.IsNullOrWhiteSpace(user.Email))
+            {
+                var existingEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
+                if (existingEmail != null)
+                {
+                    return BadRequest(new
+                    {
+                        message = "Email đã tồn tại!",
+                        status = 400
+                    });
+                }
+            }
 
+            // Kiểm tra phone đã tồn tại nếu có nhập
+            if (!string.IsNullOrWhiteSpace(user.Phone))
+            {
+                var existingPhone = await db.Users.FirstOrDefaultAsync(x => x.Phone == user.Phone);
+                if (existingPhone != null)
+                {
+                    return BadRequest(new
+                    {
+                        message = "Số điện thoại đã tồn tại!",
+                        status = 400
+                    });
+                }
+            }
+
+            // Gán ID, ngày tạo, avatar mặc định
             user.Id = Guid.NewGuid();
             user.CreateAt ??= DateTime.Now;
             user.PathImg ??= "default-avatar.png";
 
-            var role = await db.Roles.FirstOrDefaultAsync(x => x.Name == "Member");
+            // Gán vai trò mặc định là "Customer"
+            var role = await db.Roles.FirstOrDefaultAsync(x => x.Name == "Customer");
             if (role == null)
             {
-                return StatusCode(500, new { message = "Không tìm thấy vai trò mặc định 'Member'" });
+                return StatusCode(500, new { message = "Không tìm thấy vai trò mặc định 'Customer'" });
             }
             user.IdRole = role.Id;
 
+            // Lưu user
             await db.Users.AddAsync(user);
             await db.SaveChangesAsync();
 
@@ -142,6 +171,7 @@ namespace Quan_Ly_HomeStay.Controllers
                     user.Id,
                     user.Name,
                     user.Email,
+                    user.Phone,
                     user.PathImg,
                     user.CreateAt,
                     Role = role.Name
@@ -149,43 +179,34 @@ namespace Quan_Ly_HomeStay.Controllers
             });
         }
 
-        [HttpPut("edit")]
 
-        public async Task<ActionResult> Edit([FromBody] User user)
+        [HttpPut("edit")]
+        public async Task<IActionResult> Edit([FromBody] UpdateUserDto model)
         {
-            var _user = await db.Users.FindAsync(user.Id);
-            if (_user == null)
+            var user = await db.Users.FindAsync(model.Id);
+            if (user == null)
             {
-                return Ok(new
-                {
-                    message = "Dữ liệu không tồn tại!",
-                    status = 400
-                });
+                return BadRequest(new { message = "Người dùng không tồn tại" });
             }
-            db.Entry(await db.Users.FirstOrDefaultAsync(x => x.Id == _user.Id)).CurrentValues.SetValues(user);
-            var __user = (from nv in db.Users
-                          where nv.Id == user.Id
-                          select new
-                          {
-                              nv.Id,
-                              nv.Password,
-                              nv.Email,
-                              nv.IdRole,
-                              nv.PathImg,
-                              nv.Address,
-                              nv.Name,
-                              nv.CreateAt,
-                              nv.Phone,
-                              role = db.Roles.Where(x => x.Id == nv.IdRole).FirstOrDefault().Name
-                          }).ToList();
+
+            user.Name = model.Name;
+            user.Phone = model.Phone;
+            user.Address = model.Address;
+            user.Email = model.Email;
+            user.PathImg = model.PathImg;
+
             await db.SaveChangesAsync();
+
             return Ok(new
             {
                 message = "Sửa thành công!",
                 status = 200,
-                data = __user
+                data = user
             });
         }
+
+
+
         [HttpDelete("delete")]
 
         public async Task<ActionResult> Delete([FromBody] Guid id)
@@ -230,23 +251,11 @@ namespace Quan_Ly_HomeStay.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] Login user)
         {
-            var userData = (from nv in db.Users
-                            where nv.Email == user.email
-                            select new
-                            {
-                                nv.Id,
-                                nv.Password,
-                                nv.Email,
-                                nv.PathImg,
-                                nv.IdRole,
-                                nv.Address,
-                                nv.Name,
-                                nv.CreateAt,
-                                nv.Phone,
-                                role = db.Roles.FirstOrDefault(x => x.Id == nv.IdRole).Name
-                            }).FirstOrDefault();
+            var _user = await db.Users
+                .Where(u => u.Email == user.email)
+                .FirstOrDefaultAsync();
 
-            if (userData == null)
+            if (_user == null)
             {
                 return Ok(new
                 {
@@ -255,8 +264,8 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
-            // So sánh mật khẩu dạng thuần (không mã hóa)
-            if (user.password != userData.Password)
+            // So sánh mật khẩu (sử dụng hash password nếu có)
+            if (user.password != _user.Password)
             {
                 return Ok(new
                 {
@@ -265,85 +274,90 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
+            // Tạo JWT token
+            var claims = new[]
+            {
+        new Claim(JwtRegisteredClaimNames.Sub, _user.Email),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim("id", _user.Id.ToString()),
+        new Claim("role", db.Roles.FirstOrDefault(r => r.Id == _user.IdRole)?.Name)
+    };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(60),
+                signingCredentials: creds
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            // Trả về toàn bộ thông tin người dùng và token
             return Ok(new
             {
-                message = "Thành công",
+                message = "Đăng nhập thành công",
                 status = 200,
-                data = userData
+                token = tokenString,
+                user = new
+                {
+                    id = _user.Id,
+                    email = _user.Email,
+                    name = _user.Name,
+                    address = _user.Address,
+                    phone = _user.Phone,
+                    pathImg = _user.PathImg,
+                    idRole = _user.IdRole,
+                    createAt = _user.CreateAt,
+                    role = db.Roles.FirstOrDefault(r => r.Id == _user.IdRole)?.Name
+                }
             });
         }
 
 
         [HttpGet("info")]
-        public ActionResult GetDataFromToken()
+        public ActionResult GetDataFromToken(string token)
         {
-            // Lấy Authorization header từ request
-            var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
-
-            // Kiểm tra nếu header không hợp lệ hoặc không bắt đầu bằng "Bearer "
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+            if (token == "undefined")
             {
-                return Unauthorized(new
-                {
-                    message = "Token không hợp lệ hoặc chưa được cung cấp!",
-                    status = 401
-                });
-            }
-
-            // Tách token từ header
-            string _token = authHeader.Split(' ')[1];
-
-            try
-            {
-                var handler = new JwtSecurityTokenHandler();
-                var tokenData = handler.ReadJwtToken(_token);
-
-                // Lấy email từ claims
-                string email = tokenData.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
-                // Kiểm tra nếu không tìm thấy email trong token
-                if (string.IsNullOrEmpty(email))
-                {
-                    return BadRequest(new
-                    {
-                        message = "Không tìm thấy email trong token!",
-                        status = 400
-                    });
-                }
-
-                // Lấy người dùng từ cơ sở dữ liệu
-                var user = db.Users.FirstOrDefault(x => x.Email == email);
-                if (user == null)
-                {
-                    return NotFound(new
-                    {
-                        message = "Người dùng không tồn tại!",
-                        status = 404
-                    });
-                }
-
-                // Lấy role của người dùng từ bảng Roles
-                var role = db.Roles.Find(user.IdRole);
-
                 return Ok(new
                 {
-                    message = "Lấy dữ liệu thành công!",
-                    status = 200,
-                    data = user,
-                    role = role?.Name // Trả về tên role nếu có
+                    message = "Dữ liệu trống!",
+                    status = 400
                 });
             }
-            catch (Exception ex)
+            string _token = token.Split(' ')[1];
+            if (_token == null)
             {
-                return StatusCode(500, new
+                return Ok(new
                 {
-                    message = "Đã xảy ra lỗi khi xử lý yêu cầu.",
-                    status = 500,
-                    error = ex.Message
+                    message = "Token không đúng!",
+                    status = 400
                 });
             }
+            var handle = new JwtSecurityTokenHandler();
+            string email = Regex.Match(JsonSerializer.Serialize(handle.ReadJwtToken(_token)), "emailaddress\",\"Value\":\"(.*?)\",").Groups[1].Value;
+            var sinhvien = db.Users.Where(x => x.Email == email).FirstOrDefault();
+            if (sinhvien == null)
+            {
+                return Ok(new
+                {
+                    message = "Người dùng không tồn tại!",
+                    status = 404
+                });
+            }
+            var role = db.Roles.Find(sinhvien.IdRole);
+            return Ok(new
+            {
+                message = "Lấy dữ liệu thành công!",
+                status = 200,
+                data = sinhvien,
+                role = role.Name
+            });
         }
-
         [HttpPost("changepass")]
         public ActionResult ChangePassword([FromBody] ChangePassword changePassword)
         {
@@ -353,7 +367,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 return Ok(new
                 {
                     message = "Người dùng không tồn tại!",
-                    status = 200
+                    status = 404
                 });
             }
             if (changePassword.oldPassword != user.Password)
@@ -364,7 +378,8 @@ namespace Quan_Ly_HomeStay.Controllers
                     status = 400
                 });
             }
-            db.Entry(db.Users.FirstOrDefault(x => x.Id == user.Id)).CurrentValues.SetValues(user);
+
+            user.Password = changePassword.newPassword;
             db.SaveChanges();
             return Ok(new
             {
@@ -373,7 +388,9 @@ namespace Quan_Ly_HomeStay.Controllers
             });
         }
 
+
     }
+
     public class Login
     {
         public string email { get; set; }
@@ -384,6 +401,15 @@ namespace Quan_Ly_HomeStay.Controllers
         public Guid idUser { get; set; }
         public string oldPassword { get; set; }
         public string newPassword { get; set; }
+    }
+    public class UpdateUserDto
+    {
+        public Guid Id { get; set; }
+        public string? Name { get; set; }
+        public string? Phone { get; set; }
+        public string? Address { get; set; }
+        public string? Email { get; set; }
+        public string? PathImg { get; set; }
     }
 
 }

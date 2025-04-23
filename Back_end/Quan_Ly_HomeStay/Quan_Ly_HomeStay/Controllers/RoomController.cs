@@ -18,29 +18,24 @@ namespace Quan_Ly_HomeStay.Controllers
 
         // GET: api/room/all
         [HttpGet("all")]
-        public async Task<ActionResult> GetAllRooms()
+        public async Task<IActionResult> GetAllRooms()
         {
-            if (_db.Rooms == null)
-            {
-                return NotFound(new { message = "Dữ liệu trống!", status = 404 });
-            }
-
             var rooms = await _db.Rooms
+                .Include(r => r.IdCategoryNavigation)
                 .OrderByDescending(r => r.CreateAt)
                 .Select(room => new
                 {
                     room.Id,
                     room.Name,
                     room.Detail,
-                    room.Quantity,
+                    room.Note,
                     room.Price,
-                    room.Type,
-                    room.IdUser,
-                    room.CreateAt,
+                    room.Status,
                     room.PathImg,
+                    room.CreateAt,
+                    room.IdUser,
                     room.IdCategory,
-                    categoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : null,
-                    categorySlug = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Slug : null
+                    CategoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : null
                 })
                 .ToListAsync();
 
@@ -52,31 +47,45 @@ namespace Quan_Ly_HomeStay.Controllers
             });
         }
 
-
-        // GET: api/room?id=xxxx
-        [HttpGet]
-        public async Task<ActionResult> GetRoomById([FromQuery] Guid id)
+        // GET: api/room/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRoomById(Guid id)
         {
-            var room = await _db.Rooms.FindAsync(id);
+            var room = await _db.Rooms
+                .Include(r => r.IdCategoryNavigation)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (room == null)
             {
                 return NotFound(new { message = "Không tìm thấy phòng!", status = 404 });
             }
 
-            var category = await _db.Categories.FindAsync(room.IdCategory);
-
             return Ok(new
             {
                 message = "Lấy dữ liệu thành công!",
                 status = 200,
-                data = room,
-                category
+                data = new
+                {
+                    room.Id,
+                    room.Name,
+                    room.Price,
+                    room.Note,
+                    room.PathImg,
+                    room.Status,
+                    room.Detail,
+                    room.CreateAt,
+                    Category = room.IdCategoryNavigation == null ? null : new
+                    {
+                        room.IdCategoryNavigation.Id,
+                        room.IdCategoryNavigation.Name
+                    }
+                }
             });
         }
 
         // POST: api/room/add
         [HttpPost("add")]
-        public async Task<ActionResult> AddRoom([FromBody] Room room)
+        public async Task<IActionResult> AddRoom([FromBody] Room room)
         {
             room.CreateAt = DateTime.Now;
             await _db.Rooms.AddAsync(room);
@@ -92,7 +101,7 @@ namespace Quan_Ly_HomeStay.Controllers
 
         // PUT: api/room/edit
         [HttpPut("edit")]
-        public async Task<ActionResult> EditRoom([FromBody] Room room)
+        public async Task<IActionResult> EditRoom([FromBody] Room room)
         {
             var existingRoom = await _db.Rooms.FindAsync(room.Id);
             if (existingRoom == null)
@@ -103,12 +112,12 @@ namespace Quan_Ly_HomeStay.Controllers
             _db.Entry(existingRoom).CurrentValues.SetValues(room);
             await _db.SaveChangesAsync();
 
-            return Ok(new { message = "Sửa thành công!", status = 200 });
+            return Ok(new { message = "Sửa phòng thành công!", status = 200 });
         }
 
-        // DELETE: api/room/delete
-        [HttpDelete("delete")]
-        public async Task<ActionResult> DeleteRoom([FromBody] Guid id)
+        // DELETE: api/room/delete/{id}
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteRoom(Guid id)
         {
             var room = await _db.Rooms.FindAsync(id);
             if (room == null)
@@ -121,7 +130,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 _db.Rooms.Remove(room);
                 await _db.SaveChangesAsync();
 
-                return Ok(new { message = "Xóa thành công!", status = 200 });
+                return Ok(new { message = "Xóa phòng thành công!", status = 200 });
             }
             catch (Exception ex)
             {

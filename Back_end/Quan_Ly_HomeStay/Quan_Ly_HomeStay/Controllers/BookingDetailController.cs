@@ -59,7 +59,7 @@ namespace Quan_Ly_HomeStay.Controllers
         public async Task<ActionResult> AddDetail([FromBody] BookingDetail detail)
         {
 
-            var _detail = await db.BookingDetails.Where(x => x.IdProduct == detail.IdProduct).Where(x => x.IdOrder == detail.IdOrder).FirstOrDefaultAsync();
+            var _detail = await db.BookingDetails.Where(x => x.IdRoom == detail.IdRoom).Where(x => x.IdOrder == detail.IdOrder).FirstOrDefaultAsync();
             if (_detail == null)
             {
                 await db.BookingDetails.AddAsync(detail);
@@ -145,7 +145,7 @@ namespace Quan_Ly_HomeStay.Controllers
         public async Task<ActionResult<IEnumerable<BookingDetail>>> GetAllByOrder(Guid idOrder)
         {
             var _data = from dt in db.BookingDetails
-                        join pr in db.Rooms on dt.IdProduct equals pr.Id
+                        join pr in db.Rooms on dt.IdRoom equals pr.Id
                         where dt.IdOrder == idOrder
                         select new
                         {
