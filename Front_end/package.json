@@ -25,6 +25,7 @@
     "crypto-js": "^4.2.0",
     "formik": "^2.4.6",
     "framer-motion": "^12.6.3",
+    "frontend": "file:",
     "lucide-react": "^0.503.0",
     "react": "^19.1.0",
     "react-apexcharts": "^1.7.0",

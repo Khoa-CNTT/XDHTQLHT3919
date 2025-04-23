@@ -21,37 +21,42 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     if (!email || !password) {
       showNotification("Vui lòng nhập đầy đủ email và mật khẩu!");
       return;
     }
-
+  
     const credentials = { email, password };
     console.log("Đang gửi dữ liệu: ", credentials);
-
+  
     try {
       const response = await login(credentials);
       console.log("Dữ liệu trả về từ backend: ", response);
-
+  
       const { status, token, user } = response;
-
+  
       if (status === 200 && token) {
         showNotification("Đăng nhập thành công!");
-
-        const userImg = user.pathImg || "default-avatar.jpg";  // Đảm bảo pathImg có giá trị mặc định nếu không có ảnh
-
+  
+        const userImg = user.pathImg || "avatar.jpg";  // Đảm bảo pathImg có giá trị mặc định nếu không có ảnh
+  
         // Lưu trữ thông tin vào localStorage
         localStorage.setItem("token", token);
-        localStorage.setItem("email", user.email);  // Lưu email vào localStorage
-        localStorage.setItem("username", user.name); // Nếu có name, dùng name, ngược lại dùng email
-        localStorage.setItem("img", userImg); // Lưu ảnh vào localStorage nếu có
-        localStorage.setItem("role", user.role || "user"); // Lưu role vào localStorage nếu có
-        localStorage.setItem("idRole", user.idRole); // Lưu idRole vào localStorage
-        localStorage.setItem("address", user.address || ""); // Lưu địa chỉ vào localStorage
-        localStorage.setItem("phone", user.phone || ""); // Lưu số điện thoại vào localStorage
-        // Chuyển hướng tới trang chính
-        setTimeout(() => navigate("/home"), 1000);
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("username", user.name);
+        localStorage.setItem("img", userImg);
+        localStorage.setItem("role", user.role || "user");
+        localStorage.setItem("idRole", user.idRole);
+        localStorage.setItem("address", user.address || "");
+        localStorage.setItem("phone", user.phone || "");
+  
+        // Chuyển hướng dựa trên vai trò
+        if (user.role === "admin") {
+          setTimeout(() => navigate("/dashboard"), 1000);
+        } else {
+          setTimeout(() => navigate("/home"), 1000);
+        }
       } else {
         showNotification("Đăng nhập thất bại! Tài khoản hoặc mật khẩu không đúng.");
       }
@@ -63,6 +68,7 @@ function Login() {
       showNotification(errorMessage);
     }
   };
+  
 
   return (
     <div className="auth-wrapper">

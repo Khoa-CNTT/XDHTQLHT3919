@@ -54,18 +54,18 @@ const Profile = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const res = await userApi.updateProfile({
+      const res = await userApi.updateProfile(token, {
         id: userId,
         name: updatedInfo.name,
-        phoneNumber: updatedInfo.phoneNumber,
+        phone: updatedInfo.phoneNumber, // ✅ Sửa lại key cho đúng với backend
         address: updatedInfo.address,
         email: updatedInfo.email,
         pathImg: updatedInfo.pathImg,
-      }, token);
+      });
 
       const updatedUser = res.data.data || res.data;
 
-      // Update state và localStorage
+      // Cập nhật state & localStorage
       setUser(updatedUser);
       Object.entries(updatedUser).forEach(([key, value]) =>
         localStorage.setItem(key, value)
@@ -74,7 +74,7 @@ const Profile = () => {
       setIsEditing(false);
       alert("Cập nhật thành công!");
     } catch (err) {
-      console.error("Lỗi khi cập nhật thông tin:", err);
+      console.error("Lỗi khi cập nhật thông tin:", err.response?.data || err);
       alert("Đã xảy ra lỗi khi cập nhật thông tin.");
     }
   };
