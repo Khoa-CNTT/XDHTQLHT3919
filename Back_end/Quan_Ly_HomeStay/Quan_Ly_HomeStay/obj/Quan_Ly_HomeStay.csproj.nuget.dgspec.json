@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {}
+    "C:\\Users\\PC\\Source\\Repos\\XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {}
   },
   "projects": {
-    "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {
+    "C:\\Users\\PC\\Source\\Repos\\XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
+        "projectUniqueName": "C:\\Users\\PC\\Source\\Repos\\XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
         "projectName": "Quan_Ly_HomeStay",
-        "projectPath": "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
+        "projectPath": "C:\\Users\\PC\\Source\\Repos\\XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
         "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\obj\\",
+        "outputPath": "C:\\Users\\PC\\Source\\Repos\\XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 24.1\\Components\\Offline Packages",

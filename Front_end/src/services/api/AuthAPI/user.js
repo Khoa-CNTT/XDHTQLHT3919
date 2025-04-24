@@ -5,19 +5,18 @@ const API_URL = "https://localhost:7154/api/user";
 // Lấy thông tin người dùng (dựa vào token)
 const getProfile = (token) => {
   return axios.get(`${API_URL}/info`, {
-    params: {
-      token: `Bearer ${token}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
   });
 };
 
-// Cập nhật thông tin người dùng (gửi avatar hoặc form-data)
-const updateProfile = (token, data, username) => {
-  return axios.put(`${API_URL}/me`, data, {
+// ✅ Cập nhật thông tin người dùng (không dùng form-data)
+const updateProfile = (token, data) => {
+  return axios.put(`${API_URL}/edit`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-      Username: username,
+      "Content-Type": "application/json",
     },
   });
 };
@@ -32,6 +31,7 @@ const changePassword = (token, data, username) => {
     },
   });
 };
+
 export const getAllUsers = async () => {
   try {
     const response = await axios.get(`${API_URL}/getall`);
@@ -40,7 +40,8 @@ export const getAllUsers = async () => {
     console.error('Lỗi khi lấy danh sách người dùng:', error);
     throw error;
   }
-}
+};
+
 const userApi = {
   getProfile,
   updateProfile,

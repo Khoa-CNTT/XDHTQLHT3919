@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "azoBpnjE/wR6ZX7ZRkbd+xls6iJkO77ToMb7ZJVoMPys3uRvyPK4dcwknNUOWX0Yn2J6WgmTRzE/jZc+I+aWHw==",
+  "dgSpecHash": "8cyAGmlH6jfeNYqk1w/yJN8gycKF1HlEnx+xgB4niCkI0shkm8Vy8hrmXcYbx8+fFkKbm0nkM4wQE3jLU3JvQg==",
   "success": true,
-  "projectFilePath": "D:\\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
+  "projectFilePath": "C:\\Users\\PC\\Source\\Repos\\XDHTQLHT3919\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\PC\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\PC\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
