@@ -23,6 +23,8 @@ import ChangePassword from "./userSide/components/Auths/ChangePassword";
 import Contact from "./userSide/components/Other/Contact";
 import RoomDetail from "./userSide/components/Other/RoomDetail";
 import Profile from "./userSide/components/Other/Profile";
+import PrivacyPolicy from "./userSide/components/Other/PrivacyPolicy";
+import TermsOfService from "./userSide/components/Other/TermsOfService";
 
 // Admin side
 import AdminLayout from "./adminSide/components/adminSide/AdminLayout";
@@ -100,7 +102,9 @@ const App = () => {
 
                 <Route path="/adminlayout" element={<AdminLayout />} />
                 <Route path="/sidebar" element={<Sidebar />} />
-
+                
+                <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+                <Route path="/termsOfservice" element={<TermsOfService />} />
 
                 <Route path="/dashboard" element={
                     <AdminLayout>
