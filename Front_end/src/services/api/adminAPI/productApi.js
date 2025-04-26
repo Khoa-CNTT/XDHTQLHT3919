@@ -1,38 +1,74 @@
-let mockProducts = [
-    {
-      id: 1,
-      name: 'Thực phẩm bảo vệ sức khỏe Boni Sleep',
-      images: ['https://via.placeholder.com/50', 'https://via.placeholder.com/40'],
-      price: 405000,
-      quantity: 301,
-      status: 'Còn phòng',
-    },
-    {
-      id: 2,
-      name: 'Sữa rửa mặt Acne-Aid',
-      images: ['https://via.placeholder.com/50'],
-      price: 175000,
-      quantity: 301,
-      status: 'Còn phòng',
-    }
-  ];
-  
-  export const getProducts = async () => {
-    return mockProducts;
-  };
-  
-  export const addOrUpdateProduct = async (product) => {
-    if (product.id) {
-      mockProducts = mockProducts.map(p => (p.id === product.id ? product : p));
+import axios from 'axios';
+
+const API_URL = 'https://localhost:7154/api/room';
+const token = localStorage.getItem('token');
+
+// Cấu hình headers với token (nếu có)
+const headers = {
+  'Content-Type': 'application/json',
+  ...(token && { 'Authorization': `Bearer ${token}` })  // Thêm Authorization Header nếu có token
+};
+
+// Lấy danh sách phòng
+export const getRooms = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/all`, { headers });
+    console.log("Dữ liệu trả về từ API:", res.data);  // Log dữ liệu trả về để kiểm tra cấu trúc
+
+    // Kiểm tra cấu trúc dữ liệu trả về từ API
+    if (res.data && res.data.data) {
+      return res.data.data; 
     } else {
-      product.id = Date.now();
-      mockProducts.push(product);
+      throw new Error('Dữ liệu không hợp lệ từ API');
     }
-    return product;
-  };
-  
-  export const deleteProduct = async (id) => {
-    mockProducts = mockProducts.filter(p => p.id !== id);
-    return true;
-  };
-  
+  } catch (error) {
+    console.error('Lỗi khi tải danh sách phòng:', error);
+    if (error.response) {
+      // Lỗi trả về từ server
+      console.error('Lỗi từ server:', error.response.data);
+    }
+    throw error;
+  }
+};
+
+// Thêm phòng mới
+export const addRoom = async (room) => {
+  try {
+    const res = await axios.post(`${API_URL}/add`, room, { headers });
+    return res.data;
+  } catch (error) {
+    console.error('Lỗi khi thêm phòng:', error);
+    if (error.response) {
+      console.error('Lỗi từ server:', error.response.data);
+    }
+    throw error;
+  }
+};
+
+// Cập nhật thông tin phòng
+export const updateRoom = async (room) => {
+  try {
+    const res = await axios.put(`${API_URL}/edit`, room, { headers });
+    return res.data;
+  } catch (error) {
+    console.error('Lỗi khi cập nhật phòng:', error);
+    if (error.response) {
+      console.error('Lỗi từ server:', error.response.data);
+    }
+    throw error;
+  }
+};
+
+// Xoá phòng
+export const deleteRoom = async (id) => {
+  try {
+    const res = await axios.delete(`${API_URL}/delete/${id}`, { headers });
+    return res.data;
+  } catch (error) {
+    console.error('Lỗi khi xoá phòng:', error);
+    if (error.response) {
+      console.error('Lỗi từ server:', error.response.data);
+    }
+    throw error;
+  }
+};

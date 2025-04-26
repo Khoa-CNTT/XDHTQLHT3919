@@ -28,19 +28,16 @@ import Profile from "./userSide/components/Other/Profile";
 import AdminLayout from "./adminSide/components/adminSide/AdminLayout";
 import Sidebar from "./adminSide/components/adminSide/Sidebar";
 import Dashboard from "./adminSide/components/adminSide/Dashboard";
-import ProductList from "./adminSide/components/productManager/ProductList";
+import ProductList from "./adminSide/components/productManager/RoomList";
+import UserList from "./adminSide/components/userManager/UserList";
+import RoomCategory from "./adminSide/components/productManager/RoomCategoryList";
 
-import UserList from "./adminSide/components/UserManager/UserList";
+
 
 import "./assets/Style/Auth-css/auth.css";
-import "./assets/Style/Auth-css/profile.css";
 import "./assets/Style/admin-css/adminLayout.css";
-import "./assets/Style/admin-css/sidebar.css";
-import "./assets/Style/admin-css/dashboard.css";
-import "./assets/Style/admin-css/productList.css";
-import "./assets/Style/admin-css/userList.css";
 import "./assets/Style/home-css/index.css";
-import "./assets/Style/home-css/contact.css";
+
 
 
 // import "./assets/Style/roomDetail/RoomDetailPage.css";
@@ -82,7 +79,7 @@ const App = () => {
                     element={
                         <>
                             <Hero />
-                            <Rooms onRoomClick={handleRoomClick} />
+                            <Rooms  onRoomClick={handleRoomClick} />
                             <Amenities />
                             <Gallery />
                             <Testimonials />
@@ -104,6 +101,7 @@ const App = () => {
                 <Route path="/adminlayout" element={<AdminLayout />} />
                 <Route path="/sidebar" element={<Sidebar />} />
 
+
                 <Route path="/dashboard" element={
                     <AdminLayout>
                         <Dashboard />
@@ -114,6 +112,11 @@ const App = () => {
                         <ProductList />
                     </AdminLayout>
                 } />
+                <Route path="/roomcategorylist" element={
+                    <AdminLayout>
+                        <RoomCategory />
+                    </AdminLayout>
+                } />
                 <Route path="/userlist" element={
                     <AdminLayout>
                         <UserList />
@@ -121,7 +124,6 @@ const App = () => {
                 } />
                 {/* <Route path="/detail" element={<RoomDetailPage />} /> */}
                 <Route path="/detail" element={<RoomDetail />} />
-
             </Routes>
         </Layout>
     );

@@ -14,7 +14,7 @@ const RoomDetail = () => {
     const getRoom = async () => {
       try {
         const res = await fetchRoomDetails(id);
-        setRoom(res.data); // ✅ sửa ở đây
+        setRoom(res.data);
       } catch (error) {
         console.error("Lỗi khi lấy chi tiết phòng:", error);
       } finally {

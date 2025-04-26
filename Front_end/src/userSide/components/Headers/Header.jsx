@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaBars } from "react-icons/fa";
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import "../../../images/avatar.jpg"
 
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,7 +23,7 @@ const Header = () => {
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("username");
         const userRole = localStorage.getItem("role");
-        const avatar = localStorage.getItem("avatarUrl") || "";
+        const avatar = localStorage.getItem("pathImg") || "";
         
 
         if (token && user) {
@@ -39,7 +40,7 @@ const Header = () => {
         const handleUserLoggedIn = () => {
             const user = localStorage.getItem("username");
             const userRole = localStorage.getItem("role");
-            const avatar = localStorage.getItem("avatarUrl") || "";
+            const avatar = localStorage.getItem("pathImg") || "";
 
             setIsLoggedIn(true);
             setUsername(user);
@@ -85,9 +86,9 @@ const Header = () => {
     const renderMenuItems = () => (
         <ul className="header__menu">
             <li><Link to="/home">Trang chủ</Link></li>
-            <li><a href="#">Phòng</a></li>
-            <li><a href="#">Tiện nghi</a></li>
-            <li><a href="#">Thư viện</a></li>
+            <li><Link to="/room">Phòng</Link></li>
+            <li><Link to="/room">Tiện nghi</Link></li>
+            <li><Link to="/room">Thư viện</Link></li>
             <li><Link to="/contact">Liên hệ</Link></li>
             <li><Link to="/adminlayout">Quản lý</Link></li>
         </ul>
@@ -165,7 +166,7 @@ const Header = () => {
                             <div className="user-menu">
                                 <div className="user-avatar">
                                     <img
-                                        src={avatarUrl || "/images/avatar.jpg"}
+                                        src={avatarUrl || "../../../images/avatar.jpg"}
                                         alt="Avatar"
                                         className="avatar-img"
                                     />

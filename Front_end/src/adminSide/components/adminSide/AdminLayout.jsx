@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 
 const AdminLayout = ({ children }) => {
   return (
-    <div className="admin-container">
+    <div className="admin-container">      
       <Sidebar />
       <div className="admin-content">
         {children}

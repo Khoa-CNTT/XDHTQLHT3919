@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userApi from "../../../services/api/AuthAPI/user";
+import "../../../assets/Style/Auth-css/profile.css"
 
 const Profile = () => {
   const [user, setUser] = useState(null);

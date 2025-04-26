@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 const Footer = () => {
     return (
         <footer className="footer">
@@ -50,8 +50,8 @@ const Footer = () => {
                 <div className="footer__bottom">
                     <p>&copy; 2023 HynhQwc Homestay. All rights reserved.</p>
                     <div className="footer__links">
-                        <a href="#">Chính sách bảo mật</a>
-                        <a href="#">Điều khoản sử dụng</a>
+                        <Link to="/privacypolicy">Chính sách bảo mật</Link>
+                        <Link to="/termsOfservice">Điều khoản sử dụng</Link>
                     </div>
                 </div>
             </div>

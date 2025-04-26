@@ -23,22 +23,22 @@
     line-height: 1.6;
   }
   
-  .profile-container strong {
-    color: #111;
-  }
-  
-  .profile-container .profile-avatar {
-    display: flex;
-    justify-content: center;
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
     margin-bottom: 20px;
   }
   
-  .profile-container .profile-avatar img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #ddd;
+  .profile-container p {
+    font-size: 16px;
+    color: #333;
+    margin: 10px 0;
+  }
+  
+  .profile-container p strong {
+    font-weight: bold;
   }
   
   @keyframes fadeIn {

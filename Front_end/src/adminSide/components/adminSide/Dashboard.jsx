@@ -4,6 +4,7 @@ import {
 } from 'recharts';
 
 import { getMonthlyRevenue } from '../../../services/api/adminAPI/homeAdmin';
+import "../../../assets/Style/admin-css/dashboard.css";
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
