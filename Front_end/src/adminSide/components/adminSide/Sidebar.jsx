@@ -25,6 +25,9 @@ const Sidebar = () => {
         <Link to="/customerlist" className={isActive('/customerlist')}>
           <li>Quản lý khách hàng</li>
         </Link>
+        <Link to="/bookingmanager" className={isActive('/bookingmanager')}>
+          <li>Quản lý đặt phòng</li>
+        </Link>
       </ul>
     </div>
   );

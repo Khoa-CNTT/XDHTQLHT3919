@@ -31,8 +31,9 @@ import AdminLayout from "./adminSide/components/adminSide/AdminLayout";
 import Sidebar from "./adminSide/components/adminSide/Sidebar";
 import Dashboard from "./adminSide/components/adminSide/Dashboard";
 import ProductList from "./adminSide/components/productManager/RoomList";
-import UserList from "./adminSide/components/userManager/UserList";
+import UserList from "./adminSide/components/UserManager/UserList";
 import RoomCategory from "./adminSide/components/productManager/RoomCategoryList";
+import BookingManagement from "./adminSide/components/productManager/BookingManagement";
 
 
 
@@ -124,6 +125,11 @@ const App = () => {
                 <Route path="/userlist" element={
                     <AdminLayout>
                         <UserList />
+                    </AdminLayout>
+                } />
+                <Route path="/bookingmanager" element={
+                    <AdminLayout>
+                        <BookingManagement />
                     </AdminLayout>
                 } />
                 {/* <Route path="/detail" element={<RoomDetailPage />} /> */}
