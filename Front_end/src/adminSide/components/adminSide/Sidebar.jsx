@@ -22,10 +22,7 @@ const Sidebar = () => {
         <Link to="/userlist" className={isActive('/userlist')}>
           <li>Quản lý tài khoản</li>
         </Link>
-        <Link to="/customerlist" className={isActive('/customerlist')}>
-          <li>Quản lý khách hàng</li>
-        </Link>
-        <Link to="/bookingmanager" className={isActive('/bookingmanager')}>
+        <Link to="/bookingmanagement" className={isActive('/bookingmanagement')}>
           <li>Quản lý đặt phòng</li>
         </Link>
       </ul>

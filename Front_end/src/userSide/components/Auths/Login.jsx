@@ -81,7 +81,7 @@ function Login() {
         <h2 className="auth-title">Đăng nhập</h2>
         <form className="auth-form" onSubmit={handleLogin}>
           <div>
-            <label>Email</label>
+            <label className="labe">Email</label>
             <input
               type="email"
               placeholder="Nhập email"
@@ -91,7 +91,7 @@ function Login() {
             />
           </div>
           <div>
-            <label>Mật khẩu</label>
+            <label className="labe">Mật khẩu</label>
             <input
               type="password"
               placeholder="••••••••"

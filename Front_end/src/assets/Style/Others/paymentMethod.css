@@ -1,0 +1,108 @@
+.payment-container {
+    max-width: 400px;
+    margin: 40px auto;
+    color: black;
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .payment-header {
+    display: flex;
+    justify-content: flex-start; /* Đảm bảo nút quay lại nằm phía bên trái */
+    align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+    margin-bottom: 12px;
+  }
+  
+  .payment-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-left: 8px; /* Thêm khoảng cách giữa tiêu đề và nút quay lại */
+  }
+  
+  .back-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #000000;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 10;
+  }
+  
+  .back-button:hover {
+    color: #00b4b4;
+  }
+  
+  .payment-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+  }
+  
+  .payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  
+  .payment-method {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .payment-method input {
+    margin-right: 12px;
+  }
+  
+  .payment-method:hover {
+    border-color: #00b4b4;
+  }
+  
+  .payment-method.active {
+    border-color: #00b4b4;
+    background-color: #e6f7f7;
+  }
+  
+  .payment-button {
+    width: 100%;
+    background: #00b4b4;
+    color: rgb(6, 6, 6);
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .payment-button:hover {
+    background: #009494;
+  }
+  
+  .payment-footer {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    margin-top: 16px;
+  }
+  
+  .highlight {
+    color: #00b4b4;
+    font-weight: 600;
+  }
+  
+  .link {
+    color: #00b4b4;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  

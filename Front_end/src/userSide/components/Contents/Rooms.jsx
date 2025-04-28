@@ -55,7 +55,6 @@ const Rooms = ({ onRoomClick }) => {
                   onClick={() => handleRoomClick(room)}
                 >
                   Chi tiết
-                {/* <Link to="/detail">Chi tiet</Link> */}
                 </button>
               </div>
             </div>

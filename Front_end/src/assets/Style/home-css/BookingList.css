@@ -1,0 +1,45 @@
+
+
+.booking-list-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.booking-list-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.booking-table th,
+.booking-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.booking-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}

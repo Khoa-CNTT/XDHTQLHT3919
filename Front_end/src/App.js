@@ -10,9 +10,11 @@ import Amenities from "./userSide/components/Contents/Amenities";
 import Gallery from "./userSide/components/Contents/Gallery";
 import Testimonials from "./userSide/components/Contents/Testimonials";
 import Footer from "./userSide/components/Footers/Footer";
-import Modal from "./userSide/components/Contents/Modal";
 
-
+// BookingRoom
+import Booking from "./userSide/components/BookingRoom/Booking";
+import RoomDetail from "./userSide/components/BookingRoom/RoomDetail";
+import RoomInfo from "./userSide/components/BookingRoom/RoomInfo";
 
 // Auth
 import Login from "./userSide/components/Auths/Login";
@@ -21,18 +23,19 @@ import ChangePassword from "./userSide/components/Auths/ChangePassword";
 
 // Other - userSide
 import Contact from "./userSide/components/Other/Contact";
-import RoomDetail from "./userSide/components/Other/RoomDetail";
 import Profile from "./userSide/components/Other/Profile";
 import PrivacyPolicy from "./userSide/components/Other/PrivacyPolicy";
 import TermsOfService from "./userSide/components/Other/TermsOfService";
+import PaymentMethod from "./userSide/components/BookingRoom/PaymentMethod";
 
 // Admin side
 import AdminLayout from "./adminSide/components/adminSide/AdminLayout";
 import Sidebar from "./adminSide/components/adminSide/Sidebar";
 import Dashboard from "./adminSide/components/adminSide/Dashboard";
 import ProductList from "./adminSide/components/productManager/RoomList";
-import UserList from "./adminSide/components/UserManager/UserList";
+import UserList from "./adminSide/components/userManager/UserList";
 import RoomCategory from "./adminSide/components/productManager/RoomCategoryList";
+import CustomerList from "./adminSide/components/userManager/CustomerList";
 import BookingManagement from "./adminSide/components/productManager/BookingManagement";
 
 
@@ -86,11 +89,11 @@ const App = () => {
                             <Amenities />
                             <Gallery />
                             <Testimonials />
-                            <Modal
+                            {/* <Modal
                                 isOpen={isModalOpen}
                                 onClose={() => setModalOpen(false)}
                                 room={selectedRoom}
-                            />
+                            /> */}
                         </>
                     }
                 />
@@ -100,12 +103,25 @@ const App = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/room/:id" element={<RoomDetail />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/booking" element={
+                    <RoomDetail>
+                        <Booking />
+                    </RoomDetail>
+                } />
+                <Route path="/roominfo" element={
+                    <RoomDetail>
+                        <RoomInfo />
+                    </RoomDetail>
+                } />
+                
+                <Route path="/paymentMethod" element={<PaymentMethod />} />
+
 
                 <Route path="/adminlayout" element={<AdminLayout />} />
                 <Route path="/sidebar" element={<Sidebar />} />
-                
                 <Route path="/privacypolicy" element={<PrivacyPolicy />} />
                 <Route path="/termsOfservice" element={<TermsOfService />} />
+
 
                 <Route path="/dashboard" element={
                     <AdminLayout>
@@ -115,6 +131,11 @@ const App = () => {
                 <Route path="/productlist" element={
                     <AdminLayout>
                         <ProductList />
+                    </AdminLayout>
+                } />
+                <Route path="/customerlist" element={
+                    <AdminLayout>
+                        <CustomerList />
                     </AdminLayout>
                 } />
                 <Route path="/roomcategorylist" element={
@@ -127,7 +148,7 @@ const App = () => {
                         <UserList />
                     </AdminLayout>
                 } />
-                <Route path="/bookingmanager" element={
+                <Route path="/bookingmanagement" element={
                     <AdminLayout>
                         <BookingManagement />
                     </AdminLayout>

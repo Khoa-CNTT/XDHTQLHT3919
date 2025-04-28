@@ -7,7 +7,6 @@ import {
 } from '../../../services/api/adminAPI/productApi';
 import { getAllCategories } from '../../../services/api/adminAPI/roomCategory'; 
 import "../../../assets/Style/admin-css/productList.css";
-
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
   const [roomTypes, setRoomTypes] = useState([]);
@@ -15,7 +14,7 @@ const RoomList = () => {
     id: null,
     name: '',
     price: '',
-    idCategory: '',
+    idCategory: '',  // Sử dụng idCategory thay vì type
     pathImg: '',
     detail: ''
   });
@@ -54,7 +53,7 @@ const RoomList = () => {
     const room = {
       name: form.name,
       price: +form.price,
-      idCategory: form.type,
+      idCategory: form.idCategory,  // Sử dụng idCategory thay vì type
       pathImg: form.pathImg,
       detail: form.detail,
     };
@@ -79,7 +78,7 @@ const RoomList = () => {
       id: room.id,
       name: room.name,
       price: room.price,
-      idCategory: room.type,
+      idCategory: room.idCategory,  // Sử dụng idCategory khi chỉnh sửa
       pathImg: room.pathImg,
       detail: room.detail || ''
     });
@@ -132,8 +131,8 @@ const RoomList = () => {
         />
 
         <select
-          value={form.type}
-          onChange={(e) => setForm({ ...form, type: e.target.value })}
+          value={form.idCategory}  // Sử dụng idCategory trong select
+          onChange={(e) => setForm({ ...form, idCategory: e.target.value })}
         >
           <option value="">-- Chọn loại phòng --</option>
           {roomTypes.map((type) => (
@@ -163,7 +162,7 @@ const RoomList = () => {
             <th>Mã phòng</th>
             <th>Loại</th>
             <th>Giá</th>
-            <th>Ghi chú</th>
+            <th>Chi tiết</th>
             <th>Hành động</th>
           </tr>
         </thead>
@@ -172,7 +171,7 @@ const RoomList = () => {
             <tr key={room.id}>
               <td><img src={room.pathImg} alt="ảnh phòng" style={{ width: 50 }} /></td>
               <td>{room.name}</td>
-              <td>{room.categoryName}</td>
+              <td>{room.categoryName}</td> {/* Sử dụng categoryName khi hiển thị */}
               <td>{(+room.price).toLocaleString()} đ</td>
               <td>{room.detail}</td>
               <td>

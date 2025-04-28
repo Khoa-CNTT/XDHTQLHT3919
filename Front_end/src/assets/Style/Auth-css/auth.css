@@ -212,8 +212,8 @@
     color: red;
     cursor: pointer;
   }
-  label {
-    color: #f9f9f9;
+  .labe {
+    color: #ffffff;
     display: flex;
     justify-content: left;
   }
