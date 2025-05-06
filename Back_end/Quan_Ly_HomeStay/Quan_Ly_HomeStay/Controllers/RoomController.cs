@@ -88,6 +88,7 @@ namespace Quan_Ly_HomeStay.Controllers
         public async Task<IActionResult> AddRoom([FromBody] Room room)
         {
             room.CreateAt = DateTime.Now;
+            room.Status = "Còn trống";
             await _db.Rooms.AddAsync(room);
             await _db.SaveChangesAsync();
 

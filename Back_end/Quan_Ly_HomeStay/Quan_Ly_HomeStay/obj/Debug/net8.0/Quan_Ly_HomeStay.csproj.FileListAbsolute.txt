@@ -138,3 +138,14 @@ D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\bin\Debug\net8.0\Scrutor.dll
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.dll
 D:\Khoa_Luan_Tot_Nghiep_XDHTQLHT3919\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.csproj.AssemblyReference.cache
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.GeneratedMSBuildEditorConfig.editorconfig
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.AssemblyInfoInputs.cache
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.AssemblyInfo.cs
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.csproj.CoreCompileInputs.cache
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.MvcApplicationPartsAssemblyInfo.cs
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.MvcApplicationPartsAssemblyInfo.cache
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.sourcelink.json
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.dll
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\refint\Quan_Ly_HomeStay.dll
+D:\1_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.pdb

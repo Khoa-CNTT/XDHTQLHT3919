@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Quan_Ly_HomeStay.Models;
 
@@ -11,7 +12,9 @@ public partial class Category
 
     public string? Name { get; set; }
 
-    public int? Quantity { get; set; }
+    [NotMapped] // Không lưu vào DB
+    public int Quantity => Rooms?.Count ?? 0;
+
 
     public DateTime? CreateAt { get; set; } = DateTime.Now;
 

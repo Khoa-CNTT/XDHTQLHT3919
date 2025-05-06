@@ -10,7 +10,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using Quan_Ly_HomeStay.Services;
 using System.Text.RegularExpressions;
+using MimeKit;
+using System.ComponentModel.DataAnnotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,24 +25,22 @@ namespace Quan_Ly_HomeStay.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly IConfiguration _config;
+        private readonly EmailService _emailService;
 
-        public UserController(ApplicationDbContext _db, IConfiguration cf)
+        public UserController(ApplicationDbContext _db, IConfiguration cf, EmailService emailService)
         {
             db = _db;
             _config = cf;
+            _emailService = emailService;
         }
         [HttpGet("all")]
-
         public async Task<ActionResult<IEnumerable<User>>> GetAllUser()
         {
             if (db.Users == null)
             {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
+                return NotFound(new { message = "Dữ liệu trống!", status = 404 });
             }
+
             var _data = from x in db.Users
                         join role in db.Roles on x.IdRole equals role.Id
                         select new
@@ -51,30 +52,15 @@ namespace Quan_Ly_HomeStay.Controllers
                             x.Phone,
                             x.Address,
                             x.CreateAt,
-                            x.IdRole,
                             x.PathImg,
-                            nameRole = role.Name,
+                            nameRole = role.Name
                         };
-            //var _data = await db.Users.Select(x => new
-            //{
-            //    x.Id,
-            //    x.Name,
-            //    x.Email,
-            //    x.Password,
-            //    x.Phone,
-            //    x.Address,
-            //    x.CreateAt,
-            //    x.IdRole,
-            //    x.PathImg
 
-            //}).ToListAsync();
-            return Ok(new
-            {
-                message = "Lấy dữ liệu thành công!",
-                status = 200,
-                data = _data
-            }); ;
+
+
+            return Ok(_data);  // Trả về dữ liệu trực tiếp
         }
+
         [HttpGet]
 
         public async Task<ActionResult<IEnumerable<User>>> GetUser(Guid id)
@@ -98,7 +84,7 @@ namespace Quan_Ly_HomeStay.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> AddUser([FromBody] User user)
         {
-            // Kiểm tra nếu cả email và phone đều trống
+            // 1. Kiểm tra nếu cả email và số điện thoại đều trống
             if (string.IsNullOrWhiteSpace(user.Email) && string.IsNullOrWhiteSpace(user.Phone))
             {
                 return BadRequest(new
@@ -108,6 +94,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
+            // 2. Kiểm tra mật khẩu
             if (string.IsNullOrWhiteSpace(user.Password))
             {
                 return BadRequest(new
@@ -117,7 +104,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
-            // Kiểm tra email đã tồn tại nếu có nhập
+            // 3. Kiểm tra trùng email nếu có
             if (!string.IsNullOrWhiteSpace(user.Email))
             {
                 var existingEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
@@ -131,7 +118,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 }
             }
 
-            // Kiểm tra phone đã tồn tại nếu có nhập
+            // 4. Kiểm tra trùng số điện thoại nếu có
             if (!string.IsNullOrWhiteSpace(user.Phone))
             {
                 var existingPhone = await db.Users.FirstOrDefaultAsync(x => x.Phone == user.Phone);
@@ -145,23 +132,32 @@ namespace Quan_Ly_HomeStay.Controllers
                 }
             }
 
-            // Gán ID, ngày tạo, avatar mặc định
+            // 5. Gán các giá trị mặc định
             user.Id = Guid.NewGuid();
             user.CreateAt ??= DateTime.Now;
-            user.PathImg ??= "default-avatar.png";
+            user.PathImg ??= "default-avatar.png"; // Avatar mặc định nếu không có
 
-            // Gán vai trò mặc định là "Customer"
+            // 6. Gán vai trò mặc định "Customer"
             var role = await db.Roles.FirstOrDefaultAsync(x => x.Name == "Customer");
             if (role == null)
             {
-                return StatusCode(500, new { message = "Không tìm thấy vai trò mặc định 'Customer'" });
+                return StatusCode(500, new
+                {
+                    message = "Không tìm thấy vai trò mặc định 'Customer'",
+                    status = 500
+                });
             }
             user.IdRole = role.Id;
 
-            // Lưu user
+            // 7. Băm mật khẩu
+            var passwordHasher = new PasswordHasher<User>();
+            user.Password = passwordHasher.HashPassword(user, user.Password);
+
+            // 8. Lưu vào database
             await db.Users.AddAsync(user);
             await db.SaveChangesAsync();
 
+            // 9. Trả kết quả thành công
             return Ok(new
             {
                 message = "Tạo tài khoản thành công!",
@@ -183,33 +179,52 @@ namespace Quan_Ly_HomeStay.Controllers
         [HttpPut("edit")]
         public async Task<IActionResult> Edit([FromBody] UpdateUserDto model)
         {
+            Console.WriteLine($"Nhận được yêu cầu sửa người dùng với Id: {model.Id}"); // Thêm log để kiểm tra Id
+
             var user = await db.Users.FindAsync(model.Id);
             if (user == null)
             {
                 return BadRequest(new { message = "Người dùng không tồn tại" });
             }
 
+            // Cập nhật thông tin người dùng
             user.Name = model.Name;
             user.Phone = model.Phone;
             user.Address = model.Address;
             user.Email = model.Email;
             user.PathImg = model.PathImg;
 
-            await db.SaveChangesAsync();
-
-            return Ok(new
+            if (model.IdRole.HasValue)
             {
-                message = "Sửa thành công!",
-                status = 200,
-                data = user
-            });
+                var role = await db.Roles.FindAsync(model.IdRole);
+                if (role == null)
+                {
+                    return BadRequest(new { message = $"Vai trò với Id {model.IdRole} không tồn tại" });
+                }
+                user.IdRole = model.IdRole.Value;
+            }
+
+            try
+            {
+                await db.SaveChangesAsync();
+                return Ok(new
+                {
+                    message = "Sửa thành công!",
+                    status = 200,
+                    data = user
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi khi lưu thay đổi", error = ex.Message });
+            }
         }
 
 
 
-        [HttpDelete("delete")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
 
-        public async Task<ActionResult> Delete([FromBody] Guid id)
         {
             if (db.Users == null)
             {
@@ -249,13 +264,22 @@ namespace Quan_Ly_HomeStay.Controllers
             }
         }
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] Login user)
+        public async Task<ActionResult> Login([FromBody] Login userLogin)
         {
-            var _user = await db.Users
-                .Where(u => u.Email == user.email)
+            if (string.IsNullOrWhiteSpace(userLogin.EmailOrPhone) || string.IsNullOrWhiteSpace(userLogin.Password))
+            {
+                return Ok(new
+                {
+                    message = "Vui lòng nhập email hoặc số điện thoại và mật khẩu.",
+                    status = 400
+                });
+            }
+
+            var user = await db.Users
+                .Where(u => u.Email == userLogin.EmailOrPhone || u.Phone == userLogin.EmailOrPhone)
                 .FirstOrDefaultAsync();
 
-            if (_user == null)
+            if (user == null)
             {
                 return Ok(new
                 {
@@ -264,8 +288,10 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
-            // So sánh mật khẩu (sử dụng hash password nếu có)
-            if (user.password != _user.Password)
+            var passwordHasher = new PasswordHasher<User>();
+            var result = passwordHasher.VerifyHashedPassword(user, user.Password, userLogin.Password);
+
+            if (result == PasswordVerificationResult.Failed)
             {
                 return Ok(new
                 {
@@ -274,13 +300,12 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
-            // Tạo JWT token
             var claims = new[]
             {
-        new Claim(JwtRegisteredClaimNames.Sub, _user.Email),
+        new Claim(JwtRegisteredClaimNames.Sub, user.Email ?? user.Phone),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim("id", _user.Id.ToString()),
-        new Claim("role", db.Roles.FirstOrDefault(r => r.Id == _user.IdRole)?.Name)
+        new Claim("id", user.Id.ToString()),
+        new Claim("role", db.Roles.FirstOrDefault(r => r.Id == user.IdRole)?.Name ?? "")
     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -296,7 +321,6 @@ namespace Quan_Ly_HomeStay.Controllers
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            // Trả về toàn bộ thông tin người dùng và token
             return Ok(new
             {
                 message = "Đăng nhập thành công",
@@ -304,15 +328,15 @@ namespace Quan_Ly_HomeStay.Controllers
                 token = tokenString,
                 user = new
                 {
-                    id = _user.Id,
-                    email = _user.Email,
-                    name = _user.Name,
-                    address = _user.Address,
-                    phone = _user.Phone,
-                    pathImg = _user.PathImg,
-                    idRole = _user.IdRole,
-                    createAt = _user.CreateAt,
-                    role = db.Roles.FirstOrDefault(r => r.Id == _user.IdRole)?.Name
+                    id = user.Id,
+                    email = user.Email,
+                    name = user.Name,
+                    address = user.Address,
+                    phone = user.Phone,
+                    pathImg = user.PathImg,
+                    idRole = user.IdRole,
+                    createAt = user.CreateAt,
+                    role = db.Roles.FirstOrDefault(r => r.Id == user.IdRole)?.Name
                 }
             });
         }
@@ -370,7 +394,12 @@ namespace Quan_Ly_HomeStay.Controllers
                     status = 404
                 });
             }
-            if (changePassword.oldPassword != user.Password)
+
+            // Sử dụng PasswordHasher để so sánh mật khẩu cũ
+            var passwordHasher = new PasswordHasher<User>();
+            var result = passwordHasher.VerifyHashedPassword(user, user.Password, changePassword.oldPassword);
+
+            if (result == PasswordVerificationResult.Failed)
             {
                 return Ok(new
                 {
@@ -379,8 +408,10 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
-            user.Password = changePassword.newPassword;
+            // Băm mật khẩu mới
+            user.Password = passwordHasher.HashPassword(user, changePassword.newPassword); // Băm mật khẩu mới
             db.SaveChanges();
+
             return Ok(new
             {
                 message = "Thay đổi mật khẩu thành công!",
@@ -388,14 +419,161 @@ namespace Quan_Ly_HomeStay.Controllers
             });
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            if (user == null)
+            {
+                return BadRequest(new { message = "Email không tồn tại!" });
+            }
 
+            // Tạo token cho việc đặt lại mật khẩu
+            var token = GeneratePasswordResetToken(user); // Tạo token cho người dùng
+
+            // Tạo URL đặt lại mật khẩu
+            var resetPasswordUrl = $"http://localhost:3000/reset-password?token={token}";
+
+            // Gửi email với URL này
+            await _emailService.SendEmailAsync(request.Email, "Yêu cầu đặt lại mật khẩu",
+                $"Chúng tôi nhận được yêu cầu đặt lại mật khẩu từ bạn. Vui lòng nhấp vào đường dẫn sau để đặt lại mật khẩu: {resetPasswordUrl}");
+
+            return Ok(new { message = "Một email hướng dẫn đặt lại mật khẩu đã được gửi." });
+        }
+
+
+
+
+        private string GeneratePasswordResetToken(User user)
+        {
+            // Step 1: Set expiration time (e.g., 1 hour)
+            var expirationTime = DateTime.UtcNow.AddHours(1);
+
+            // Step 2: Create JWT token with expiration and user info (like email)
+            var claims = new[]
+            {
+        new Claim(ClaimTypes.Name, user.Email),
+        new Claim("exp", expirationTime.ToString())
+    };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("quocdeptrai_12345678901234567890123456789012"));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = expirationTime,
+                SigningCredentials = credentials
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromQuery] string token, [FromBody] ResetPasswordRequest request)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest(new { message = "Token không hợp lệ." });
+            }
+
+            // Step 1: Validate the token and get user info
+            var userEmail = ValidatePasswordResetToken(token);
+            if (userEmail == null)
+            {
+                return BadRequest(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            // Step 2: Find user by email
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            if (user == null)
+            {
+                return BadRequest(new { message = "Người dùng không tồn tại!" });
+            }
+
+            // Step 3: Validate the new password
+            if (request.NewPassword != request.ConfirmPassword)
+            {
+                return BadRequest(new { message = "Mật khẩu mới không khớp!" });
+            }
+
+            if (request.NewPassword.Length < 6)
+            {
+                return BadRequest(new { message = "Mật khẩu mới phải có ít nhất 6 ký tự!" });
+            }
+
+            // Step 4: Băm và lưu mật khẩu mới
+            var passwordHasher = new PasswordHasher<User>();
+            user.Password = passwordHasher.HashPassword(user, request.NewPassword);  // Băm mật khẩu mới
+            await db.SaveChangesAsync();
+
+            return Ok(new { message = "Mật khẩu đã được thay đổi thành công!" });
+        }
+
+
+
+        private string ValidatePasswordResetToken(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes("quocdeptrai_12345678901234567890123456789012");
+                var parameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true, // Bắt buộc xác thực thời gian hết hạn của token
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+
+                var principal = tokenHandler.ValidateToken(token, parameters, out var validatedToken);
+
+                // Kiểm tra thời gian hết hạn của token
+                var expirationClaim = principal?.FindFirst("exp");
+                if (expirationClaim != null)
+                {
+                    var expClaim = principal?.FindFirst("exp");
+                    if (expClaim != null)
+                    {
+                        var expUnix = long.Parse(expClaim.Value);
+                        var expirationTime = DateTimeOffset.FromUnixTimeSeconds(expUnix).UtcDateTime;
+                        if (expirationTime < DateTime.UtcNow)
+                        {
+                            return null; // Token hết hạn
+                        }
+                    }
+                }
+
+                var emailClaim = principal?.FindFirst(ClaimTypes.Name)?.Value;
+                return emailClaim;
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi để tiện tra cứu
+                Console.WriteLine($"Token validation failed: {ex.Message}");
+                return null;
+            }
+        }
+
+
+    }
+    public class ResetPasswordRequest
+    {
+        public string NewPassword { get; set; }
+        public string ConfirmPassword { get; set; }
+    }
+    public class ForgotPasswordRequest
+    {
+        public string Email { get; set; }
     }
 
     public class Login
     {
-        public string email { get; set; }
-        public string password { get; set; }
+        public string EmailOrPhone { get; set; }
+        public string Password { get; set; }
     }
+
     public class ChangePassword
     {
         public Guid idUser { get; set; }
@@ -407,10 +585,43 @@ namespace Quan_Ly_HomeStay.Controllers
         public Guid Id { get; set; }
         public string? Name { get; set; }
         public string? Phone { get; set; }
+        //public string? Password { get; set; }
         public string? Address { get; set; }
         public string? Email { get; set; }
         public string? PathImg { get; set; }
+        public Guid? IdRole { get; set; }
     }
+    public class RegisterDto : IValidatableObject
+    {
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
+        public string? PathImg { get; set; }
+        public Guid IdRole { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext context)
+        {
+            if (string.IsNullOrWhiteSpace(Email) && string.IsNullOrWhiteSpace(Phone))
+                yield return new ValidationResult("Vui lòng nhập Email hoặc Số điện thoại!");
+
+            if (!string.IsNullOrWhiteSpace(Email) && !new EmailAddressAttribute().IsValid(Email))
+                yield return new ValidationResult("Email không đúng định dạng", new[] { nameof(Email) });
+
+            if (!string.IsNullOrWhiteSpace(Phone) && !Regex.IsMatch(Phone, @"^0\d{9}$"))
+                yield return new ValidationResult("Số điện thoại không đúng định dạng");
+
+            if (string.IsNullOrWhiteSpace(Name))
+                yield return new ValidationResult("Tên không được để trống");
+
+            if (string.IsNullOrWhiteSpace(Password))
+                yield return new ValidationResult("Mật khẩu không được để trống");
+
+            if (IdRole == Guid.Empty)
+                yield return new ValidationResult("Vai trò không hợp lệ");
+        }
+    }
+
 
 }
 

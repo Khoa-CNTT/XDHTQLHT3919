@@ -8,11 +8,12 @@ namespace Quan_Ly_HomeStay.Models;
 public partial class Booking
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid IdBooking { get; set; } = Guid.NewGuid();
 
     public string? Status { get; set; } // có 3 trạng thái chưa xác nhận, đang xác nhận, đã xác nhận
 
     public decimal? Total { get; set; }
+    public string? PaymentMethod { get; set; }
 
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
@@ -22,4 +23,5 @@ public partial class Booking
     public virtual User? IdUserNavigation { get; set; }
 
     public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
+
 }

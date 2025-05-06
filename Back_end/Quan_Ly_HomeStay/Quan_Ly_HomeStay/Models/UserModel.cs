@@ -2,21 +2,24 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
+using System.Text.Json.Serialization;
 
 namespace Quan_Ly_HomeStay.Models;
 
 public partial class User
 {
     [Key]
+    [JsonPropertyName("id")]
     public Guid Id { get; set; }
 
-    [Required, EmailAddress]
-    public string Email { get; set; } = null!;
+    // Email KHÔNG bắt buộc, nhưng nếu có thì phải đúng định dạng
+    [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
+    public string? Email { get; set; }
 
     public string? Name { get; set; }
 
-    [Required]
+    // Mật khẩu là bắt buộc
+    [Required(ErrorMessage = "Mật khẩu không được để trống")]
     public string Password { get; set; } = null!;
 
     public string? Address { get; set; }

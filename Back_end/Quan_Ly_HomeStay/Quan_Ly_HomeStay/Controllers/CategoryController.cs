@@ -23,27 +23,33 @@ namespace Quan_Ly_HomeStay.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAllCategory()
         {
-            var categoriesWithCount = await db.Categories
-                .Select(c => new {
-                    c.Id,
-                    c.Name,
-                    Quantity = db.Rooms.Count(r => r.IdCategory == c.Id)
-                }).ToListAsync();
+            var categories = await db.Categories
+                .Include(c => c.Rooms) // để tính Quantity
+                .ToListAsync();
+
+            var result = categories.Select(c => new
+            {
+                c.Id,
+                c.Name,
+                c.CreateAt,
+                Quantity = c.Quantity
+            });
 
             return Ok(new
             {
                 message = "Lấy dữ liệu thành công!",
                 status = 200,
-                data = categoriesWithCount
+                data = result
             });
         }
 
-
         // Lấy danh mục theo ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(Guid id)
+        public async Task<IActionResult> GetCategory(Guid id)
         {
-            var category = await db.Categories.FindAsync(id);
+            var category = await db.Categories
+                .Include(c => c.Rooms)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (category == null)
             {
@@ -58,13 +64,19 @@ namespace Quan_Ly_HomeStay.Controllers
             {
                 message = "Lấy dữ liệu thành công!",
                 status = 200,
-                data = category
+                data = new
+                {
+                    category.Id,
+                    category.Name,
+                    category.CreateAt,
+                    Quantity = category.Quantity
+                }
             });
         }
 
         // Thêm mới danh mục
         [HttpPost("add")]
-        public async Task<ActionResult> AddCategory([FromBody] Category category)
+        public async Task<IActionResult> AddCategory([FromBody] Category category)
         {
             if (category == null)
             {
@@ -76,8 +88,7 @@ namespace Quan_Ly_HomeStay.Controllers
             }
 
             var existingCategory = await db.Categories
-                                            .Where(x => x.Name == category.Name)
-                                            .FirstOrDefaultAsync();
+                                            .FirstOrDefaultAsync(x => x.Name == category.Name);
 
             if (existingCategory != null)
             {
@@ -88,7 +99,9 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
-            category.Quantity = 0; // Mặc định 0 phòng khi mới tạo
+            category.Id = Guid.NewGuid();
+            category.CreateAt = DateTime.Now;
+
             await db.Categories.AddAsync(category);
             await db.SaveChangesAsync();
 
@@ -96,29 +109,34 @@ namespace Quan_Ly_HomeStay.Controllers
             {
                 message = "Tạo danh mục thành công!",
                 status = 201,
-                data = category
+                data = new
+                {
+                    category.Id,
+                    category.Name,
+                    category.CreateAt,
+                    Quantity = category.Quantity
+                }
             });
         }
 
-        // Sửa thông tin danh mục
+        // Sửa danh mục
         [HttpPut("edit")]
-        public async Task<ActionResult> Edit([FromBody] Category category)
+        public async Task<IActionResult> Edit([FromBody] Category category)
         {
             var existingCategory = await db.Categories.FindAsync(category.Id);
             if (existingCategory == null)
             {
-                return BadRequest(new
+                return NotFound(new
                 {
                     message = "Danh mục không tồn tại!",
-                    status = 400
+                    status = 404
                 });
             }
 
-            // Không cho sửa Quantity trực tiếp
             existingCategory.Name = category.Name;
             existingCategory.CreateAt = category.CreateAt;
 
-            db.Entry(existingCategory).State = EntityState.Modified;
+            db.Categories.Update(existingCategory);
             await db.SaveChangesAsync();
 
             return Ok(new
@@ -128,11 +146,13 @@ namespace Quan_Ly_HomeStay.Controllers
             });
         }
 
-        // Xóa danh mục theo ID
+        // Xóa danh mục
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var category = await db.Categories.Include(c => c.Rooms).FirstOrDefaultAsync(c => c.Id == id);
+            var category = await db.Categories
+                .Include(c => c.Rooms)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (category == null)
             {
@@ -143,13 +163,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 });
             }
 
-            // Xóa các phòng liên quan
             db.Rooms.RemoveRange(category.Rooms);
-
-            // Cập nhật lại số lượng
-            category.Quantity = 0;
-
-            // Xóa danh mục
             db.Categories.Remove(category);
             await db.SaveChangesAsync();
 
@@ -162,29 +176,30 @@ namespace Quan_Ly_HomeStay.Controllers
 
         // Thêm phòng vào danh mục
         [HttpPost("add-room")]
-        public async Task<ActionResult> AddRoomToCategory([FromBody] Room room)
+        public async Task<IActionResult> AddRoomToCategory([FromBody] Room room)
         {
-            var category = await db.Categories.Include(c => c.Rooms).FirstOrDefaultAsync(c => c.Id == room.IdCategory);
+            var category = await db.Categories.Include(c => c.Rooms)
+                                              .FirstOrDefaultAsync(c => c.Id == room.IdCategory);
+
             if (category == null)
             {
                 return NotFound(new { message = "Danh mục không tồn tại!", status = 404 });
             }
 
+            room.Id = Guid.NewGuid();
             await db.Rooms.AddAsync(room);
             await db.SaveChangesAsync();
 
-            // Cập nhật lại số lượng phòng và lưu vào cơ sở dữ liệu
-            category.Quantity = category.Rooms.Count + 1; // Tăng thêm 1 phòng vào
-            db.Categories.Update(category);
-            await db.SaveChangesAsync();
-
-            return Ok(new { message = "Thêm phòng thành công!", status = 200 });
+            return Ok(new
+            {
+                message = "Thêm phòng thành công!",
+                status = 200
+            });
         }
 
-
-        // (Gợi ý) Xóa phòng riêng lẻ và cập nhật Quantity
+        // Xóa phòng riêng lẻ
         [HttpDelete("delete-room/{roomId}")]
-        public async Task<ActionResult> DeleteRoom(Guid roomId)
+        public async Task<IActionResult> DeleteRoom(Guid roomId)
         {
             var room = await db.Rooms.FindAsync(roomId);
             if (room == null)
@@ -192,20 +207,10 @@ namespace Quan_Ly_HomeStay.Controllers
                 return NotFound(new { message = "Phòng không tồn tại!", status = 404 });
             }
 
-            var category = await db.Categories.FindAsync(room.IdCategory);
             db.Rooms.Remove(room);
             await db.SaveChangesAsync();
 
-            if (category != null)
-            {
-                // Cập nhật lại số lượng phòng
-                category.Quantity = await db.Rooms.CountAsync(r => r.IdCategory == category.Id);
-                db.Categories.Update(category);
-                await db.SaveChangesAsync();
-            }
-
             return Ok(new { message = "Xóa phòng thành công!", status = 200 });
         }
-
     }
 }
