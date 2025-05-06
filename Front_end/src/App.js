@@ -8,7 +8,7 @@ import Hero from "./userSide/components/Contents/Hero";
 import Rooms from "./userSide/components/Contents/Rooms";
 import Amenities from "./userSide/components/Contents/Amenities";
 import Gallery from "./userSide/components/Contents/Gallery";
-
+import Reviews from "./userSide/components/Contents/Reviews";
 import Footer from "./userSide/components/Footers/Footer";
 
 // BookingRoom
@@ -22,7 +22,7 @@ import Login from "./userSide/components/Auths/Login";
 import Register from "./userSide/components/Auths/Register";
 import ChangePassword from "./userSide/components/Auths/ChangePassword";
 import ForgotPassword from "./userSide/components/Auths/ForgotPassword";
-
+import ResetPassword from "./userSide/components/Auths/ResetPassword";
 
 // Other - userSide
 import Contact from "./userSide/components/Other/Contact";
@@ -36,7 +36,7 @@ import AdminLayout from "./adminSide/components/adminSide/AdminLayout";
 import Sidebar from "./adminSide/components/adminSide/Sidebar";
 import Dashboard from "./adminSide/components/adminSide/Dashboard";
 import ProductList from "./adminSide/components/productManager/RoomList";
-import UserList from "./adminSide/components/userManager/UserList";
+import UserList from "./adminSide/components/UserManager/UserList";
 import RoomCategory from "./adminSide/components/productManager/RoomCategoryList";
 import BookingManagement from "./adminSide/components/productManager/BookingManagement";
 
@@ -90,12 +90,7 @@ const App = () => {
                             <Rooms  onRoomClick={handleRoomClick} />
                             <Amenities />
                             <Gallery />
-                            
-                            {/* <Modal
-                                isOpen={isModalOpen}
-                                onClose={() => setModalOpen(false)}
-                                room={selectedRoom}
-                            /> */}
+                            <Reviews />
                         </>
                     }
                 />
@@ -103,7 +98,7 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/change" element={<ChangePassword />} />
                 <Route path="/forgot" element={<ForgotPassword />} />
-
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/room/:id" element={<RoomDetail />} />
                 <Route path="/profile" element={<Profile />} />

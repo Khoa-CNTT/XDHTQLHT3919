@@ -1,0 +1,116 @@
+.reviews-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 16px;
+    background-color: #f4f4f4;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.reviews-section h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.add-review-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.add-review-box textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    resize: vertical;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.add-review-box button {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-review-box button:hover {
+    background-color: #0056b3;
+}
+
+.reviews-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.review-item {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.review-header {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.review-header .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+}
+
+.review-header .comment {
+    margin-top: 8px;
+    color: #444;
+    font-size: 15px;
+}
+
+.review-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
