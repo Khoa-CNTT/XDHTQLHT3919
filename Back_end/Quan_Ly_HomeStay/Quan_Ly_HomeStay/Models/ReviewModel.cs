@@ -13,14 +13,9 @@ namespace Quan_Ly_HomeStay.Models
         public DateTime? CreateAt { get; set; } = DateTime.Now;
 
         public Guid? IdUser { get; set; }
-
-        public Guid? IdRoom { get; set; }
-
+        
         [ForeignKey("IdUser")]
         public virtual User? IdUserNavigation { get; set; }
-
-        [ForeignKey("IdRoom")]
-        public virtual Room? IdRoomNavigation { get; set; }
 
     }
 }

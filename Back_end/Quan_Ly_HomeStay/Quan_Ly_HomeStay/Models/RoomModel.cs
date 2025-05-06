@@ -39,6 +39,6 @@ public partial class Room
     public virtual Category? IdCategoryNavigation { get; set; }
 
     public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+
 
 }

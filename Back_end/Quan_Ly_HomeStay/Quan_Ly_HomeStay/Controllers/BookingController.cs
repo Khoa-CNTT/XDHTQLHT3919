@@ -4,212 +4,165 @@ using Microsoft.EntityFrameworkCore;
 using Quan_Ly_HomeStay.Data;
 using Quan_Ly_HomeStay.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace backend.Controllers
 {
-    [Route("api/order")]
+    [Route("api/booking")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class BookingController : ControllerBase
     {
         private readonly ApplicationDbContext db;
-        public OrderController(ApplicationDbContext _db)
+
+        public BookingController(ApplicationDbContext _db)
         {
             db = _db;
         }
+
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetAllOrder()
+        public async Task<ActionResult> GetAllBooking()
         {
-            if (db.Users == null)
-            {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
-            }
-            var _data = from order in db.Bookings
-                        join user in db.Users on order.IdUser equals user.Id
-                        orderby order.CreateAt descending
-                        select new
-                        {
-                            order.Id,
-                            order.IdUser,
-                            order.Status,
-                            user.Name,
-                            order.Total,
-                            order.CreateAt,
-                        };
-            return Ok(new
-            {
-                message = "Lấy dữ liệu thành công!",
-                status = 200,
-                data = _data
-            }); ;
-        }
-        [HttpGet]
-
-        public async Task<ActionResult<IEnumerable<Booking>>> GetOrder(Guid id)
-        {
-            if (db.Bookings == null)
-            {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
-            }
-            var _data = await db.Bookings.Where(x => x.Id == id).ToListAsync();
-            return Ok(new
-            {
-                message = "Lấy dữ liệu thành công!",
-                status = 200,
-                data = _data
-            }); ;
-        }
-        [HttpPut("edit")]
-
-        public async Task<ActionResult> Edit([FromBody] Booking order)
-        {
-            var _order = await db.Bookings.FindAsync(order.Id);
-            if (_order == null)
-            {
-                return Ok(new
-                {
-                    message = "Dữ liệu không tồn tại!",
-                    status = 400
-                });
-            }
-            db.Entry(await db.Users.FirstOrDefaultAsync(x => x.Id == _order.Id)).CurrentValues.SetValues(order);
-            await db.SaveChangesAsync();
-            return Ok(new
-            {
-                message = "Sửa thành công!",
-                status = 200
-            });
-        }
-        /*[HttpPost("add")]
-
-        public async Task<ActionResult> AddOrder([FromBody] Booking order)
-        {
-            await db.Bookings.AddAsync(order);
-            await db.SaveChangesAsync();
-            var _data = await db.Bookings.Where(x => x.Status == 0).Where(x => x.IdUser == order.IdUser).FirstOrDefaultAsync();
-            return Ok(new
-            {
-                message = "Tạo thành công!",
-                status = 200,
-                data = _data
-            });
-        }*/
-        [HttpDelete("delete")]
-
-        public async Task<ActionResult> Delete([FromBody] Guid id)
-        {
-            if (db.Bookings == null)
-            {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
-            }
-            var _order = await db.Bookings.FindAsync(id);
-            if (_order == null)
-            {
-                return Ok(new
-                {
-                    message = "Dữ liệu trống!",
-                    status = 404
-                });
-            }
             try
             {
-                db.Bookings.Remove(_order);
-                db.SaveChanges();
+                var _data = await (from booking in db.Bookings
+                                   join user in db.Users on booking.IdUser equals user.Id into users
+                                   from user in users.DefaultIfEmpty()
+                                   orderby booking.CreateAt descending
+                                   select new
+                                   {
+                                       booking.IdBooking,
+                                       booking.IdUser,
+                                       UserEmail = user != null ? user.Email : "Unknown",
+                                       booking.Status,
+                                       booking.Total,
+                                       booking.PaymentMethod,
+                                       booking.CreateAt,
+                                       user.Name
+                                   }).ToListAsync();
+
+                if (_data == null || !_data.Any())
+                {
+                    return Ok(new
+                    {
+                        message = "Không có đơn đặt phòng nào!",
+                        status = 404,
+                        data = new List<object>()
+                    });
+                }
+
                 return Ok(new
                 {
-                    message = "Xóa thành công!",
-                    status = 200
+                    message = "Lấy danh sách đơn đặt phòng thành công!",
+                    status = 200,
+                    count = _data.Count,
+                    data = _data
                 });
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return Ok(new
+                return StatusCode(500, new
                 {
-                    message = "Lỗi rồi!",
-                    status = 400,
-                    data = e.Message
+                    message = "Đã xảy ra lỗi khi lấy dữ liệu!",
+                    status = 500,
+                    error = ex.Message
                 });
             }
         }
 
-        /*[HttpGet("getOrderNotPay")]
-
-        public async Task<ActionResult<Booking>> GetOrderNotPayment(Guid idUser)
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetBooking(Guid id)
         {
-            decimal amount = 0;
-            var _data = await db.Bookings.Where(x => x.IdUser == idUser).Where(x => x.Status == 0).FirstOrDefaultAsync();
+            if (db.Bookings == null)
+            {
+                return Ok(new
+                {
+                    message = "Dữ liệu trống!",
+                    status = 404
+                });
+            }
+
+            var _data = await db.Bookings.FirstOrDefaultAsync(x => x.IdBooking == id);
+
             if (_data == null)
             {
                 return Ok(new
                 {
-                    message = "Không có order nào hết!",
-                    status = 400
+                    message = "Không tìm thấy Booking!",
+                    status = 404
                 });
             }
-            var detail = await db.BookingDetails.Where(x => x.IdOrder == _data.Id).ToListAsync();
-            if (detail.Count > 0)
-            {
-                foreach (var item in detail)
-                {
-                    amount += item.Price * item.Quantity;
-                }
-            }
+
             return Ok(new
             {
-                message = "Đã có order!",
+                message = "Lấy dữ liệu thành công!",
                 status = 200,
-                data = _data,
-                total = amount
+                data = _data
             });
-        }*/
-        /*[HttpGet("confirm")]
+        }
 
-        public async Task<ActionResult> Confirm(Guid idUser, int status, int type)
+        [HttpPost("add")]
+        public async Task<ActionResult> AddBooking([FromBody] Booking booking)
         {
-            var _order = await db.Bookings.Where(x => x.IdUser == idUser).Where(x => x.Status == 0).FirstOrDefaultAsync();
-            decimal amount = 0;
-            if (_order == null)
+            booking.IdBooking = Guid.NewGuid();
+            booking.CreateAt = DateTime.Now;
+
+            await db.Bookings.AddAsync(booking);
+            await db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Tạo thành công!",
+                status = 200,
+                data = booking
+            });
+        }
+
+        [HttpPut("edit")]
+        public async Task<ActionResult> EditBooking([FromBody] Booking booking)
+        {
+            var _booking = await db.Bookings.FindAsync(booking.IdBooking);
+            if (_booking == null)
             {
                 return Ok(new
                 {
                     message = "Dữ liệu không tồn tại!",
-                    status = 400
+                    status = 404
                 });
             }
-            var detail = await db.BookingDetails.Where(x => x.IdOrder == _order.Id).ToListAsync();
-            if (detail.Count > 0)
-            {
-                foreach (var item in detail)
-                {
-                    amount += item.Price * item.Quantity;
-                }
-            }
-            _order.CreateAt = DateTime.Now;
-            _order.Total = amount;
-            _order.Status = status;
-            db.Entry(await db.Bookings.FirstOrDefaultAsync(x => x.Id == _order.Id)).CurrentValues.SetValues(_order);
+
+            db.Entry(_booking).CurrentValues.SetValues(booking);
             await db.SaveChangesAsync();
+
             return Ok(new
             {
-                message = "Sửa thành công!",
+                message = "Cập nhật thành công!",
                 status = 200
             });
-        }*/
-        [HttpGet("getAllOrder")]
+        }
 
-        public async Task<ActionResult<IEnumerable<Booking>>> GetAllOrderByIdUser(Guid idUser)
+        [HttpDelete("delete/{id}")]
+        public async Task<ActionResult> DeleteBooking(Guid id)
+        {
+            var _booking = await db.Bookings.FindAsync(id);
+            if (_booking == null)
+            {
+                return Ok(new
+                {
+                    message = "Dữ liệu không tồn tại!",
+                    status = 404
+                });
+            }
+
+            db.Bookings.Remove(_booking);
+            await db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Xóa thành công!",
+                status = 200
+            });
+        }
+
+        [HttpGet("user/{idUser}")]
+        public async Task<ActionResult> GetAllBookingByUser(Guid idUser)
         {
             if (db.Users == null)
             {
@@ -219,42 +172,18 @@ namespace backend.Controllers
                     status = 404
                 });
             }
-            var _data = await db.Bookings.Where(x => x.IdUser == idUser).Where(x => x.Total != 0).OrderByDescending(x => x.CreateAt).ToListAsync();
+
+            var _data = await db.Bookings
+                                .Where(x => x.IdUser == idUser && x.Total != 0)
+                                .OrderByDescending(x => x.CreateAt)
+                                .ToListAsync();
+
             return Ok(new
             {
                 message = "Lấy dữ liệu thành công!",
                 status = 200,
                 data = _data
-            }); ;
-        }
-        /*[HttpGet("confirmOrder")]
-
-        public async Task<ActionResult> ConfirmOrder(Guid idOrder, int status)
-        {
-            var _order = await db.Bookings.FindAsync(idOrder);
-            if (_order == null)
-            {
-                return Ok(new
-                {
-                    message = "Dữ liệu không tồn tại!",
-                    status = 400
-                });
-            }
-            _order.Status = status;
-            db.Entry(await db.Bookings.FirstOrDefaultAsync(x => x.Id == idOrder)).CurrentValues.SetValues(_order);
-            var listProduct = await db.BookingDetails.Where(x => x.IdOrder == idOrder).ToListAsync();
-            foreach (var item in listProduct)
-            {
-                var product = await db.Rooms.FindAsync(item.IdRoom);
-                Room.Quantity -= item.Quantity;
-                db.Entry(await db.Rooms.FirstOrDefaultAsync(x => x.Id == product.Id)).CurrentValues.SetValues(product);
-            }
-            await db.SaveChangesAsync();
-            return Ok(new
-            {
-                message = "Sửa thành công!",
-                status = 200
             });
-        }*/
+        }
     }
 }

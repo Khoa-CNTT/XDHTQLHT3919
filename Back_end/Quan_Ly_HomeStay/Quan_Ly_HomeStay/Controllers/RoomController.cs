@@ -21,7 +21,7 @@ namespace Quan_Ly_HomeStay.Controllers
         public async Task<IActionResult> GetAllRooms()
         {
             var rooms = await _db.Rooms
-                .Include(r => r.IdCategoryNavigation)
+                .Include(r => r.IdCategoryNavigation)  // Đảm bảo Category được include
                 .OrderByDescending(r => r.CreateAt)
                 .Select(room => new
                 {
@@ -35,7 +35,8 @@ namespace Quan_Ly_HomeStay.Controllers
                     room.CreateAt,
                     room.IdUser,
                     room.IdCategory,
-                    CategoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : null
+                    // Lấy tên loại phòng từ IdCategoryNavigation
+                    CategoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : "Chưa xác định"
                 })
                 .ToListAsync();
 
@@ -47,12 +48,13 @@ namespace Quan_Ly_HomeStay.Controllers
             });
         }
 
+
         // GET: api/room/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoomById(Guid id)
         {
             var room = await _db.Rooms
-                .Include(r => r.IdCategoryNavigation)
+                .Include(r => r.IdCategoryNavigation)  // Đảm bảo Category được include
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (room == null)
@@ -74,21 +76,36 @@ namespace Quan_Ly_HomeStay.Controllers
                     room.Status,
                     room.Detail,
                     room.CreateAt,
-                    Category = room.IdCategoryNavigation == null ? null : new
-                    {
-                        room.IdCategoryNavigation.Id,
-                        room.IdCategoryNavigation.Name
-                    }
+                    // Trả về tên loại phòng từ IdCategoryNavigation
+                    CategoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : "Chưa xác định"
                 }
             });
         }
 
+
+
         // POST: api/room/add
+       
         [HttpPost("add")]
-        public async Task<IActionResult> AddRoom([FromBody] Room room)
+        public async Task<ActionResult> AddRoom([FromBody] Room room)
         {
+            if (string.IsNullOrEmpty(room.Name) || room.Price == null || string.IsNullOrEmpty(room.PathImg))
+            {
+                return BadRequest(new
+                {
+                    message = "Vui lòng điền đầy đủ thông tin bắt buộc.",
+                    status = 400
+                });
+            }
+
+            if (room.Id == Guid.Empty)
+            {
+                room.Id = Guid.NewGuid();
+            }
+
             room.CreateAt = DateTime.Now;
-            room.Status = "Còn trống";
+            room.Status = "Còn trống"; 
+
             await _db.Rooms.AddAsync(room);
             await _db.SaveChangesAsync();
 
@@ -136,6 +153,40 @@ namespace Quan_Ly_HomeStay.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = "Xảy ra lỗi khi xóa!", status = 400, error = ex.Message });
+            }
+        }
+        [HttpPost("upload")]
+        public async Task<ActionResult> UploadImage([FromForm] IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new { message = "Không có tệp được tải lên", status = 400 });
+            }
+
+            // Đường dẫn lưu ảnh
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "rooms", file.FileName);
+
+            try
+            {
+                // Kiểm tra nếu thư mục không tồn tại, tạo mới
+                var directoryPath = Path.GetDirectoryName(filePath);
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                // Lưu tệp vào thư mục
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var fileUrl = $"/images/rooms/{file.FileName}"; // Đường dẫn ảnh
+                return Ok(new { message = "Tải ảnh thành công", status = 200, fileUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi tải ảnh", status = 500, error = ex.Message });
             }
         }
     }
