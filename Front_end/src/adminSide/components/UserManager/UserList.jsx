@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import userApi from '../../../services/api/AuthAPI/user';
-import roleApi from '../../../services/api/AuthAPI/roleApi'; 
+import roleApi from '../../../services/api/AuthAPI/roleApi';
+import Notification from '../../../userSide/components/Other/Notification';
 import "../../../assets/Style/admin-css/userList.css";
 
 const UserList = () => {
@@ -20,6 +21,8 @@ const UserList = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isEditMode, setIsEditMode] = useState(false); // Thêm trạng thái: đang thêm hay đang sửa
+  const [notification, setNotification] = useState({ message: '', show: false });
+  const token = localStorage.getItem('token');
 
   const resetForm = () => {
     setForm({
@@ -80,77 +83,101 @@ const UserList = () => {
   }, []);
 
   const handleAddOrUpdate = async () => {
-    // Kiểm tra form trước khi gửi
+    // Kiểm tra điều kiện nhập liệu
     if (!form.name || (!form.email && !form.phone) || (!isEditMode && !form.password)) {
-      alert('Vui lòng nhập đầy đủ tên, email/điện thoại và mật khẩu (nếu thêm mới)');
+      setNotification({ message: 'Vui lòng nhập đầy đủ tên, email/điện thoại và mật khẩu (nếu thêm mới)', show: true });
       return;
     }
-
+  
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const phoneRegex = /^[0-9]{10,11}$/;
-
+  
     if (form.email && !emailRegex.test(form.email)) {
-      alert('Email không hợp lệ');
+      setNotification({ message: 'Email không hợp lệ', show: true });
       return;
     }
     if (form.phone && !phoneRegex.test(form.phone)) {
-      alert('Số điện thoại không hợp lệ');
+      setNotification({ message: 'Số điện thoại không hợp lệ', show: true });
       return;
     }
-
+  
+    const selectedRole = roles.find(r => r.name === form.role);
+  
+    if (!selectedRole) {
+      setNotification({ message: 'Vai trò không hợp lệ', show: true });
+      return;
+    }
+  
+    // Tạo đối tượng payload cho yêu cầu API
     const userPayload = {
-      id: form.id, // Nếu đang sửa thì gửi id
       name: form.name,
       email: form.email,
-      password: form.password, // Mật khẩu chỉ cần khi thêm mới
       address: form.address,
       phone: form.phone,
       pathImg: form.img,
+      idRole: selectedRole ? selectedRole.id : null,
     };
-    
+  
+    // Kiểm tra xem nếu đang ở chế độ chỉnh sửa thì thêm `id`
+    if (isEditMode && form.id) {
+      userPayload.id = form.id; // Chỉ thêm id khi ở chế độ chỉnh sửa
+    } else if (!isEditMode && form.password) {
+      userPayload.password = form.password; // Chỉ gửi password khi thêm mới
+    }
+  
     setLoading(true);
     try {
       if (isEditMode) {
-        // Nếu đang sửa
-        await userApi.updateUser(userPayload);
-        alert('Cập nhật thành công!');
+        // Cập nhật người dùng
+        await userApi.updateUser(token, userPayload);
+        setNotification({ message: 'Cập nhật thành công!', show: true });
       } else {
-        // Nếu đang thêm mới
+        // Thêm mới người dùng
         await userApi.addUser(userPayload);
-        alert('Thêm mới thành công!');
+        setNotification({ message: 'Thêm mới thành công!', show: true });
       }
+      // Lấy lại danh sách người dùng
       await fetchUsers();
+      // Reset form
       resetForm();
     } catch (error) {
       console.error('Lỗi khi thêm/sửa người dùng:', error);
-      alert('Đã xảy ra lỗi, vui lòng thử lại!');
+      if (error.response) {
+        console.error('Chi tiết lỗi từ server:', error.response.data);
+      }
+      setNotification({ message: 'Đã xảy ra lỗi, vui lòng thử lại!', show: true });
     } finally {
       setLoading(false);
     }
   };
+  
+  
+  
 
   const handleEdit = (user) => {
+    const role = roles.find(r => r.name.toLowerCase() === user.nameRole?.toLowerCase());
     setForm({
       id: user.id,
       name: user.name,
       email: user.email,
-      password: '', // Mật khẩu để trống
+      password: '', // Không cần giữ mật khẩu khi chỉnh sửa
       address: user.address,
       phone: user.phone,
       img: user.img,
-      role: user.nameRole === "Admin" ? "admin" : "user"
+      role: role ? role.name : 'user'
     });
-    setIsEditMode(true); // Đang chỉnh sửa
+    setIsEditMode(true);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa tài khoản này?')) {
       try {
         await userApi.deleteUser(id);
+        setNotification({ message: 'Xóa tài khoản thành công!', show: true });
         await fetchUsers();
       } catch (error) {
         console.error('Lỗi khi xóa người dùng:', error);
-        alert('Đã xảy ra lỗi khi xóa!');
+        setNotification({ message: 'Đã xảy ra lỗi khi xóa!', show: true });
       }
     }
   };
@@ -165,6 +192,11 @@ const UserList = () => {
 
   return (
     <div className="user-container">
+      <Notification
+        message={notification.message}
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+      />
       <div className="user-header">
         <h1>Danh sách tài khoản</h1>
         <div className="actions">

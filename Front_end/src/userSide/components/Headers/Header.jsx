@@ -23,7 +23,8 @@ const Header = () => {
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("username");
         const userRole = localStorage.getItem("role");
-        const avatar = localStorage.getItem("pathImg") || "";
+        const avatar = localStorage.getItem("img") || "/images/avatar.jpg";
+
         
 
         if (token && user) {
@@ -166,7 +167,7 @@ const Header = () => {
                             <div className="user-menu">
                                 <div className="user-avatar">
                                     <img
-                                        src={avatarUrl || "../../../images/avatar.jpg"}
+                                        src={avatarUrl || "/images/avatar.jpg"}
                                         alt="Avatar"
                                         className="avatar-img"
                                     />
@@ -177,6 +178,9 @@ const Header = () => {
                                 <div className="dropdown">
                                     <button className="btn btn--secondary" onClick={() => navigate("/profile")}>
                                         Profile
+                                    </button>
+                                    <button className="btn btn--secondary" onClick={() => navigate("/historybooking")}>
+                                        Lịch sử đặt
                                     </button>
                                     <button className="btn btn--secondary" onClick={handleLogout}>
                                         Đăng xuất

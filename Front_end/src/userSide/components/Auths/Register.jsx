@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { register } from "../../../services/api/AuthAPI/Register";
-
 import { FaEnvelope, FaPhone } from "react-icons/fa";
+import Notification from "../Other/Notification";
 
 function Register() {
   const [isEmail, setIsEmail] = useState(true);
@@ -12,61 +11,90 @@ function Register() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [address, setAddress] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notification, setNotification] = useState({ show: false, message: "" });
+
   const navigate = useNavigate();
+
+  const showNotification = (message) => {
+    setNotification({ show: true, message });
+  };
+
+  const handleCloseNotification = () => {
+    setNotification({ show: false, message: "" });
+  };
 
   const handlePhoneInput = (e) => {
     let input = e.target.value.replace(/\D/g, "");
-    if (!input.startsWith("+84")) {
-      if (input.startsWith("84")) {
-        input = "+84" + input.slice(2);
-      } else if (input.startsWith("0")) {
-        input = "+84" + input.slice(1);
-      } else {
-        input = "+84" + input;
-      }
+    if (input.startsWith("0")) {
+      input = input;
+    } else if (input.length > 0) {
+      input = "0" + input;
     }
     setPhoneNumber(input);
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
-    if (!name || !password || !confirmPassword || !address || (isEmail && !email) || (!isEmail && !phoneNumber)) {
-      alert("Vui lòng nhập đầy đủ thông tin!");
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phoneNumber.trim();
+
+    if (!trimmedName || !password || !confirmPassword || (isEmail && !trimmedEmail) || (!isEmail && !trimmedPhone)) {
+      showNotification("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Mật khẩu xác nhận không khớp!");
+      showNotification("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
+    const isValidPhoneNumber = /^[0-9]{10}$/.test(trimmedPhone);
+
+    if (isEmail && !isValidEmail) {
+      showNotification("Email không hợp lệ!");
+      return;
+    }
+
+    if (!isEmail && !isValidPhoneNumber) {
+      showNotification("Số điện thoại không hợp lệ! (Ví dụ: 0987654321)");
       return;
     }
 
     const registerData = {
-      name,
-      password,
-      email: isEmail ? email : "",
-      phone: !isEmail ? phoneNumber : "",
-      address,
-      PathImg: "",
-      createAt: new Date().toISOString(),
-      idRole: "0c12b645-4b6e-4ddf-99ae-a493eb2a3a52"
+      name: trimmedName,
+      password: password,
+      idRole: "0d215690-3ece-478d-8f3a-20935a0f822f",
     };
+
+    if (isEmail) {
+      registerData.email = trimmedEmail;
+    } else {
+      registerData.phone = trimmedPhone;
+    }
+
+    setIsSubmitting(true);
 
     try {
       const response = await register(registerData);
       console.log("Phản hồi từ backend:", response);
 
-      if (response && response.status === 200) {
-        alert("Đăng ký thành công!");
-        navigate("/login");
-      } else {
-        alert("Đăng ký thất bại! Vui lòng thử lại.");
-      }
+      showNotification("Đăng ký thành công!");
+      setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
       console.error("Lỗi đăng ký:", error);
-      const message = error.response?.data?.message || "Lỗi đăng ký! Vui lòng thử lại.";
-      alert(message);
+      const errors = error.response?.data?.errors;
+      const message =
+        (errors && Object.values(errors)[0]?.[0]) ||
+        error.response?.data?.message ||
+        "Lỗi đăng ký! Vui lòng thử lại.";
+      showNotification(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -96,6 +124,7 @@ function Register() {
                   className="auth-input"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isSubmitting}
                 />
               </div>
             ) : (
@@ -107,6 +136,7 @@ function Register() {
                   className="auth-input"
                   value={phoneNumber}
                   onChange={handlePhoneInput}
+                  disabled={isSubmitting}
                 />
               </div>
             )}
@@ -119,17 +149,7 @@ function Register() {
                 className="auth-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label>Địa chỉ</label>
-              <input
-                type="text"
-                placeholder="Nhập địa chỉ"
-                className="auth-input"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                disabled={isSubmitting}
               />
             </div>
 
@@ -141,6 +161,7 @@ function Register() {
                 className="auth-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isSubmitting}
               />
             </div>
 
@@ -152,17 +173,25 @@ function Register() {
                 className="auth-input"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={isSubmitting}
               />
             </div>
 
-            <button type="submit" className="auth-button">Đăng ký</button>
+            <button type="submit" className="auth-button" disabled={isSubmitting}>Đăng ký</button>
           </form>
         </div>
+
         <p className="auth-footer">
           Bạn đã có tài khoản?{" "}
           <button className="btn" onClick={() => navigate("/login")}>Đăng nhập ngay</button>
         </p>
       </div>
+
+      <Notification
+        message={notification.message}
+        show={notification.show}
+        onClose={handleCloseNotification}
+      />
     </div>
   );
 }

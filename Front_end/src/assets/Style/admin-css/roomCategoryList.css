@@ -5,15 +5,15 @@
   min-height: 100vh;
 }
 
-.header {
+.headerql {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.header h1 {
-  font-size: 24px;
+.headerql h1 {
+  font-size: 30px;
   color: #343a40;
 }
 

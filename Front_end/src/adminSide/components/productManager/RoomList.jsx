@@ -5,8 +5,10 @@ import {
   updateRoom,
   deleteRoom,
 } from '../../../services/api/adminAPI/productApi';
-import { getAllCategories } from '../../../services/api/adminAPI/roomCategory'; 
-import "../../../assets/Style/admin-css/productList.css";
+import { getAllCategories } from '../../../services/api/adminAPI/roomCategory';
+import Notification from '../../../userSide/components/Other/Notification';
+import "../../../assets/Style/admin-css/roomList.css";
+
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
   const [roomTypes, setRoomTypes] = useState([]);
@@ -14,15 +16,24 @@ const RoomList = () => {
     id: null,
     name: '',
     price: '',
-    idCategory: '',  // Sử dụng idCategory thay vì type
+    idCategory: '',
     pathImg: '',
     detail: ''
   });
   const [search, setSearch] = useState('');
 
+  const [notification, setNotification] = useState({ show: false, message: "", type: "info" });
+
+  const showNotification = (message, type = "info") => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "info" });
+    }, 3000);
+  };
+
   useEffect(() => {
     fetchRoomData();
-    fetchRoomTypes(); // Gọi API lấy danh sách loại phòng
+    fetchRoomTypes();
   }, []);
 
   const fetchRoomData = async () => {
@@ -30,30 +41,31 @@ const RoomList = () => {
       const res = await getRooms();
       setRooms(res);
     } catch (error) {
-      alert('Không thể tải danh sách phòng');
       console.error(error);
+      showNotification('Không thể tải danh sách phòng', "error");
     }
   };
 
   const fetchRoomTypes = async () => {
     try {
-      const res = await getAllCategories();  // Lấy danh sách loại phòng
-      setRoomTypes(res.data); // Gán kết quả vào state roomTypes
+      const res = await getAllCategories();
+      setRoomTypes(res.data);
     } catch (error) {
       console.error('Lỗi khi tải loại phòng:', error);
+      showNotification('Lỗi khi tải loại phòng', "error");
     }
   };
 
   const handleAddOrUpdate = async () => {
     if (!form.name || !form.price || !form.pathImg) {
-      alert('Vui lòng nhập đầy đủ thông tin bắt buộc');
+      showNotification('Vui lòng nhập đầy đủ thông tin bắt buộc', "error");
       return;
     }
 
     const room = {
       name: form.name,
       price: +form.price,
-      idCategory: form.idCategory,  // Sử dụng idCategory thay vì type
+      idCategory: form.idCategory,
       pathImg: form.pathImg,
       detail: form.detail,
     };
@@ -61,15 +73,17 @@ const RoomList = () => {
     try {
       if (form.id) {
         await updateRoom({ ...room, id: form.id });
+        showNotification("Cập nhật phòng thành công", "success");
       } else {
         await addRoom(room);
+        showNotification("Thêm phòng thành công", "success");
       }
 
       await fetchRoomData();
       setForm({ id: null, name: '', price: '', idCategory: '', pathImg: '', detail: '' });
     } catch (error) {
       console.error("Lỗi khi lưu phòng:", error);
-      alert("Có lỗi khi lưu phòng!");
+      showNotification("Có lỗi khi lưu phòng!", "error");
     }
   };
 
@@ -78,7 +92,7 @@ const RoomList = () => {
       id: room.id,
       name: room.name,
       price: room.price,
-      idCategory: room.idCategory,  // Sử dụng idCategory khi chỉnh sửa
+      idCategory: room.idCategory,
       pathImg: room.pathImg,
       detail: room.detail || ''
     });
@@ -89,8 +103,10 @@ const RoomList = () => {
       try {
         await deleteRoom(id);
         await fetchRoomData();
+        showNotification("Xóa phòng thành công", "success");
       } catch (error) {
-        alert('Không thể xóa phòng');
+        console.error(error);
+        showNotification('Không thể xóa phòng', "error");
       }
     }
   };
@@ -101,7 +117,7 @@ const RoomList = () => {
 
   return (
     <div className="main-content">
-      <div className="header">
+      <div className="headerql">
         <h1>Danh sách phòng</h1>
         <div className="actions">
           <input
@@ -129,9 +145,8 @@ const RoomList = () => {
           value={form.price}
           onChange={(e) => setForm({ ...form, price: e.target.value })}
         />
-
         <select
-          value={form.idCategory}  // Sử dụng idCategory trong select
+          value={form.idCategory}
           onChange={(e) => setForm({ ...form, idCategory: e.target.value })}
         >
           <option value="">-- Chọn loại phòng --</option>
@@ -141,7 +156,6 @@ const RoomList = () => {
             </option>
           ))}
         </select>
-
         <input
           type="text"
           placeholder="URL ảnh phòng"
@@ -171,7 +185,7 @@ const RoomList = () => {
             <tr key={room.id}>
               <td><img src={room.pathImg} alt="ảnh phòng" style={{ width: 50 }} /></td>
               <td>{room.name}</td>
-              <td>{room.categoryName}</td> {/* Sử dụng categoryName khi hiển thị */}
+              <td>{room.categoryName}</td>
               <td>{(+room.price).toLocaleString()} đ</td>
               <td>{room.detail}</td>
               <td>
@@ -182,6 +196,12 @@ const RoomList = () => {
           ))}
         </tbody>
       </table>
+
+      <Notification
+        message={notification.message}
+        show={notification.show}
+        type={notification.type}
+      />
     </div>
   );
 };

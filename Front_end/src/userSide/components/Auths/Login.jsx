@@ -4,13 +4,11 @@ import { login } from "../../../services/api/AuthAPI/Login";
 import { FaArrowLeft } from "react-icons/fa";
 import Notification from "../../components/Other/Notification";
 
-
 function Login() {
-  const [email, setEmail] = useState("");
+  const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showNoti, setShowNoti] = useState(false);
   const [notiMessage, setNotiMessage] = useState("");
-
   const navigate = useNavigate();
 
   const showNotification = (message) => {
@@ -21,59 +19,52 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
-    if (!email || !password) {
-      showNotification("Vui lòng nhập đầy đủ email và mật khẩu!");
+
+    if (!emailOrPhone || !password) {
+      showNotification("Vui lòng nhập email/số điện thoại và mật khẩu!");
       return;
     }
-  
-    const credentials = { email, password };
-    console.log("Đang gửi dữ liệu: ", credentials);
-  
+
     try {
-      const response = await login(credentials);
-      console.log("Dữ liệu trả về từ backend: ", response);
-  
-      const { status, token, user } = response;
-  
-      if (status === 200 && token) {
+      const response = await login({
+        userLogin: emailOrPhone.trim(),
+        password,
+      });
+
+      const { token, user } = response;
+
+      if (token) {
         showNotification("Đăng nhập thành công!");
-  
-        const userImg = user.pathImg || "avatar.jpg";  // Đảm bảo pathImg có giá trị mặc định nếu không có ảnh
-  
-        // Lưu trữ thông tin vào localStorage
+
+        const userImg = user.pathImg || "avatar.jpg";
+
         localStorage.setItem("token", token);
-        localStorage.setItem("email", user.email);
-        localStorage.setItem("username", user.name);
+        localStorage.setItem("email", user.email || "");
+        localStorage.setItem("username", user.name || "");
         localStorage.setItem("img", userImg);
         localStorage.setItem("role", user.role || "user");
-        localStorage.setItem("idRole", user.idRole);
+        localStorage.setItem("idRole", user.idRole || "");
         localStorage.setItem("address", user.address || "");
         localStorage.setItem("phone", user.phone || "");
-  
-        // Chuyển hướng dựa trên vai trò
-        if (user.role === "admin") {
-          setTimeout(() => navigate("/dashboard"), 1000);
-        } else {
-          setTimeout(() => navigate("/home"), 1000);
-        }
+        localStorage.setItem("idUser", user.id || "");
+
+        setTimeout(() => {
+          navigate(user.role === "admin" ? "/dashboard" : "/home");
+        }, 1000);
       } else {
-        showNotification("Đăng nhập thất bại! Tài khoản hoặc mật khẩu không đúng.");
+        showNotification("Đăng nhập thất bại! Token không hợp lệ.");
       }
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
       const errorMessage =
-        error.response?.data?.message ||
-        "Đăng nhập thất bại, vui lòng kiểm tra lại!";
+        error.response?.data?.message || "Đăng nhập thất bại, vui lòng thử lại!";
       showNotification(errorMessage);
     }
   };
-  
 
   return (
     <div className="auth-wrapper">
       <Notification message={notiMessage} show={showNoti} onClose={() => setShowNoti(false)} />
-
       <div className="auth-container">
         <button className="back-button" onClick={() => navigate("/")}>
           <FaArrowLeft />
@@ -81,13 +72,13 @@ function Login() {
         <h2 className="auth-title">Đăng nhập</h2>
         <form className="auth-form" onSubmit={handleLogin}>
           <div>
-            <label className="labe">Email</label>
+            <label className="labe">Email hoặc Số điện thoại</label>
             <input
-              type="email"
-              placeholder="Nhập email"
+              type="text"
+              placeholder="Nhập email hoặc số điện thoại"
               className="auth-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={emailOrPhone}
+              onChange={(e) => setEmailOrPhone(e.target.value)}
             />
           </div>
           <div>
@@ -108,7 +99,7 @@ function Login() {
             Đăng ký ngay
           </button>
         </p>
-        <p className="auth-footer" onClick={() => navigate("/change")}>
+        <p className="auth-footer" onClick={() => navigate("/forgot")}>
           Quên mật khẩu?
         </p>
       </div>

@@ -8,18 +8,21 @@ import Hero from "./userSide/components/Contents/Hero";
 import Rooms from "./userSide/components/Contents/Rooms";
 import Amenities from "./userSide/components/Contents/Amenities";
 import Gallery from "./userSide/components/Contents/Gallery";
-import Testimonials from "./userSide/components/Contents/Testimonials";
+
 import Footer from "./userSide/components/Footers/Footer";
 
 // BookingRoom
 import Booking from "./userSide/components/BookingRoom/Booking";
 import RoomDetail from "./userSide/components/BookingRoom/RoomDetail";
 import RoomInfo from "./userSide/components/BookingRoom/RoomInfo";
+import BookingHistory from "./userSide/components/BookingRoom/BookingHistory";
 
 // Auth
 import Login from "./userSide/components/Auths/Login";
 import Register from "./userSide/components/Auths/Register";
 import ChangePassword from "./userSide/components/Auths/ChangePassword";
+import ForgotPassword from "./userSide/components/Auths/ForgotPassword";
+
 
 // Other - userSide
 import Contact from "./userSide/components/Other/Contact";
@@ -35,14 +38,13 @@ import Dashboard from "./adminSide/components/adminSide/Dashboard";
 import ProductList from "./adminSide/components/productManager/RoomList";
 import UserList from "./adminSide/components/userManager/UserList";
 import RoomCategory from "./adminSide/components/productManager/RoomCategoryList";
-import CustomerList from "./adminSide/components/userManager/CustomerList";
 import BookingManagement from "./adminSide/components/productManager/BookingManagement";
 
 
 
 import "./assets/Style/Auth-css/auth.css";
 import "./assets/Style/admin-css/adminLayout.css";
-import "./assets/Style/home-css/index.css";
+import "./assets/Style/home-css/indexx.css";
 
 
 
@@ -51,7 +53,7 @@ import "./assets/Style/home-css/index.css";
 
 const Layout = ({ children }) => {
     const location = useLocation();
-    const hideHeaderRoutes = ["/login", "/register", "/change"];
+    const hideHeaderRoutes = ["/login", "/register", "/change", "/forgot", "/reset-password"];
 
     return (
         <>
@@ -88,7 +90,7 @@ const App = () => {
                             <Rooms  onRoomClick={handleRoomClick} />
                             <Amenities />
                             <Gallery />
-                            <Testimonials />
+                            
                             {/* <Modal
                                 isOpen={isModalOpen}
                                 onClose={() => setModalOpen(false)}
@@ -100,9 +102,12 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/change" element={<ChangePassword />} />
+                <Route path="/forgot" element={<ForgotPassword />} />
+
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/room/:id" element={<RoomDetail />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/historybooking" element={<BookingHistory />} />
                 <Route path="/booking" element={
                     <RoomDetail>
                         <Booking />
@@ -131,11 +136,6 @@ const App = () => {
                 <Route path="/productlist" element={
                     <AdminLayout>
                         <ProductList />
-                    </AdminLayout>
-                } />
-                <Route path="/customerlist" element={
-                    <AdminLayout>
-                        <CustomerList />
                     </AdminLayout>
                 } />
                 <Route path="/roomcategorylist" element={

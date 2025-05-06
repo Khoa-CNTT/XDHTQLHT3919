@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // Base URL của API
-const API_URL = process.env.REACT_APP_API_URL || 'https://localhost:7154/api/user';
+const API_URL =  "https://localhost:7154/api/user";
+// const API_URL = process.env.REACT_APP_API_URL || "https://localhost:7154/api/user";
+
 
 // Lấy tất cả người dùng
 const getAllUsers = async () => {
@@ -10,9 +12,20 @@ const getAllUsers = async () => {
 };
 
 // Thêm người dùng (dùng cho admin thêm mới hoặc đăng ký)
-const addUser = async (userData) => {
+// user.js
+
+
+const addUser = async (user) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, userData);
+    const response = await axios.post(
+      `${API_URL}/register`,
+      user,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
     return response.data;
   } catch (error) {
     console.error('Lỗi khi thêm người dùng:', error);
@@ -20,17 +33,26 @@ const addUser = async (userData) => {
   }
 };
 
+
 // Cập nhật thông tin người dùng (bao gồm cả thay đổi vai trò)
-const updateUser = async (userData) => {
+const updateUser = async (token, data) => {
+  console.log('Updating user with ID:', data.id); // Log ID để kiểm tra
   try {
-    // Gửi yêu cầu PUT để cập nhật người dùng, bao gồm thay đổi vai trò
-    const response = await axios.put(`${API_URL}/edit`, userData);
+    const response = await axios.put(`${API_URL}/edit`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        
+      },
+      
+    });
     return response.data;
   } catch (error) {
     console.error('Lỗi khi cập nhật người dùng:', error);
     throw error;
   }
 };
+
 
 // Xóa người dùng theo ID
 const deleteUser = async (id) => {
@@ -40,7 +62,6 @@ const deleteUser = async (id) => {
   }
 
   try {
-    // Gọi API xóa người dùng với đúng đường dẫn /api/user/{id}
     const response = await axios.delete(`${API_URL}/${id}`);
     return response.data;  // Trả về kết quả từ API
   } catch (error) {
@@ -81,21 +102,44 @@ const updateProfile = async (token, data) => {
 };
 
 // Đổi mật khẩu
-const changePassword = async (token, data, username) => {
+const changePassword = async (data) => {
   try {
-    const response = await axios.put(`${API_URL}/change-password`, data, {
+    const response = await axios.post(`${API_URL}/changepass`, data, {
       headers: {
-        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
-        Username: username,
       },
     });
-    return response.data;
+    return response.data; // vì backend trả message + status
   } catch (error) {
     console.error('Lỗi khi đổi mật khẩu:', error);
     throw error;
   }
 };
+const forgotPassword = async (email) => {
+  try {
+    const response = await axios.post(`${API_URL}/forgot-password`, { email });
+    return response.data; // Trả về dữ liệu phản hồi từ API
+  } catch (error) {
+    // Quản lý lỗi nếu API gọi thất bại
+    throw error; // Ném lỗi ra ngoài để xử lý tiếp
+  }
+};
+
+
+const resetPassword = async ({ token, newPassword, confirmPassword }) => {
+  try {
+    const response = await axios.post(`${API_URL}/reset-password?token=${token}`, {
+      newPassword,
+      confirmPassword,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi đổi mật khẩu:", error);
+    throw error;
+  }
+};
+
+
 
 const userApi = {
   getAllUsers,
@@ -105,6 +149,8 @@ const userApi = {
   getProfile,
   updateProfile,
   changePassword,
+  forgotPassword,
+  resetPassword,
 };
 
 export default userApi;

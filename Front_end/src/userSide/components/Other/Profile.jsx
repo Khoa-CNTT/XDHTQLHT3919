@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userApi from "../../../services/api/AuthAPI/user";
-import "../../../assets/Style/Auth-css/profile.css"
+import "../../../assets/Style/Auth-css/profile.css";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [updatedInfo, setUpdatedInfo] = useState({
     name: "",
-    phoneNumber: "",
+    phone: "",
     address: "",
     email: "",
     pathImg: "",
   });
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("id");
+  const userId = localStorage.getItem("idUser");
 
   useEffect(() => {
     if (!token) {
@@ -26,12 +27,12 @@ const Profile = () => {
 
     const userInfo = {
       id: userId,
-      email: localStorage.getItem("email"),
-      name: localStorage.getItem("name"),
-      phoneNumber: localStorage.getItem("phone"),
-      address: localStorage.getItem("address"),
-      pathImg: localStorage.getItem("pathImg"),
-      role: localStorage.getItem("role"),
+      email: localStorage.getItem("email") || "",
+      name: localStorage.getItem("username") || "",
+      phone: localStorage.getItem("phone") || "",
+      address: localStorage.getItem("address") || "",
+      pathImg: localStorage.getItem("img") || "",
+      role: localStorage.getItem("role") || "",
     };
 
     setUser(userInfo);
@@ -58,7 +59,7 @@ const Profile = () => {
       const res = await userApi.updateProfile(token, {
         id: userId,
         name: updatedInfo.name,
-        phone: updatedInfo.phoneNumber, // ✅ Sửa lại key cho đúng với backend
+        phone: updatedInfo.phone,
         address: updatedInfo.address,
         email: updatedInfo.email,
         pathImg: updatedInfo.pathImg,
@@ -68,9 +69,11 @@ const Profile = () => {
 
       // Cập nhật state & localStorage
       setUser(updatedUser);
-      Object.entries(updatedUser).forEach(([key, value]) =>
-        localStorage.setItem(key, value)
-      );
+      localStorage.setItem("username", updatedUser.name || "");
+      localStorage.setItem("phone", updatedUser.phone || "");
+      localStorage.setItem("email", updatedUser.email || "");
+      localStorage.setItem("address", updatedUser.address || "");
+      localStorage.setItem("img", updatedUser.pathImg || "");
 
       setIsEditing(false);
       alert("Cập nhật thành công!");
@@ -78,6 +81,10 @@ const Profile = () => {
       console.error("Lỗi khi cập nhật thông tin:", err.response?.data || err);
       alert("Đã xảy ra lỗi khi cập nhật thông tin.");
     }
+  };
+
+  const handleChangePasswordClick = () => {
+    navigate("/change");
   };
 
   if (errorMessage) return <div>{errorMessage}</div>;
@@ -92,7 +99,7 @@ const Profile = () => {
           <input name="name" value={updatedInfo.name} onChange={handleInputChange} />
 
           <label>Số điện thoại:</label>
-          <input name="phoneNumber" value={updatedInfo.phoneNumber} onChange={handleInputChange} />
+          <input name="phone" value={updatedInfo.phone} onChange={handleInputChange} />
 
           <label>Địa chỉ:</label>
           <input name="address" value={updatedInfo.address} onChange={handleInputChange} />
@@ -100,7 +107,7 @@ const Profile = () => {
           <label>Email:</label>
           <input name="email" value={updatedInfo.email} onChange={handleInputChange} />
 
-          <label>Link ảnh đại diện (PathImg):</label>
+          <label>Link ảnh đại diện:</label>
           <input name="pathImg" value={updatedInfo.pathImg} onChange={handleInputChange} />
 
           <button onClick={handleSaveChanges}>Lưu thay đổi</button>
@@ -114,10 +121,11 @@ const Profile = () => {
             className="profile-avatar"
           />
           <p><strong>Tên:</strong> {user.name}</p>
-          <p><strong>SĐT:</strong> {user.phoneNumber}</p>
+          <p><strong>SĐT:</strong> {user.phone}</p>
           <p><strong>Địa chỉ:</strong> {user.address}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <button onClick={handleEditClick}>Chỉnh sửa</button>
+          <button onClick={handleChangePasswordClick}>Đổi mật khẩu</button>
         </div>
       )}
     </div>

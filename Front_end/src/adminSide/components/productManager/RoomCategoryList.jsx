@@ -5,13 +5,14 @@ import {
   updateCategory,
   deleteCategory
 } from '../../../services/api/adminAPI/roomCategory';
-import "../../../assets/Style/admin-css/roomCategoryList.css"
-
+import "../../../assets/Style/admin-css/roomCategoryList.css";
+import Notification from '../../../userSide/components/Other/Notification';
 
 const RoomCategoryList = () => {
   const [roomCategories, setRoomCategories] = useState([]);
   const [form, setForm] = useState({ id: null, name: '', quantity: 0 });
   const [search, setSearch] = useState('');
+  const [notification, setNotification] = useState({ message: '', show: false, type: '' });
 
   const fetchRoomCategories = async () => {
     try {
@@ -20,6 +21,7 @@ const RoomCategoryList = () => {
         setRoomCategories(res.data);
       }
     } catch (error) {
+      setNotification({ message: 'Lỗi khi lấy danh mục', show: true, type: 'error' });
       console.error('Lỗi khi lấy danh mục:', error);
     }
   };
@@ -30,7 +32,7 @@ const RoomCategoryList = () => {
 
   const handleAddOrUpdate = async () => {
     if (!form.name) {
-      alert('Vui lòng nhập tên danh mục');
+      setNotification({ message: 'Vui lòng nhập tên danh mục', show: true, type: 'error' });
       return;
     }
 
@@ -48,8 +50,9 @@ const RoomCategoryList = () => {
       }
       await fetchRoomCategories();
       setForm({ id: null, name: '', quantity: 0 });
+      setNotification({ message: form.id ? 'Cập nhật thành công!' : 'Thêm mới thành công!', show: true, type: 'success' });
     } catch (error) {
-      alert('Lỗi khi thêm/sửa danh mục!');
+      setNotification({ message: 'Lỗi khi thêm/sửa danh mục!', show: true, type: 'error' });
       console.error(error);
     }
   };
@@ -67,8 +70,9 @@ const RoomCategoryList = () => {
       try {
         await deleteCategory(id);
         await fetchRoomCategories();
+        setNotification({ message: 'Xóa thành công!', show: true, type: 'success' });
       } catch (error) {
-        alert('Lỗi khi xóa!');
+        setNotification({ message: 'Lỗi khi xóa!', show: true, type: 'error' });
         console.error(error);
       }
     }
@@ -80,7 +84,13 @@ const RoomCategoryList = () => {
 
   return (
     <div className="main-content">
-      <div className="header">
+      <Notification
+        message={notification.message}
+        show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
+      />
+
+      <div className="headerql">
         <h1>Danh mục phòng</h1>
         <div className="actions">
           <input

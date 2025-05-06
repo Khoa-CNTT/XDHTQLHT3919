@@ -5,37 +5,22 @@ const BASE_URL = "https://localhost:7154/api/user";
 // ========== 1. Đăng nhập ========== 
 export const login = async (credentials) => {
   try {
-    const response = await axios.post(`${BASE_URL}/login`, credentials);
+    const response = await axios.post(`${BASE_URL}/login`, {
+      EmailOrPhone: credentials.userLogin, // phải viết hoa đúng như trong BE
+      Password: credentials.password,
+    });
 
     if (response.status === 200 && response.data.token) {
-      const { token, user } = response.data;
-
-      // Lưu token và thông tin người dùng vào localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("id", user.id);
-      localStorage.setItem("name", user.name || "");
-      localStorage.setItem("username", user.username || "");
-      localStorage.setItem("email", user.email || "");
-      localStorage.setItem("phone", user.phoneNumber || "");
-      localStorage.setItem("address", user.address || "");
-      localStorage.setItem("role", user.role || "");
-      localStorage.setItem("pathImg", user.pathImg || "");
-
       return response.data;
     } else {
       throw new Error("Đăng nhập thất bại. Không nhận được token.");
     }
   } catch (error) {
-    if (error.response) {
-      console.error("Lỗi đăng nhập từ API:", error.response.data);
-    } else if (error.request) {
-      console.error("Không nhận được phản hồi từ API:", error.request);
-    } else {
-      console.error("Lỗi xảy ra khi gửi yêu cầu đăng nhập:", error.message);
-    }
+    console.error("Lỗi đăng nhập:", error.response?.data || error.message);
     throw error;
   }
 };
+
 
 // ========== 2. Cập nhật thông tin người dùng ========== 
 export const updateProfile = async (updatedData) => {

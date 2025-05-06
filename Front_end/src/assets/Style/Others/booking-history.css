@@ -1,0 +1,114 @@
+.booking-history-container {
+    font-family: 'Arial', sans-serif;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .booking-history-container h2 {
+    font-size: 2rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .booking-item {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .booking-item h3 {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .booking-item p {
+    font-size: 1rem;
+    color: #666;
+    margin: 5px 0;
+  }
+  
+  .booking-item table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .booking-item table th, .booking-item table td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .booking-item table th {
+    background-color: #4caf50;
+    color: white;
+    font-size: 1.1rem;
+  }
+  
+  .booking-item table td {
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  .booking-item table tr:nth-child(even) td {
+    background-color: #f1f1f1;
+  }
+  
+  .booking-item table tr:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .booking-item .total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #4caf50;
+    margin-top: 15px;
+  }
+  
+  .booking-item .status {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #ffeb3b;
+    color: #333;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .booking-item .status.confirmed {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .booking-item .status.pending {
+    background-color: #ff9800;
+    color: white;
+  }
+  
+  .booking-item .status.unconfirmed {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .booking-history-container {
+      padding: 15px;
+    }
+  
+    .booking-item table th, .booking-item table td {
+      padding: 10px;
+    }
+  
+    .booking-item h3 {
+      font-size: 1.4rem;
+    }
+  }
+  
