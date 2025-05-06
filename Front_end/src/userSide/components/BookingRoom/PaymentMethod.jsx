@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../../assets/Style/Others/paymentMethod.css";
+import { addBooking } from '../../../services/api/userAPI/bookingAPI';
 
 const PaymentMethod = () => {
   const [selectedMethod, setSelectedMethod] = useState("");

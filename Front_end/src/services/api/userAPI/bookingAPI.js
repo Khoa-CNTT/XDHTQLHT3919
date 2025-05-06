@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/booking'; // Địa chỉ API của backend
+const API_URL = 'https://localhost:7154/api/booking';
 
-// Hàm gọi API để thêm đơn đặt phòng
+// Tạo đơn đặt phòng (BookingModel)
 export const addBooking = async (bookingData) => {
   try {
     const response = await axios.post(`${API_URL}/add`, bookingData, {
@@ -11,14 +11,14 @@ export const addBooking = async (bookingData) => {
       },
     });
 
-    return response.data; // Trả về dữ liệu sau khi đặt phòng thành công
+    return response.data; // Trả về object chứa id Booking
   } catch (error) {
-    console.error("Lỗi khi thêm đơn đặt phòng:", error);
-    throw error; // Ném lỗi để xử lý ở component
+    console.error("Lỗi khi thêm đơn đặt phòng:", error.response?.data || error.message);
+    throw error;
   }
 };
 
-// Bạn có thể tạo thêm các API khác nếu cần, ví dụ: lấy tất cả đơn đặt phòng của người dùng.
+// Lấy tất cả đơn đặt phòng
 export const getAllBookings = async () => {
   try {
     const response = await axios.get(`${API_URL}/all`);
@@ -29,7 +29,7 @@ export const getAllBookings = async () => {
   }
 };
 
-// API lấy đơn đặt phòng theo ID
+// Lấy đơn đặt phòng theo ID
 export const getBookingById = async (id) => {
   try {
     const response = await axios.get(`${API_URL}/${id}`);
@@ -40,7 +40,7 @@ export const getBookingById = async (id) => {
   }
 };
 
-// API lấy tất cả đơn đặt phòng của người dùng theo ID
+// Lấy các đơn đặt phòng theo ID người dùng
 export const getBookingsByUserId = async (userId) => {
   try {
     const response = await axios.get(`${API_URL}/user/${userId}`);

@@ -1,6 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+
 const Footer = () => {
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://app.preny.ai/embed-global.js";
+        script.async = true;
+        script.defer = true;
+        script.setAttribute("data-button-style", "width:200px;height:200px");
+        script.setAttribute("data-preny-bot-id", "68183e57a705cfd56ee4b0a7");
+        document.body.appendChild(script);
+
+        // Cleanup script when component unmounts (optional)
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+
     return (
         <footer className="footer">
             <div className="container2">
