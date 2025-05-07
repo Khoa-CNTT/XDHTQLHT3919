@@ -18,8 +18,10 @@ const RoomList = () => {
     price: '',
     idCategory: '',
     pathImg: '',
-    detail: ''
+    detail: '',
+    status: ''
   });
+
   const [search, setSearch] = useState('');
 
   const [notification, setNotification] = useState({ show: false, message: "", type: "info" });
@@ -68,6 +70,7 @@ const RoomList = () => {
       idCategory: form.idCategory,
       pathImg: form.pathImg,
       detail: form.detail,
+      status: form.status
     };
 
     try {
@@ -94,7 +97,8 @@ const RoomList = () => {
       price: room.price,
       idCategory: room.idCategory,
       pathImg: room.pathImg,
-      detail: room.detail || ''
+      detail: room.detail || '',
+      status: room.status || ''
     });
   };
 
@@ -109,6 +113,11 @@ const RoomList = () => {
         showNotification('Không thể xóa phòng', "error");
       }
     }
+  };
+
+  // Reset form to initial state
+  const handleCancel = () => {
+    setForm({ id: null, name: '', price: '', idCategory: '', pathImg: '', detail: '' });
   };
 
   const filteredRooms = Array.isArray(rooms)
@@ -129,6 +138,12 @@ const RoomList = () => {
           <button onClick={handleAddOrUpdate}>
             {form.id ? 'CẬP NHẬT' : 'THÊM PHÒNG'}
           </button>
+          {/* Hiển thị nút hủy chỉ khi đang chỉnh sửa phòng */}
+          {form.id && (
+            <button onClick={handleCancel} className="cancel-button">
+              HỦY
+            </button>
+          )}
         </div>
       </div>
 
@@ -162,6 +177,16 @@ const RoomList = () => {
           value={form.pathImg}
           onChange={(e) => setForm({ ...form, pathImg: e.target.value })}
         />
+        <select
+          value={form.status}
+          onChange={(e) => setForm({ ...form, status: e.target.value })}
+        >
+          <option value="">-- Trạng thái phòng --</option>
+          <option value="Trống">Trống</option>
+          <option value="Đã đặt">Đã đặt</option>
+          <option value="Đang bảo trì">Đang bảo trì</option>
+        </select>
+
         <textarea
           placeholder="Mô tả phòng"
           value={form.detail}
@@ -177,6 +202,7 @@ const RoomList = () => {
             <th>Loại</th>
             <th>Giá</th>
             <th>Chi tiết</th>
+            <th>Trạng thái</th>
             <th>Hành động</th>
           </tr>
         </thead>
@@ -188,6 +214,7 @@ const RoomList = () => {
               <td>{room.categoryName}</td>
               <td>{(+room.price).toLocaleString()} đ</td>
               <td>{room.detail}</td>
+              <td>{room.status || "Chưa cập nhật"}</td>
               <td>
                 <button onClick={() => handleEdit(room)}>CHỈNH SỬA</button>
                 <button onClick={() => handleDelete(room.id)}>XÓA</button>

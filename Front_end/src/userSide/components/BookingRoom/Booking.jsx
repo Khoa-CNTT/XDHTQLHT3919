@@ -4,7 +4,7 @@ import { addBooking } from '../../../services/api/userAPI/bookingAPI';
 import { addBookingDetail } from '../../../services/api/userAPI/bookingDetail';
 import { fetchRoomDetails } from '../../../services/api/userAPI/room';  // Import đúng API
 
-const BookingBox = ({
+const Booking = ({
   price,
   id: roomId,
   checkInDate,
@@ -95,7 +95,7 @@ const BookingBox = ({
         }
       });
     } catch (error) {
-      console.error('Lỗi khi đặt phòng:', error);
+console.error('Lỗi khi đặt phòng:', error);
       alert('Đặt phòng thất bại. Vui lòng thử lại.');
     }
   };
@@ -155,4 +155,4 @@ const BookingBox = ({
   );
 };
 
-export default BookingBox;
+export default Booking;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchRoomsData } from '../../../services/api/userAPI/room';
+import '../../../assets/Style/home-css/Room.css'
 
 const Rooms = () => {
   const [roomsData, setRoomsData] = useState([]);

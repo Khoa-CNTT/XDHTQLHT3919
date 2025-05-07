@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userApi from "../../../services/api/AuthAPI/user";
 import "../../../assets/Style/Auth-css/profile.css";
+import Notification from "./Notification";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -14,6 +15,10 @@ const Profile = () => {
     pathImg: "",
   });
   const [errorMessage, setErrorMessage] = useState(null);
+
+  // Notification state
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [showNotification, setShowNotification] = useState(false);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -31,7 +36,7 @@ const Profile = () => {
       name: localStorage.getItem("username") || "",
       phone: localStorage.getItem("phone") || "",
       address: localStorage.getItem("address") || "",
-      pathImg: localStorage.getItem("img") || "",
+      pathImg: "",
       role: localStorage.getItem("role") || "",
     };
 
@@ -76,10 +81,12 @@ const Profile = () => {
       localStorage.setItem("img", updatedUser.pathImg || "");
 
       setIsEditing(false);
-      alert("Cập nhật thành công!");
+      setNotificationMessage("Cập nhật thành công!");
+      setShowNotification(true);
     } catch (err) {
       console.error("Lỗi khi cập nhật thông tin:", err.response?.data || err);
-      alert("Đã xảy ra lỗi khi cập nhật thông tin.");
+      setNotificationMessage("Đã xảy ra lỗi khi cập nhật thông tin.");
+      setShowNotification(true);
     }
   };
 
@@ -92,6 +99,12 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
+      <Notification
+        message={notificationMessage}
+        show={showNotification}
+        onClose={() => setShowNotification(false)}
+      />
+
       <h2>Thông tin tài khoản</h2>
       {isEditing ? (
         <div>
@@ -110,8 +123,8 @@ const Profile = () => {
           <label>Link ảnh đại diện:</label>
           <input name="pathImg" value={updatedInfo.pathImg} onChange={handleInputChange} />
 
-          <button onClick={handleSaveChanges}>Lưu thay đổi</button>
-          <button onClick={handleCancelEdit}>Hủy</button>
+          <button className="btn-profile" onClick={handleSaveChanges}>Lưu thay đổi</button>
+          <button className="btn-profile" onClick={handleCancelEdit}>Hủy</button>
         </div>
       ) : (
         <div>
@@ -124,8 +137,8 @@ const Profile = () => {
           <p><strong>SĐT:</strong> {user.phone}</p>
           <p><strong>Địa chỉ:</strong> {user.address}</p>
           <p><strong>Email:</strong> {user.email}</p>
-          <button onClick={handleEditClick}>Chỉnh sửa</button>
-          <button onClick={handleChangePasswordClick}>Đổi mật khẩu</button>
+          <button className="btn-profile" onClick={handleEditClick}>Chỉnh sửa</button>
+          <button className="btn-profile" onClick={handleChangePasswordClick}>Đổi mật khẩu</button>
         </div>
       )}
     </div>

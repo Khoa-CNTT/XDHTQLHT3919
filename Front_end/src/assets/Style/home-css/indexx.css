@@ -407,7 +407,7 @@ h1, h2, h3, h4 {
 
 /* Hero Section */
 .hero {
-    height: 100vh;
+    height: 90vh;
     background-size: cover;
     background-position: center;
     display: flex;

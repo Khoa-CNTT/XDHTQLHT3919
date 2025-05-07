@@ -57,11 +57,11 @@ const RoomCategoryList = () => {
     }
   };
 
-  const handleEdit = (room) => {
+  const handleEdit = (category) => {
     setForm({
-      id: room.id,
-      name: room.name,
-      quantity: room.quantity ?? 0
+      id: category.id,
+      name: category.name,
+      quantity: category.quantity ?? 0
     });
   };
 
@@ -76,6 +76,11 @@ const RoomCategoryList = () => {
         console.error(error);
       }
     }
+  };
+
+  // Reset form to initial state
+  const handleCancel = () => {
+    setForm({ id: null, name: '', quantity: 0 });
   };
 
   const filteredRoomCategories = roomCategories.filter(r =>
@@ -105,6 +110,12 @@ const RoomCategoryList = () => {
           >
             {form.id ? 'Cập nhật' : 'Thêm'}
           </button>
+          {/* Hiển thị nút hủy chỉ khi đang chỉnh sửa danh mục */}
+          {form.id && (
+            <button onClick={handleCancel} className="cancel-btn">
+              HỦY
+            </button>
+          )}
         </div>
       </div>
 

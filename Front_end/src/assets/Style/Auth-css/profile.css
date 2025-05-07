@@ -57,7 +57,7 @@
   border-color: #007bff;
 }
 
-.profile-container button {
+.profile-container .btn-profile {
   padding: 10px 16px;
   margin: 12px 8px 0 0;
   border: none;
