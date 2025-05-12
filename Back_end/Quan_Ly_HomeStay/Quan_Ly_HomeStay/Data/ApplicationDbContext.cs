@@ -12,6 +12,10 @@ namespace Quan_Ly_HomeStay.Data
 
         // Đăng ký DbSet cho tất cả model
         public DbSet<User> Users { get; set; }
+   
+        public DbSet<AmenityModel> Amenities { get; set; }
+        public DbSet<Image> Images { get; set; }
+
         public DbSet<Role> Roles { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Category> Categories { get; set; }

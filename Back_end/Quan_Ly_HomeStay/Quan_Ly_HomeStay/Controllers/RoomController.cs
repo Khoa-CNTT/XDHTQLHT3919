@@ -21,7 +21,8 @@ namespace Quan_Ly_HomeStay.Controllers
         public async Task<IActionResult> GetAllRooms()
         {
             var rooms = await _db.Rooms
-                .Include(r => r.IdCategoryNavigation)  // Đảm bảo Category được include
+                .Include(r => r.IdCategoryNavigation)
+                .Include(r => r.Amenities) // Thêm dòng này để lấy tiện nghi
                 .OrderByDescending(r => r.CreateAt)
                 .Select(room => new
                 {
@@ -35,8 +36,8 @@ namespace Quan_Ly_HomeStay.Controllers
                     room.CreateAt,
                     room.IdUser,
                     room.IdCategory,
-                    // Lấy tên loại phòng từ IdCategoryNavigation
-                    CategoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : "Chưa xác định"
+                    CategoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : "Chưa xác định",
+                    Amenities = room.Amenities.Select(a => new { a.Id, a.Name })
                 })
                 .ToListAsync();
 
@@ -49,12 +50,15 @@ namespace Quan_Ly_HomeStay.Controllers
         }
 
 
+
+
         // GET: api/room/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoomById(Guid id)
         {
             var room = await _db.Rooms
-                .Include(r => r.IdCategoryNavigation)  // Đảm bảo Category được include
+                .Include(r => r.IdCategoryNavigation)
+                .Include(r => r.Amenities)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (room == null)
@@ -76,85 +80,106 @@ namespace Quan_Ly_HomeStay.Controllers
                     room.Status,
                     room.Detail,
                     room.CreateAt,
-                    // Trả về tên loại phòng từ IdCategoryNavigation
-                    CategoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : "Chưa xác định"
+                    CategoryName = room.IdCategoryNavigation != null ? room.IdCategoryNavigation.Name : "Chưa xác định",
+                    Amenities = room.Amenities.Select(a => new { a.Id, a.Name }) // Trả về danh sách tiện nghi
                 }
             });
         }
 
 
 
+
+
         // POST: api/room/add
-       
+
         [HttpPost("add")]
-        public async Task<ActionResult> AddRoom([FromBody] Room room)
+        public async Task<ActionResult> AddRoom([FromBody] RoomDto roomDto)
         {
-            if (string.IsNullOrEmpty(room.Name) || room.Price == null || string.IsNullOrEmpty(room.PathImg))
+            if (string.IsNullOrEmpty(roomDto.Name) || roomDto.Price == 0 || string.IsNullOrEmpty(roomDto.PathImg))
             {
-                return BadRequest(new
-                {
-                    message = "Vui lòng điền đầy đủ thông tin bắt buộc.",
-                    status = 400
-                });
+                return BadRequest(new { message = "Vui lòng điền đầy đủ thông tin.", status = 400 });
             }
 
-            if (room.Id == Guid.Empty)
+            var room = new Room
             {
-                room.Id = Guid.NewGuid();
-            }
+                Id = roomDto.Id == Guid.Empty ? Guid.NewGuid() : roomDto.Id,
+                Name = roomDto.Name,
+                Detail = roomDto.Detail,
+                Note = roomDto.Note,
+                Price = roomDto.Price,
+                PathImg = roomDto.PathImg,
+                Status = "Còn trống",
+                CreateAt = DateTime.Now,
+                IdUser = roomDto.IdUser,
+                IdCategory = roomDto.IdCategory
+            };
 
-            room.CreateAt = DateTime.Now;
-            room.Status = "Còn trống"; 
+            var amenities = await _db.Amenities.Where(a => roomDto.AmenityIds.Contains(a.Id)).ToListAsync();
+            room.Amenities = amenities;
 
             await _db.Rooms.AddAsync(room);
             await _db.SaveChangesAsync();
 
-            return Ok(new
-            {
-                message = "Tạo phòng thành công!",
-                status = 200,
-                data = room
-            });
+            return Ok(new { message = "Tạo phòng thành công!", status = 200, data = room });
         }
+
 
         // PUT: api/room/edit
         [HttpPut("edit")]
-        public async Task<IActionResult> EditRoom([FromBody] Room room)
+        public async Task<IActionResult> EditRoom([FromBody] RoomDto roomDto)
         {
-            var existingRoom = await _db.Rooms.FindAsync(room.Id);
-            if (existingRoom == null)
+            var room = await _db.Rooms.Include(r => r.Amenities).FirstOrDefaultAsync(r => r.Id == roomDto.Id);
+            if (room == null)
             {
                 return NotFound(new { message = "Phòng không tồn tại!", status = 404 });
             }
 
-            _db.Entry(existingRoom).CurrentValues.SetValues(room);
+            room.Name = roomDto.Name;
+            room.Detail = roomDto.Detail;
+            room.Note = roomDto.Note;
+            room.Price = roomDto.Price;
+            room.PathImg = roomDto.PathImg;
+            room.Status = roomDto.Status;
+            room.IdUser = roomDto.IdUser;
+            room.IdCategory = roomDto.IdCategory;
+
+            // Cập nhật danh sách tiện nghi
+            room.Amenities.Clear();
+            var amenities = await _db.Amenities.Where(a => roomDto.AmenityIds.Contains(a.Id)).ToListAsync();
+            room.Amenities = amenities;
+
             await _db.SaveChangesAsync();
 
             return Ok(new { message = "Sửa phòng thành công!", status = 200 });
         }
 
+
         // DELETE: api/room/delete/{id}
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(Guid id)
         {
             var room = await _db.Rooms.FindAsync(id);
             if (room == null)
             {
-                return NotFound(new { message = "Không tìm thấy phòng!", status = 404 });
+                return NotFound();
             }
 
-            try
+            var hasBookings = _db.BookingDetails.Any(b => b.IdRoom == id);
+            if (hasBookings)
             {
-                _db.Rooms.Remove(room);
-                await _db.SaveChangesAsync();
+                return BadRequest(new
+                {
+                    message = "Không thể xóa phòng này vì đã có đơn đặt phòng liên quan.",
+                    status = 400
+                });
+            }
 
-                return Ok(new { message = "Xóa phòng thành công!", status = 200 });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = "Xảy ra lỗi khi xóa!", status = 400, error = ex.Message });
-            }
+            _db.Rooms.Remove(room);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Xóa phòng thành công." });
         }
+
         [HttpPost("upload")]
         public async Task<ActionResult> UploadImage([FromForm] IFormFile file)
         {
@@ -190,4 +215,18 @@ namespace Quan_Ly_HomeStay.Controllers
             }
         }
     }
+    public class RoomDto
+    {
+        public Guid Id { get; set; }
+        public string? Name { get; set; }
+        public string? Detail { get; set; }
+        public string? Note { get; set; }
+        public decimal Price { get; set; }
+        public string? PathImg { get; set; }
+        public string? Status { get; set; }
+        public Guid? IdUser { get; set; }
+        public Guid? IdCategory { get; set; }
+        public List<Guid> AmenityIds { get; set; } = new();
+    }
+
 }
