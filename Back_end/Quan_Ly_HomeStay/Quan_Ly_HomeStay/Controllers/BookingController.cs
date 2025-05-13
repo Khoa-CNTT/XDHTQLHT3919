@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Quan_Ly_HomeStay.Data;
 using Quan_Ly_HomeStay.Models;
 
-namespace backend.Controllers
+namespace Quan_Ly_HomeStay.Controllers
 {
     [Route("api/booking")]
     [ApiController]
@@ -25,6 +25,8 @@ namespace backend.Controllers
                 var _data = await (from booking in db.Bookings
                                    join user in db.Users on booking.IdUser equals user.Id into users
                                    from user in users.DefaultIfEmpty()
+                                   join detail in db.BookingDetails on booking.IdBooking equals detail.IdBooking into details
+                                   from detail in details.DefaultIfEmpty()
                                    orderby booking.CreateAt descending
                                    select new
                                    {
@@ -35,8 +37,9 @@ namespace backend.Controllers
                                        booking.Total,
                                        booking.PaymentMethod,
                                        booking.CreateAt,
-                                       user.Name
                                    }).ToListAsync();
+
+
 
                 if (_data == null || !_data.Any())
                 {
@@ -185,5 +188,56 @@ namespace backend.Controllers
                 data = _data
             });
         }
+        /*  [HttpGet("details/{idBooking}")]
+          public async Task<ActionResult> GetBookingDetailsByBookingId(Guid idBooking)
+          {
+              try
+              {
+                  var booking = await db.Bookings
+                      .Include(b => b.BookingDetails)
+                      .ThenInclude(d => d.IdRoom) // Nếu có liên kết đến Room (phòng)
+                      .FirstOrDefaultAsync(b => b.IdBooking == idBooking);
+
+                  if (booking == null)
+                  {
+                      return NotFound(new
+                      {
+                          message = "Không tìm thấy đơn đặt phòng!",
+                          status = 404
+                      });
+                  }
+
+                  var detailList = booking.BookingDetails.Select(d => new
+                  {
+                      d.Id,
+                      d.IdBooking,
+                      d.IdRoom,
+                      d.CheckInDate,
+                      d.CheckOutDate,
+                      d.TotalPrice,
+                      d.Note,
+                      d.CreateAt,
+                      RoomName = d.IdRoom != null ? d.IdRoom. : "Không rõ"
+                  }).ToList();
+
+                  return Ok(new
+                  {
+                      message = "Lấy chi tiết đơn đặt phòng thành công!",
+                      status = 200,
+                      count = detailList.Count,
+                      data = detailList
+                  });
+              }
+              catch (Exception ex)
+              {
+                  return StatusCode(500, new
+                  {
+                      message = "Đã xảy ra lỗi khi lấy dữ liệu!",
+                      status = 500,
+                      error = ex.Message
+                  });
+              }
+          }*/
+
     }
 }

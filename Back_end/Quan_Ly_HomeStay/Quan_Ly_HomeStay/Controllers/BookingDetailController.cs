@@ -31,6 +31,7 @@ namespace Quan_Ly_HomeStay.Controllers
                     x.TotalPrice,
                     x.CreateAt,
                     RoomName = x.IdRoomNavigation.Name,  // Lấy tên phòng từ Room
+                    RoomId = x.IdRoomNavigation != null ? x.IdRoomNavigation.Id : Guid.Empty,
                     RoomPrice = x.IdRoomNavigation.Price,  // Lấy giá phòng (nếu cần)
                     RoomStatus = x.IdRoomNavigation.Status,  // Lấy trạng thái phòng (nếu cần)
                     StatusBooking = x.IdBookingNavigation.Status,

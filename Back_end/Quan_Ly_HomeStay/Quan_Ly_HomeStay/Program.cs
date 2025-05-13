@@ -5,6 +5,10 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Quan_Ly_HomeStay.Data;
 using Swashbuckle.AspNetCore.Filters;
+using Quan_Ly_HomeStay.Services;
+using Quan_Ly_HomeStay.Settings;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +29,18 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddAuthorization();
+
+// Đăng ký các dịch vụ email với tên rõ ràng để tránh xung đột
+builder.Services.AddTransient<EmailService>(); // Dịch vụ chính cho thanh toán
+builder.Services.AddTransient<EmailService>();
+builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
+builder.Services.AddScoped<IVnpayService, VnpayService>();
+
+
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
+// Đăng ký VnpayService
+builder.Services.AddScoped<VnpayService>();
 
 // Cấu hình JSON options để bỏ qua vòng lặp trong các liên kết
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -56,7 +72,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000") // Cho phép React truy cập
+            policy.WithOrigins("http://localhost:3000")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -78,13 +94,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();  // Đảm bảo có middleware xác thực JWT
-app.UseAuthorization();   // Đảm bảo có middleware kiểm tra quyền
+app.UseAuthentication();
+app.UseAuthorization();
 
-// Cấu hình CORS
 app.UseCors("AllowReactApp");
-
-// Bản đồ các controller
 app.MapControllers();
 
 app.Run();
