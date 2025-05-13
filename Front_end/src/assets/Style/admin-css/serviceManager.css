@@ -1,0 +1,142 @@
+/* Container for the service manager */
+.service-manager-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h2 {
+    text-align: center;
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+/* Messages */
+.success-message {
+    color: #28a745;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.error-message {
+    color: #dc3545;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Form styles */
+.add-service-form, .edit-service-form {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.add-service-form input, .edit-service-form input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+}
+
+.add-service-form button, .edit-service-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.add-service-form button:hover, .edit-service-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Service list styles */
+.service-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.service-list li {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: box-shadow 0.3s;
+}
+
+.service-list li:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.service-list h4 {
+    margin: 0;
+    color: #333;
+}
+
+.service-list p {
+    margin: 5px 0;
+    color: #666;
+}
+
+/* Button styles for service actions */
+.service-list button {
+    margin-top: 10px;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.service-list button:first-child {
+    background-color: #ffc107;
+    color: #fff;
+}
+
+.service-list button:first-child:hover {
+    background-color: #e0a800;
+}
+
+.service-list button:last-child {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.service-list button:last-child:hover {
+    background-color: #c82333;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+    .add-service-form input, .edit-service-form input {
+        width: 100%;
+    }
+
+    .add-service-form button, .edit-service-form button {
+        width: 100%;
+    }
+}

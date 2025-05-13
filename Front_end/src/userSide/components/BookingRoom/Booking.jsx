@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addBooking } from '../../../services/api/userAPI/bookingAPI'; 
+import { addBooking } from '../../../services/api/userAPI/bookingAPI';
 import { addBookingDetail } from '../../../services/api/userAPI/bookingDetail';
-import { fetchRoomDetails } from '../../../services/api/userAPI/room';  // Import đúng API
+import { fetchRoomDetails } from '../../../services/api/userAPI/room';
+import Notification from '../../../userSide/components/Other/Notification';
 
 const Booking = ({
   price,
@@ -18,9 +19,10 @@ const Booking = ({
   const navigate = useNavigate();
   const [room, setRoom] = useState(null);  // State để lưu thông tin phòng
   const [isRoomAvailable, setIsRoomAvailable] = useState(true); // Biến kiểm tra trạng thái phòng
+  const [showNotification, setShowNotification] = useState(false);  // Trạng thái hiển thị thông báo
+  const [notificationMessage, setNotificationMessage] = useState("");  // Nội dung thông báo
 
-  // ✅ Lấy userId từ localStorage
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("idUser");
 
   const formatPrice = (value) =>
     typeof value === 'number' ? value.toLocaleString() + " VND" : "Đang cập nhật";
@@ -33,7 +35,7 @@ const Booking = ({
         setRoom(roomData);  // Lưu thông tin phòng vào state
 
         // Kiểm tra nếu phòng không còn trống
-        if (roomData.data.status !== 'trống') {
+        if (roomData.data.status !== 'Còn trống') {
           setIsRoomAvailable(false);  // Phòng không còn trống, set isRoomAvailable = false
         } else {
           setIsRoomAvailable(true);  // Phòng còn trống
@@ -49,13 +51,20 @@ const Booking = ({
 
   const handleBooking = async () => {
     if (!userId) {
-      alert("Vui lòng đăng nhập trước khi đặt phòng.");
-      navigate("/login");
+      setNotificationMessage("Vui lòng đăng nhập trước khi đặt phòng.");
+      setShowNotification(true);
+
+      // Chờ 6 giây rồi chuyển hướng tới trang login
+      setTimeout(() => {
+        navigate("/login");
+      }, 6000); // 6 giây = 6000ms
+
       return;
     }
 
     if (!isRoomAvailable) {
-      alert("Phòng này đã được đặt hoặc không còn trống.");
+      setNotificationMessage("Phòng này đã được đặt hoặc không còn trống.");
+      setShowNotification(true);
       return;
     }
 
@@ -69,7 +78,7 @@ const Booking = ({
       };
 
       const bookingRes = await addBooking(bookingPayload);
-      const bookingId = bookingRes.id; // hoặc bookingRes.data.id tuỳ theo backend
+      const bookingId = bookingRes.id; // hoặc bookingRes.data.id tùy theo backend
 
       // 2. Gọi API tạo chi tiết BookingDetail
       const detailPayload = {
@@ -95,13 +104,17 @@ const Booking = ({
         }
       });
     } catch (error) {
-console.error('Lỗi khi đặt phòng:', error);
-      alert('Đặt phòng thất bại. Vui lòng thử lại.');
+      console.error('Lỗi khi đặt phòng:', error);
+      setNotificationMessage('Đặt phòng thất bại. Vui lòng thử lại.');
+      setShowNotification(true);
     }
   };
 
+
   return (
     <div className="booking-box">
+      <Notification message={notificationMessage} show={showNotification} onClose={() => setShowNotification(false)} />
+
       <div className="price">{formatPrice(price)} / đêm</div>
 
       <div className="date-selection">

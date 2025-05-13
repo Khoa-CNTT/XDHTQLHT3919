@@ -2,89 +2,67 @@ import axios from 'axios';
 
 const API_URL = 'https://localhost:7154/api/review';
 
-// Hàm lấy cấu hình Authorization từ localStorage
-const getAuthConfig = () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('Token không hợp lệ');
-  }
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-};
+const token = localStorage.getItem('token');
+console.log(token)
+// Tạo một instance của Axios có sẵn header Authorization nếu có token
+const axiosAuth = axios.create({
+  baseURL: API_URL,
+  headers: token
+    ? { Authorization: `Bearer ${token}` }
+    : {},
+});
 
-// Lấy tất cả các đánh giá
+// Lấy tất cả đánh giá (không cần token)
 export const getAllReviews = async () => {
   try {
-    const res = await axios.get(API_URL, getAuthConfig());
-    return res.data;
+    const response = await axios.get(`${API_URL}/reviews`); // Đường dẫn này đã chính xác rồi
+    return response.data;
   } catch (error) {
-    console.error('Error fetching reviews:', error);
-    if (error.response && error.response.data) {
-      console.error('Error details:', error.response.data);
-    }
+    console.error("Lỗi khi lấy danh sách đánh giá:", error);
     throw error;
   }
 };
 
-// Tạo đánh giá mới
+// Tạo mới một đánh giá (cần token)
 export const createReview = async (reviewData) => {
-  console.log("Review Data Sent:", reviewData);  // Kiểm tra dữ liệu gửi đi
   try {
-    const res = await axios.post(API_URL, reviewData, getAuthConfig());
-    return res.data;
+    const response = await axiosAuth.post('/reviews', reviewData); // Đúng với BE
+    return response.data;
   } catch (error) {
-    console.error('Error creating review:', error);
-    if (error.response && error.response.data) {
-      console.error('Error details:', error.response.data.errors || error.response.data);
-    }
+    console.error("Lỗi khi tạo đánh giá:", error);
     throw error;
   }
 };
 
-// Trả lời đánh giá
+// Trả lời một đánh giá (cần token)
 export const replyToReview = async (reviewId, replyData) => {
   try {
-    const res = await axios.post(`${API_URL}/reply/${reviewId}`, replyData, getAuthConfig());
-    return res.data;
+    const response = await axiosAuth.post(`/reply/${reviewId}`, replyData); // Chỉnh lại đường dẫn cho đúng với BE
+    return response.data;
   } catch (error) {
-    console.error('Error replying to review:', error);
-    if (error.response && error.response.data) {
-      console.error('Error details:', error.response.data.errors || error.response.data);
-    }
+    console.error("Lỗi khi trả lời đánh giá:", error);
     throw error;
   }
 };
 
-// Cập nhật đánh giá
+// Cập nhật một đánh giá (cần token)
 export const updateReview = async (reviewId, reviewData) => {
   try {
-    const res = await axios.put(`${API_URL}/${reviewId}`, reviewData, getAuthConfig());
-    return res.data;
+    const response = await axiosAuth.put(`/${reviewId}`, reviewData); // Đường dẫn đã chỉnh sửa đúng với BE
+    return response.data;
   } catch (error) {
-    console.error('Error updating review:', error);
-    if (error.response) {
-      if (error.response.status === 400) {
-        console.error('Bad Request: Invalid data or missing parameters.');
-        console.error('Error details:', error.response.data.errors || error.response.data);
-      }
-    }
+    console.error("Lỗi khi cập nhật đánh giá:", error);
     throw error;
   }
 };
 
-// Xóa đánh giá
+// Xóa một đánh giá (cần token)
 export const deleteReview = async (reviewId) => {
   try {
-    const res = await axios.delete(`${API_URL}/${reviewId}`, getAuthConfig());
-    return res.data;
+    const response = await axiosAuth.delete(`/${reviewId}`); // Đường dẫn đã chỉnh sửa đúng với BE
+    return response.data;
   } catch (error) {
-    console.error('Error deleting review:', error);
-    if (error.response && error.response.data) {
-      console.error('Error details:', error.response.data.errors || error.response.data);
-    }
+    console.error('Lỗi khi xóa:', error.response ? error.response.data : error);
     throw error;
   }
 };

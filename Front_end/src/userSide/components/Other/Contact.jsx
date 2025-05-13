@@ -9,15 +9,6 @@ function Contact() {
     message: ""
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Cảm ơn bạn đã gửi yêu cầu! Chúng tôi sẽ phản hồi sớm.");
-    // Có thể gửi formData tới API ở đây
-  };
 
   return (
     <div className="contact-wrapper">
@@ -48,47 +39,7 @@ function Contact() {
           </div>
         </div>
 
-        <div className="contact-form">
-          <h2>Gửi yêu cầu</h2>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">Tên của bạn</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Nhập tên của bạn"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Nhập email của bạn"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="message">Tin nhắn</label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                placeholder="Nhập tin nhắn của bạn"
-              />
-            </div>
-            <button type="submit" className="btn-submit">Gửi yêu cầu</button>
-          </form>
-        </div>
+        
 
         <div className="map-container">
           <h2>Vị trí Homestay</h2>

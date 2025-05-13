@@ -36,7 +36,7 @@ const Profile = () => {
       name: localStorage.getItem("username") || "",
       phone: localStorage.getItem("phone") || "",
       address: localStorage.getItem("address") || "",
-      pathImg: "",
+      pathImg: localStorage.getItem("img") || "",
       role: localStorage.getItem("role") || "",
     };
 

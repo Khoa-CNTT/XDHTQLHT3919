@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../../services/api/AuthAPI/Register";
-import { FaEnvelope, FaPhone } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaEye, FaEyeSlash } from "react-icons/fa";
 import Notification from "../Other/Notification";
 
 function Register() {
@@ -11,6 +11,8 @@ function Register() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // Trạng thái hiển thị mật khẩu
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false); // Trạng thái hiển thị mật khẩu xác nhận
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notification, setNotification] = useState({ show: false, message: "" });
 
@@ -55,14 +57,23 @@ function Register() {
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
     const isValidPhoneNumber = /^[0-9]{10}$/.test(trimmedPhone);
 
-    if (isEmail && !isValidEmail) {
-      showNotification("Email không hợp lệ!");
-      return;
-    }
+    if (isEmail) {
+      if (!isValidEmail) {
+        showNotification("Email không hợp lệ!");
+        return;
+      }
 
-    if (!isEmail && !isValidPhoneNumber) {
-      showNotification("Số điện thoại không hợp lệ! (Ví dụ: 0987654321)");
-      return;
+      // Kiểm tra xem email có phải là @gmail.com không
+      const isGmail = trimmedEmail.endsWith("@gmail.com");
+      if (!isGmail) {
+        showNotification("Email phải có đuôi @gmail.com!");
+        return;
+      }
+    } else {
+      if (!isValidPhoneNumber) {
+        showNotification("Số điện thoại không hợp lệ! (Ví dụ: 0987654321)");
+        return;
+      }
     }
 
     const registerData = {
@@ -155,27 +166,46 @@ function Register() {
 
             <div>
               <label>Mật khẩu</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="auth-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isSubmitting}
-              />
+              <div className="password-container">
+                <input
+                  type={isPasswordVisible ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="auth-input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="button"
+                  className="password-toggle-btn"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                >
+                  {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
 
             <div>
               <label>Xác nhận mật khẩu</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="auth-input"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={isSubmitting}
-              />
+              <div className="password-container">
+                <input
+                  type={isConfirmPasswordVisible ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="auth-input"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="button"
+                  className="password-toggle-btn"
+                  onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                >
+                  {isConfirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
+
 
             <button type="submit" className="auth-button" disabled={isSubmitting}>Đăng ký</button>
           </form>

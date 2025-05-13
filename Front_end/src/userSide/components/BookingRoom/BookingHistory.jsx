@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import mockBookingData from '../../../services/api/userAPI/bookingMockData';
+// import mockBookingData from '../../../services/api/userAPI/bookingMockData';
 import '../../../assets/Style/Others/booking-history.css'
 
 
 const BookingHistory = () => {
-    const [bookings, setBookings] = useState([]);
+//     const [bookings, setBookings] = useState([]);
   
-    useEffect(() => {
-      // Giả lập việc gọi API và nhận dữ liệu
-      const fetchBookings = async () => {
-        // Thay thế API thực tế bằng mock data
-        setBookings(mockBookingData);
-      };
+//     useEffect(() => {
+//       // Giả lập việc gọi API và nhận dữ liệu
+//       const fetchBookings = async () => {
+//         // Thay thế API thực tế bằng mock data
+//         setBookings(mockBookingData);
+//       };
   
-      fetchBookings();
-    }, []);
+//       fetchBookings();
+    // }, []);
   
     return (
       <div className="booking-history-container">
-        <h2>Lịch sử Đặt Phòng</h2>
+        {/* <h2>Lịch sử Đặt Phòng</h2>
         {bookings.length > 0 ? (
           bookings.map((booking) => (
             <div key={booking.Id} className="booking-item">
@@ -58,7 +58,7 @@ const BookingHistory = () => {
           ))
         ) : (
           <p>Chưa có lịch sử đặt phòng.</p>
-        )}
+        )} */}
       </div>
     );
   };

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaPaperPlane } from 'react-icons/fa';
 
 const Footer = () => {
     useEffect(() => {
@@ -24,41 +25,43 @@ const Footer = () => {
                     <div className="footer__col">
                         <h3>HynhQwc Homestay</h3>
                         <p>32 Trần Xuân Soạn<br />Thành phố Đà Nẵng, Việt Nam</p>
-                        <p>Email: info@hynhqwc.com<br />Điện thoại: +84 123 456 789</p>
+                        <p>Email: hlaquoc@gmail.com<br />Điện thoại: +84 702 309 446</p>
                     </div>
                     <div className="footer__col">
                         <h3>Liên kết nhanh</h3>
                         <ul>
-                            <li><a href="#">Trang chủ</a></li>
-                            <li><a href="#">Phòng</a></li>
-                            <li><a href="#">Dịch vụ</a></li>
-                            <li><a href="#">Ẩm thực</a></li>
-                            <li><a href="#">Liên hệ</a></li>
+                            <li><Link to="/">Trang chủ</Link></li>
+                            <li><Link to="/room">Phòng</Link></li>
+                            <li><Link to="/service">Dịch vụ</Link></li>
+                            <li><Link to="/">Ẩm thực</Link></li>
+                            <li><Link to="/contact">Liên hệ</Link></li>
+
                         </ul>
                     </div>
                     <div className="footer__col">
                         <h3>Dịch vụ</h3>
                         <ul>
-                            <li><a href="#">Đặt phòng</a></li>
-                            <li><a href="#">Spa & Wellness</a></li>
-                            <li><a href="#">Nhà hàng</a></li>
-                            <li><a href="#">Sự kiện</a></li>
-                            <li><a href="#">Tour du lịch</a></li>
+                            <li><Link to="/">Trang chủ</Link></li>
+                            <li><Link to="/spa">Spa & Wellness</Link></li>
+                            <li><Link to="/restaurant">Nhà hàng</Link></li>
+                            <li><Link to="/events">Sự kiện</Link></li>
+                            <li><Link to="/tours">Tour du lịch</Link></li>
                         </ul>
+
                     </div>
                     <div className="footer__col">
                         <h3>Kết nối với chúng tôi</h3>
                         <div className="footer__social">
-                            <a href="#"><i className="fab fa-facebook-f"></i></a>
-                            <a href="#"><i className="fab fa-instagram"></i></a>
-                            <a href="#"><i className="fab fa-twitter"></i></a>
-                            <a href="#"><i className="fab fa-youtube"></i></a>
+                            <a href="https://www.facebook.com/profile.php?id=100027204825889" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
+                            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
+                            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
+                            <a href="https://www.youtube.com/results?search_query=homstay" target="_blank" rel="noopener noreferrer"><FaYoutube /></a>
                         </div>
                         <div className="footer__newsletter">
                             <h4>Đăng ký nhận tin</h4>
                             <form>
                                 <input type="email" placeholder="Email của bạn" required />
-                                <button type="submit"><i className="fas fa-paper-plane"></i></button>
+                                <button type="submit"><FaPaperPlane /></button>
                             </form>
                         </div>
                     </div>

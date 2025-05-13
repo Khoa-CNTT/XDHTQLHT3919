@@ -17,6 +17,25 @@
     padding: 20px;
     position: relative;
 }
+.password-container {
+  position: relative;
+}
+
+.auth-input {
+  width: 100%;
+  padding-right: 30px; 
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 
 /* Container chính */
 .auth-container {
@@ -212,7 +231,7 @@
     color: red;
     cursor: pointer;
   }
-  .labe {
+  .label_text {
     color: #ffffff;
     display: flex;
     justify-content: left;

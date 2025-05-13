@@ -1,7 +1,8 @@
 import React from 'react';
 
+
 const RoomInfo = ({ room }) => {
-  const { name, price, note, detail, pathImg, status, createAt, category } = room;
+  const { name, price, note, detail, pathImg, status, createAt, category, amenities } = room;
 
   const formatPrice = (value) =>
     typeof value === 'number' ? value.toLocaleString() + " VND" : "Đang cập nhật";
@@ -27,6 +28,21 @@ const RoomInfo = ({ room }) => {
         {detail && (
           <p><strong>Chi tiết:</strong> {detail}</p>
         )}
+
+        {/* Hiển thị tiện nghi */}
+        {Array.isArray(amenities) && amenities.length > 0 && (
+          <div className="room-amenities">
+            <strong>Tiện nghi:</strong>
+            <div className="room-amenities-list">
+              {amenities.map((amenity) => (
+                <div key={amenity.id} className="room-amenity">
+                  {amenity.name}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

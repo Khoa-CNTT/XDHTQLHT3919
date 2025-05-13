@@ -10,6 +10,8 @@ import Amenities from "./userSide/components/Contents/Amenities";
 import Gallery from "./userSide/components/Contents/Gallery";
 import Reviews from "./userSide/components/Contents/Reviews";
 import Footer from "./userSide/components/Footers/Footer";
+import RoomNew from "./userSide/components/Contents/RoomNew";
+import Amenity from "./userSide/components/Contents/Amenity";
 
 // BookingRoom
 import Booking from "./userSide/components/BookingRoom/Booking";
@@ -39,6 +41,9 @@ import ProductList from "./adminSide/components/productManager/RoomList";
 import UserList from "./adminSide/components/UserManager/UserList";
 import RoomCategory from "./adminSide/components/productManager/RoomCategoryList";
 import BookingManagement from "./adminSide/components/productManager/BookingManagement";
+import AmenityManager from "./adminSide/components/UserManager/AmenityManager";
+import ImageManager from "./adminSide/components/UserManager/ImageManager";
+import ServiceManager from "./adminSide/components/productManager/ServiceManagement";
 
 
 
@@ -87,8 +92,8 @@ const App = () => {
                     element={
                         <>
                             <Hero />
-                            <Rooms  onRoomClick={handleRoomClick} />
-                            <Amenities />
+                            <RoomNew  onRoomClick={handleRoomClick} />
+                            <Amenity />
                             <Gallery />
                             <Reviews />
                         </>
@@ -101,8 +106,10 @@ const App = () => {
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/room/:id" element={<RoomDetail />} />
+                <Route path="/room" element={<Rooms />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/historybooking" element={<BookingHistory />} />
+                <Route path="/amenities" element={<Amenities />} />
                 <Route path="/booking" element={
                     <RoomDetail>
                         <Booking />
@@ -146,6 +153,21 @@ const App = () => {
                 <Route path="/bookingmanagement" element={
                     <AdminLayout>
                         <BookingManagement />
+                    </AdminLayout>
+                } />
+                <Route path="/amenitymanager" element={
+                    <AdminLayout>
+                        <AmenityManager />
+                    </AdminLayout>
+                } />
+                <Route path="/imagemanager" element={
+                    <AdminLayout>
+                        <ImageManager />
+                    </AdminLayout>
+                } />
+                <Route path="/servicemanager" element={
+                    <AdminLayout>
+                        <ServiceManager />
                     </AdminLayout>
                 } />
                 {/* <Route path="/detail" element={<RoomDetailPage />} /> */}

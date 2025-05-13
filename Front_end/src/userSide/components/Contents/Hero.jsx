@@ -6,6 +6,7 @@ import logoBg2 from '../../../images/logo-bg2.jpg';
 import logoBg3 from '../../../images/logo-bg3.jpg';
 import logoBg4 from '../../../images/logo-bg4.jpg';
 import logoBg5 from '../../../images/logo-bg5.png';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,8 +44,8 @@ const Hero = () => {
           <h1 className="hero__title">MTX-N54 Homestay</h1>
           <p className="hero__subtitle">Trải nghiệm sang trọng bậc nhất tại trung tâm thành phố</p>
           <div className="hero__buttons">
-            <a href="#" className="btn btn--primary1">Đặt phòng ngay</a>
-            <a href="#" className="btn btn--outline">Khám phá phòng</a>
+            <Link to="/room" className="btn btn--primary1">Đặt phòng ngay</Link>
+            <Link to="/room" className="btn btn--outline">Khám phá phòng</Link>
           </div>
         </div>
       </div>

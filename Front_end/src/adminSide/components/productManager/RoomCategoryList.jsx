@@ -39,7 +39,6 @@ const RoomCategoryList = () => {
     const newCategory = {
       id: form.id || crypto.randomUUID(),
       name: form.name,
-      quantity: parseInt(form.quantity) || 0
     };
 
     try {
@@ -61,7 +60,6 @@ const RoomCategoryList = () => {
     setForm({
       id: category.id,
       name: category.name,
-      quantity: category.quantity ?? 0
     });
   };
 
@@ -78,9 +76,8 @@ const RoomCategoryList = () => {
     }
   };
 
-  // Reset form to initial state
   const handleCancel = () => {
-    setForm({ id: null, name: '', quantity: 0 });
+    setForm({ id: null, name: ''});
   };
 
   const filteredRoomCategories = roomCategories.filter(r =>
@@ -101,7 +98,7 @@ const RoomCategoryList = () => {
           <input
             type="text"
             placeholder="Tìm danh mục..."
-            value={search}
+value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <button
@@ -110,7 +107,6 @@ const RoomCategoryList = () => {
           >
             {form.id ? 'Cập nhật' : 'Thêm'}
           </button>
-          {/* Hiển thị nút hủy chỉ khi đang chỉnh sửa danh mục */}
           {form.id && (
             <button onClick={handleCancel} className="cancel-btn">
               HỦY
@@ -125,13 +121,7 @@ const RoomCategoryList = () => {
           placeholder="Tên danh mục"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Số lượng"
-          value={form.quantity}
-          onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-          min="0"
+          className="form-input"
         />
       </div>
 

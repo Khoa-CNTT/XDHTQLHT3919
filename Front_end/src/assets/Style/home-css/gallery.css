@@ -1,0 +1,141 @@
+/* Gallery Section */
+.gallery.section-padding {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* Carousel Container (Wrapper) */
+.carousel-container {
+    width: 1160px;
+    margin: 0 auto; /* Center the container */
+    overflow: hidden; /* Prevents overflow */
+    position: relative; /* To position the navigation buttons */
+}
+
+/* Carousel Layout */
+.carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+    position: relative;
+    gap: 20px;
+    width: 100%; /* Full width of the container */
+}
+
+/* Container for navigation buttons */
+/* Container for navigation buttons */
+.nav-btn-container {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    justify-content: center; /* Căn giữa các nút */
+    width: 100%; /* Full width của container */
+    gap: 10px; /* Khoảng cách 10px giữa các nút */
+    padding: 0 20px; /* Optional: padding để tạo không gian ở hai bên */
+    z-index: 10; /* Đảm bảo các nút nằm trên cùng */
+}
+
+/* Navigation Buttons */
+.nav-btn {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    font-size: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    z-index: 10; /* Đảm bảo các nút nằm trên cùng */
+}
+
+/* Hover effect for navigation buttons */
+.nav-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+
+/* Carousel Images Wrapper */
+.carousel-images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%; /* Full width of the carousel */
+    padding-bottom: 80px; /* Adds space for the navigation buttons */
+}
+
+/* Main Image */
+.main-image {
+    width: 600px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: transform 1.5s ease-in-out, opacity 1.5s ease-in-out; /* Slower effect for main image */
+    z-index: 2;
+}
+
+/* Side Images */
+.side-image {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    opacity: 0.4;
+    filter: blur(2px);
+    transition: transform 1.5s ease-in-out, opacity 1.5s ease-in-out, filter 1.5s ease-in-out; /* Slower effect for side images */
+    z-index: 1;
+}
+
+.side-image.left {
+    margin-right: 20px;
+    transform: scale(0.95) translateX(-10px);
+}
+
+.side-image.right {
+    margin-left: 20px;
+    transform: scale(0.95) translateX(10px);
+}
+
+/* Hover Effects for Images */
+.carousel-images:hover .side-image {
+    opacity: 0.7;
+    filter: blur(1px); /* Subtle blur effect on hover */
+}
+
+.carousel-images:hover .main-image {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+/* Optional: Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .main-image {
+width: 90%;
+        height: auto;
+    }
+
+    .side-image {
+        display: none;
+    }
+
+    .carousel-container {
+        width: 100%; /* Full width on small screens */
+    }
+
+    .nav-btn-container {
+        padding: 0 10px; /* Adjust padding for smaller screens */
+    }
+}

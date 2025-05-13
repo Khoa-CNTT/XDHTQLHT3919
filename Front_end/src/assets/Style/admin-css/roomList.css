@@ -4,6 +4,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f7f7f7;
@@ -14,6 +15,7 @@ body {
   display: flex;
   height: 100vh;
 }
+
 .main-content {
   flex: 1;
   padding: 30px;
@@ -21,23 +23,33 @@ body {
 }
 
 /* ===== Sidebar ===== */
-.sidebar h2 {
-  margin-bottom: 30px;
-  font-size: 20px;
-  font-weight: bold;
+.sidebar {
+  width: 240px;
+  background-color: #34495e;
+  color: white;
+  padding: 20px;
 }
+
+.sidebar h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
 .sidebar ul {
   list-style: none;
 }
+
 .sidebar ul li {
   padding: 12px 10px;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .sidebar ul li:hover,
 .sidebar ul li.active {
-  background-color: #34495e;
+  background-color: #2c3e50;
 }
 
 /* ===== Header ===== */
@@ -47,20 +59,25 @@ body {
   align-items: center;
   margin-bottom: 20px;
 }
+
 .headerql h1 {
   font-size: 30px;
+  color: #34495e;
 }
+
 .actions {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .actions input[type="text"] {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 240px;
 }
+
 .search-btn,
 .add-btn,
 .edit-btn,
@@ -70,55 +87,186 @@ body {
   border-radius: 6px;
   color: white;
   cursor: pointer;
+  font-size: 14px;
 }
+
 .search-btn {
   background-color: #3498db;
 }
+
 .add-btn {
   background-color: #27ae60;
   font-weight: bold;
 }
+
 .edit-btn {
-  background-color: orange;
+  background-color: #f39c12;
   margin-right: 6px;
   padding: 6px 12px;
   border-radius: 4px;
 }
+
 .delete-btn {
   background-color: #e74c3c;
   padding: 6px 12px;
   border-radius: 4px;
 }
 
-/* ===== Form ===== */
-.form-section,
-.product-form {
+/* ===== Form Section ===== */
+.form-secction {
   margin: 20px 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 15px;
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
 }
-.form-section input,
-.form-section select,
-.product-form input,
-.product-form select {
-  padding: 8px;
+
+.form-secction:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Form Inputs and Selects */
+.form-secction input,
+.form-secction select,
+.form-secction .tera {
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  min-width: 150px;
+  min-width: 200px;
   flex: 1;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  height: 50px;
 }
-.quantity-control {
+
+.form-secction select:focus,
+.form-secction textarea:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 4px rgba(52, 152, 219, 0.5);
+}
+
+.form-secction input::placeholder,
+.form-secction select:invalid,
+.form-secction textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.form-secction select:invalid {
+  color: #999;
+}
+
+.form-secction textarea {
+  height: 140px;
+  resize: none;
+}
+
+/* ===== Amenity Selection ===== */
+.amenity-selection {
+  margin: 25px 0;
+  width: 100%;
+}
+
+.amenity-selection h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 12px;
+}
+
+.amenity-selection button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+.amenity-selection button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.amenity-selection button:active {
+  transform: translateY(0);
+}
+.amenity-lisst {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* Mỗi tiện nghi */
+.amenity-selection {
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+}
+
+.amenity-selection h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.amenity-selection button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 12px;
+}
+
+.amenity-selection button:hover {
+  background-color: #45a049;
+}
+
+.amenity-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.amenity-option {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.quantity-control input {
-  width: 60px;
-  text-align: center;
+
+.roomlist-select {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
-.quantity-control button {
-  padding: 4px 10px;
+
+.amenity-option label {
+  font-size: 14px;
+  color: #444;
   cursor: pointer;
 }
 
@@ -129,21 +277,20 @@ body {
   background-color: white;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 }
+
 .product-table th,
 .product-table td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #eee;
 }
+
 .product-table img {
   width: 50px;
   height: auto;
   border-radius: 6px;
-}
-img {
-  border-radius: 4px;
 }
 
 /* ===== Responsive ===== */
@@ -151,17 +298,53 @@ img {
   .container {
     flex-direction: column;
   }
+
   .sidebar {
     width: 100%;
   }
+
   .main-content {
     padding: 15px;
   }
+
   .actions {
     flex-direction: column;
     align-items: stretch;
   }
+
   .actions input[type="text"] {
     width: 100%;
+  }
+
+  .form-secction {
+    padding: 20px;
+  }
+
+  .form-secction input,
+  .form-secction select,
+  .form-secction textarea {
+    min-width: 100%;
+  }
+
+  .amenity-lisst {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .amenity-selection button {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .form-secction {
+    padding: 15px;
+  }
+
+  .amenity-lisst {
+    grid-template-columns: 1fr;
+  }
+
+  .amenity-opption {
+    padding: 10px;
   }
 }

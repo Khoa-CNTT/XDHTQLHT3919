@@ -5,7 +5,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../../../assets/Style/home-css/Room.css';
 
-const Rooms = () => {
+const RoomNew = () => {
   const [roomsData, setRoomsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,7 +38,9 @@ const Rooms = () => {
   const formatPrice = (price) =>
     typeof price === 'number' ? price.toLocaleString() + ' VND' : 'Đang cập nhật';
 
-  const filteredRooms = roomsData.filter((room) => {
+  // Lọc các phòng thỏa điều kiện
+  const filteredRooms = roomsData
+  .filter((room) => {
     const matchPrice =
       priceFilter === '' ||
       (priceFilter === 'lt500' && room.price < 500000) ||
@@ -51,7 +53,10 @@ const Rooms = () => {
       categoryFilter === '' || roomCategory.toLowerCase() === categoryFilter.toLowerCase();
 
     return matchPrice && matchCategory;
-  });
+  })
+  .sort((a, b) => new Date(b.createAt) - new Date(a.createAt)) // Sắp xếp giảm dần theo ngày tạo
+  .slice(0, 9);
+
 
   const handleRoomClick = (room) => {
     navigate(`/room/${room.id}`);
@@ -77,33 +82,8 @@ const Rooms = () => {
   return (
     <section className="rooms section-padding">
       <div className="container2">
-        <h2 className="section-title">Phòng nghỉ của chúng tôi</h2>
-        <p className="section-subtitle">Các phòng nghỉ sang trọng với đầy đủ tiện nghi</p>
-
-        {/* Bộ lọc */}
-        <div className="filters" style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-          <label>
-            Lọc theo giá:{' '}
-            <select value={priceFilter} onChange={(e) => setPriceFilter(e.target.value)}>
-              <option value="">Tất cả</option>
-              <option value="lt500">Dưới 500.000 VND</option>
-              <option value="500to1000">500.000 - 1.000.000 VND</option>
-              <option value="gt1000">Trên 1.000.000 VND</option>
-            </select>
-          </label>
-
-          <label>
-            Lọc theo loại phòng:{' '}
-            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-              <option value="">Tất cả</option>
-              {categories.map((cat, index) => (
-                <option key={index} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <h2 className="section-title">Phòng mới nhất của chung tôi</h2>
+        <p className="section-subtitle">Những phòng mới nhất dành cho bạn – không gian sang trọng, trải nghiệm tuyệt vời</p>
 
         {/* Danh sách phòng */}
         <div className="rooms__grid">
@@ -129,11 +109,10 @@ const Rooms = () => {
               </div>
             ))
           )}
-
         </div>
       </div>
     </section>
   );
 };
 
-export default Rooms;
+export default RoomNew;

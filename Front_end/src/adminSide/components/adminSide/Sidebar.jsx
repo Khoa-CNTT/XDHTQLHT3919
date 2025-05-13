@@ -25,6 +25,15 @@ const Sidebar = () => {
         <Link to="/bookingmanagement" className={isActive('/bookingmanagement')}>
           <li>Quản lý đặt phòng</li>
         </Link>
+        <Link to="/amenitymanager" className={isActive('/amenitymanager')}>
+          <li>Quản lý tiện nghi</li>
+        </Link>
+        <Link to="/imagemanager" className={isActive('/imagemanager')}>
+          <li>Quản lý ảnh home</li>
+        </Link>
+        <Link to="/servicemanager" className={isActive('/servicemanager')}>
+          <li>Quản lý dịch vụ</li>
+        </Link>
       </ul>
     </div>
   );

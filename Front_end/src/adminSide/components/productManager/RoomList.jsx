@@ -6,12 +6,15 @@ import {
   deleteRoom,
 } from '../../../services/api/adminAPI/productApi';
 import { getAllCategories } from '../../../services/api/adminAPI/roomCategory';
+import { getAllAmenities } from '../../../services/api/userAPI/amenityAPI';
 import Notification from '../../../userSide/components/Other/Notification';
 import "../../../assets/Style/admin-css/roomList.css";
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
   const [roomTypes, setRoomTypes] = useState([]);
+  const [amenities, setAmenities] = useState([]);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [form, setForm] = useState({
     id: null,
     name: '',
@@ -23,8 +26,8 @@ const RoomList = () => {
   });
 
   const [search, setSearch] = useState('');
-
   const [notification, setNotification] = useState({ show: false, message: "", type: "info" });
+  const [isAmenitiesVisible, setIsAmenitiesVisible] = useState(false);
 
   const showNotification = (message, type = "info") => {
     setNotification({ show: true, message, type });
@@ -36,6 +39,7 @@ const RoomList = () => {
   useEffect(() => {
     fetchRoomData();
     fetchRoomTypes();
+    fetchAmenities();
   }, []);
 
   const fetchRoomData = async () => {
@@ -58,6 +62,16 @@ const RoomList = () => {
     }
   };
 
+  const fetchAmenities = async () => {
+    try {
+      const res = await getAllAmenities();
+      setAmenities(res.data);
+    } catch (error) {
+      console.error('Lỗi khi tải tiện nghi:', error);
+      showNotification('Lỗi khi tải tiện nghi', "error");
+    }
+  };
+
   const handleAddOrUpdate = async () => {
     if (!form.name || !form.price || !form.pathImg) {
       showNotification('Vui lòng nhập đầy đủ thông tin bắt buộc', "error");
@@ -70,7 +84,8 @@ const RoomList = () => {
       idCategory: form.idCategory,
       pathImg: form.pathImg,
       detail: form.detail,
-      status: form.status
+      status: form.status,
+      amenityIds: selectedAmenities
     };
 
     try {
@@ -83,7 +98,8 @@ const RoomList = () => {
       }
 
       await fetchRoomData();
-      setForm({ id: null, name: '', price: '', idCategory: '', pathImg: '', detail: '' });
+      setForm({ id: null, name: '', price: '', idCategory: '', pathImg: '', detail: '', status: '' });
+      setSelectedAmenities([]);
     } catch (error) {
       console.error("Lỗi khi lưu phòng:", error);
       showNotification("Có lỗi khi lưu phòng!", "error");
@@ -100,6 +116,7 @@ const RoomList = () => {
       detail: room.detail || '',
       status: room.status || ''
     });
+    setSelectedAmenities((room.amenities || []).map(a => a.id));
   };
 
   const handleDelete = async (id) => {
@@ -115,9 +132,23 @@ const RoomList = () => {
     }
   };
 
-  // Reset form to initial state
+  const handleAmenityChange = (amenityId) => {
+    setSelectedAmenities((prevSelected) => {
+      if (prevSelected.includes(amenityId)) {
+        return prevSelected.filter((id) => id !== amenityId);
+      } else {
+        return [...prevSelected, amenityId];
+      }
+    });
+  };
+
+  const toggleAmenitiesVisibility = () => {
+    setIsAmenitiesVisible(!isAmenitiesVisible);
+  };
+
   const handleCancel = () => {
-    setForm({ id: null, name: '', price: '', idCategory: '', pathImg: '', detail: '' });
+    setForm({ id: null, name: '', price: '', idCategory: '', pathImg: '', detail: '', status: '' });
+    setSelectedAmenities([]);
   };
 
   const filteredRooms = Array.isArray(rooms)
@@ -138,7 +169,6 @@ const RoomList = () => {
           <button onClick={handleAddOrUpdate}>
             {form.id ? 'CẬP NHẬT' : 'THÊM PHÒNG'}
           </button>
-          {/* Hiển thị nút hủy chỉ khi đang chỉnh sửa phòng */}
           {form.id && (
             <button onClick={handleCancel} className="cancel-button">
               HỦY
@@ -147,7 +177,7 @@ const RoomList = () => {
         </div>
       </div>
 
-      <div className="form-section">
+      <div className="form-secction">
         <input
           type="text"
           placeholder="Tên phòng"
@@ -182,16 +212,41 @@ const RoomList = () => {
           onChange={(e) => setForm({ ...form, status: e.target.value })}
         >
           <option value="">-- Trạng thái phòng --</option>
-          <option value="Trống">Trống</option>
+          <option value="Còn trống">Còn trống</option>
           <option value="Đã đặt">Đã đặt</option>
           <option value="Đang bảo trì">Đang bảo trì</option>
         </select>
 
         <textarea
+          className='tera'
           placeholder="Mô tả phòng"
           value={form.detail}
           onChange={(e) => setForm({ ...form, detail: e.target.value })}
         ></textarea>
+
+        <div className="amenity-selection">
+          <h3>Chọn tiện nghi cho phòng</h3>
+          <button onClick={toggleAmenitiesVisibility}>
+            {isAmenitiesVisible ? 'Ẩn tiện nghi' : 'Hiển thị tiện nghi'}
+          </button>
+          {isAmenitiesVisible && (
+            <div className="amenity-list">
+              {amenities.map((amenity) => (
+                <div key={amenity.id} className="amenity-option">
+                  <input
+                    className='roomlist-select'
+                    type="checkbox"
+                    id={amenity.id}
+                    checked={selectedAmenities.includes(amenity.id)}
+                    onChange={() => handleAmenityChange(amenity.id)}
+                  />
+                  <label htmlFor={amenity.id}>{amenity.name}</label>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
 
       <table className="product-table">
@@ -203,6 +258,7 @@ const RoomList = () => {
             <th>Giá</th>
             <th>Chi tiết</th>
             <th>Trạng thái</th>
+            <th>Tiện nghi</th>
             <th>Hành động</th>
           </tr>
         </thead>
@@ -216,8 +272,11 @@ const RoomList = () => {
               <td>{room.detail}</td>
               <td>{room.status || "Chưa cập nhật"}</td>
               <td>
-                <button onClick={() => handleEdit(room)}>CHỈNH SỬA</button>
-                <button onClick={() => handleDelete(room.id)}>XÓA</button>
+                {(room.amenities || []).map(a => a.name).join(", ")}
+              </td>
+              <td>
+                <button className='edit-btn' onClick={() => handleEdit(room)}>CHỈNH SỬA</button>
+                <button className='delete-btn' onClick={() => handleDelete(room.id)}>XÓA</button>
               </td>
             </tr>
           ))}

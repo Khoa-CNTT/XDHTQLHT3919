@@ -30,7 +30,7 @@ const Header = () => {
             setIsLoggedIn(true);
             setUsername(user);
             setRole(userRole);
-            setIsAdmin(userRole === "admin");
+            setIsAdmin(userRole === "Admin");
             setAvatarUrl(avatar);
         }
     }, []);
@@ -88,10 +88,12 @@ const Header = () => {
         <ul className="header__menu">
             <li><Link to="/home">Trang chủ</Link></li>
             <li><Link to="/room">Phòng</Link></li>
-            <li><Link to="/room">Tiện nghi</Link></li>
-            <li><Link to="/room">Thư viện</Link></li>
+            <li><Link to="/amenities">Tiện ích</Link></li>
             <li><Link to="/contact">Liên hệ</Link></li>
-            <li><Link to="/adminlayout">Quản lý</Link></li>
+            {isAdmin && (
+                <li><Link to="/adminlayout">Quản lý</Link></li>
+            )}
+
             <li>
                 <div className="heart-container" ref={roomListRef}>
                     <button className="btn btn--icon heart-button" onClick={toggleRoomList}>
@@ -167,7 +169,7 @@ const Header = () => {
                                     <span>{username}</span>
                                 </div>
                                 <div className="dropdown">
-                                <button className="btn btn--secondary" onClick={() => navigate("/profile")}>
+                                    <button className="btn btn--secondary" onClick={() => navigate("/profile")}>
                                         Profile
                                     </button>
                                     <button className="btn btn--secondary" onClick={() => navigate("/historybooking")}>

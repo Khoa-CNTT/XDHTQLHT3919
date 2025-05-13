@@ -1,6 +1,6 @@
 .booking-management-container {
   padding: 20px;
-  background-color: #f9f9f9; /* đổi nền cho giống */
+  background-color: #f9f9f9;
   min-height: 100vh;
   font-family: Arial, sans-serif;
 }
@@ -31,7 +31,7 @@
 }
 
 .booking-management-button {
-  padding: 8px 14px;
+  padding: 0 16px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -39,6 +39,8 @@
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.3s;
+  height: 40px;
+  font-size: 15px;
 }
 
 .booking-management-button:hover {
@@ -53,24 +55,24 @@
   width: 100%;
   border-collapse: collapse;
   background-color: white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05); /* giống user-table */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
 }
 
 .booking-management-table th,
 .booking-management-table td {
   padding: 12px 16px;
   text-align: center;
-  border-bottom: 1px solid #e0e0e0; /* nhẹ hơn */
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .booking-management-table th {
-  background-color: #f1f1f1; /* xám nhẹ giống user */
+  background-color: #f1f1f1;
   font-weight: 600;
   color: #333;
 }
 
 .booking-management-table tbody tr:hover {
-  background-color: #f5f5f5; /* hover sáng nhẹ */
+  background-color: #f5f5f5;
 }
 
 .booking-management-image {
@@ -80,11 +82,44 @@
   border-radius: 4px;
 }
 
-.booking-management-actions button {
-  margin: 0 4px;
+.booking-management-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
-/* Action Buttons */
+.booking-management-input.search-input {
+  flex: 1;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.booking-management-input.search-input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Action Buttons - TO HƠN */
+.booking-management-actions button {
+  margin: 0 4px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Các nút riêng */
 .booking-edit-btn {
   background-color: #ffc107;
 }
@@ -111,36 +146,4 @@
 }
 .booking-cancel-btn:hover {
   background-color: #5a6268;
-}
-/* Sửa layout cho thanh công cụ */
-.booking-management-tools {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-/* Cho input tìm kiếm full width phần còn lại */
-.booking-management-input.search-input {
-  flex: 1;
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-/* Khi focus vào input */
-.booking-management-input.search-input:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-}
-
-/* Nút button */
-.booking-management-button {
-  height: 40px;
-  padding: 0 16px;
 }
