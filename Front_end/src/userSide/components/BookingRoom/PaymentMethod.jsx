@@ -1,70 +1,108 @@
-import React, { useState } from "react";
-import "../../../assets/Style/Others/paymentMethod.css";
-import { addBooking } from '../../../services/api/userAPI/bookingAPI';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import '../../../assets/Style/home-css/paymentMethod.css';
 
 const PaymentMethod = () => {
-  const [selectedMethod, setSelectedMethod] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const paymentMethods = [
-    { id: "qrpay", label: "Thanh toán QR-PAY", icon: "🏦" },
-    { id: "banktransfer", label: "Chuyển khoản ngân hàng", icon: "💸" },
-    { id: "visa", label: "Thẻ Visa, Master Card", icon: "💳" },
-    { id: "atm", label: "Thẻ ATM/ Tài khoản ngân hàng", icon: "🏧" },
-  ];
+  // Lấy bookingData từ state hoặc localStorage
+  const bookingData =
+    location.state?.bookingData || JSON.parse(localStorage.getItem('bookingData'));
+  console.log('bookingData:', bookingData);
 
-  const handlePayment = () => {
-    if (!selectedMethod) {
-      alert("Vui lòng chọn phương thức thanh toán!");
+  // Kiểm tra dữ liệu bookingData
+  if (
+    !bookingData ||
+    !bookingData.total ||
+    !bookingData.idUser ||
+    !bookingData.bookingDetails ||
+    !Array.isArray(bookingData.bookingDetails) ||
+    bookingData.bookingDetails.length === 0
+  ) {
+    return (
+      <div className="payment-container">
+        <h2>Không có dữ liệu thanh toán</h2>
+        <p>Vui lòng đặt phòng lại.</p>
+        <button onClick={() => navigate('/booking')} className="cancel-btn">
+          Quay lại trang đặt phòng
+        </button>
+      </div>
+    );
+  }
+
+  // Lấy thông tin cần thiết
+  const bookingId = bookingData.bookingId;
+  const checkInDate = bookingData.checkInDate || bookingData.bookingDetails[0]?.checkInDate;
+  const checkOutDate = bookingData.checkOutDate || bookingData.bookingDetails[0]?.checkOutDate;
+  const note = bookingData.note || bookingData.bookingDetails[0]?.note;
+  const idBookingDetail = bookingData.bookingDetails[0]?.idBookingDetail; // Nếu backend trả về, còn không có thì có thể bỏ qua
+
+ const handleVNPayPayment = async () => {
+  setLoading(true);
+  try {
+    const response = await axios.post('https://localhost:7154/api/Payment/create-payment', {
+      idUser: bookingData.idUser,
+      total: bookingData.total,
+      idBooking: bookingId,
+      checkInDate,
+      checkOutDate,
+      note,
+      bookingDetails: bookingData.bookingDetails,
+    });
+
+    const { url } = response.data;
+
+    if (url) {
+      window.location.href = url;
     } else {
-      alert(`Bạn đã chọn: ${selectedMethod}`);
-      // Xử lý thanh toán tại đây
+      alert('Không thể tạo URL thanh toán. Vui lòng thử lại.');
     }
-  };
+  } catch (error) {
+    console.error('Lỗi khi tạo thanh toán VNPay:', error);
 
-  const handleBack = () => {
-    navigator("/r")
-  };
-
+    if (error.response) {
+      alert(`Lỗi từ server: ${error.response.data.message || 'Không thể tạo thanh toán.'}`);
+    } else if (error.request) {
+      alert('Không nhận được phản hồi từ server. Vui lòng thử lại.');
+    } else {
+      alert('Có lỗi xảy ra khi cấu hình yêu cầu thanh toán.');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="payment-container">
-      <div className="payment-header">
-        <button className="back-button" onClick={handleBack}>
-          ←
-        </button>
-        <h2 className="payment-title">Phương thức thanh toán</h2>
-        
+      <h2>Xác nhận thanh toán</h2>
+      <div className="payment-details">
+        <p>
+          <strong>Mã đặt phòng:</strong> {bookingId}
+        </p>
+        <p>
+          <strong>Ngày nhận phòng:</strong> {checkInDate ? new Date(checkInDate).toLocaleDateString() : '---'}
+        </p>
+        <p>
+          <strong>Ngày trả phòng:</strong> {checkOutDate ? new Date(checkOutDate).toLocaleDateString() : '---'}
+        </p>
+        <p>
+          <strong>Tổng tiền:</strong> {Number(bookingData.total).toLocaleString()} VND
+        </p>
+        <p>
+          <strong>Ghi chú:</strong> {note || '---'}
+        </p>
+        <p>
+          <strong>Phương thức:</strong> VNPay
+        </p>
       </div>
-
-      <p className="payment-subtitle">
-        Sau khi hoàn tất thanh toán, mã xác nhận phòng sẽ được gửi ngay qua SMS và Email của bạn
-      </p>
-
-      <div className="payment-methods">
-        {paymentMethods.map((method) => (
-          <label
-            key={method.id}
-            className={`payment-method ${selectedMethod === method.id ? "active" : ""}`}
-          >
-            <input
-              type="radio"
-              name="paymentMethod"
-              value={method.id}
-              checked={selectedMethod === method.id}
-              onChange={(e) => setSelectedMethod(e.target.value)}
-            />
-            <span>{method.icon} {method.label}</span>
-          </label>
-        ))}
-      </div>
-
-      <button className="payment-button" onClick={handlePayment}>
-        Thanh toán
+      <button onClick={handleVNPayPayment} className="pay-btn" disabled={loading}>
+        {loading ? 'Đang xử lý...' : 'Thanh toán qua VNPay'}
       </button>
-
-      <p className="payment-footer">
-        Bằng cách nhấn nút <span className="highlight">Thanh toán</span>, bạn đồng ý với <br />
-        <a href="#" className="link">Điều kiện và điều khoản</a> của chúng tôi
-      </p>
+      <button onClick={() => navigate('/')} className="cancel-btn">
+        Hủy
+      </button>
     </div>
   );
 };

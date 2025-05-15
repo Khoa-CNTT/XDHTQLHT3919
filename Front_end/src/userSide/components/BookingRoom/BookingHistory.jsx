@@ -1,67 +1,116 @@
 import React, { useState, useEffect } from 'react';
-// import mockBookingData from '../../../services/api/userAPI/bookingMockData';
-import '../../../assets/Style/Others/booking-history.css'
-
+import { getBookingsByUserId } from '../../../services/api/userAPI/bookingAPI';
+import { getBookingDetailsByBookingId } from '../../../services/api/userAPI/bookingDetail'; // Sử dụng API đúng
+import '../../../assets/Style/Others/booking-history.css';
 
 const BookingHistory = () => {
-//     const [bookings, setBookings] = useState([]);
-  
-//     useEffect(() => {
-//       // Giả lập việc gọi API và nhận dữ liệu
-//       const fetchBookings = async () => {
-//         // Thay thế API thực tế bằng mock data
-//         setBookings(mockBookingData);
-//       };
-  
-//       fetchBookings();
-    // }, []);
-  
-    return (
-      <div className="booking-history-container">
-        {/* <h2>Lịch sử Đặt Phòng</h2>
-        {bookings.length > 0 ? (
-          bookings.map((booking) => (
-            <div key={booking.Id} className="booking-item">
-              <h3>Mã Đặt Phòng: {booking.Id}</h3>
-              <p><strong>Trạng thái:</strong> 
-                <span className={`status ${booking.Status.toLowerCase().replace(' ', '-')}`}>
-                  {booking.Status}
-                </span>
-              </p>
-              <p><strong>Tổng Tiền:</strong> {new Intl.NumberFormat().format(booking.Total)} đ</p>
-              <p><strong>Ngày Đặt:</strong> {new Date(booking.CreateAt).toLocaleDateString()}</p>
-              <p><strong>Ngày Check-In:</strong> {new Date(booking.CheckInDate).toLocaleDateString()}</p>
-              <p><strong>Ngày Check-Out:</strong> {new Date(booking.CheckOutDate).toLocaleDateString()}</p>
-              <h4>Chi Tiết Phòng:</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Tên Phòng</th>
-                    <th>Số Lượng</th>
-                    <th>Giá</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {booking.BookingDetails.map((detail, index) => (
-                    <tr key={index}>
-                      <td>{detail.RoomName}</td>
-                      <td>{detail.Quantity}</td>
-                      <td>{new Intl.NumberFormat().format(detail.Price)} đ</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="total">
-                <strong>Tổng cộng: {new Intl.NumberFormat().format(booking.Total)} đ</strong>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>Chưa có lịch sử đặt phòng.</p>
-        )} */}
-      </div>
-    );
-  };
-  
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const userId = localStorage.getItem('idUser');
+        if (!userId) {
+          alert('Vui lòng đăng nhập để xem lịch sử đặt phòng.');
+          window.location.href = '/login';
+          return;
+        }
+
+        const response = await getBookingsByUserId(userId);
+
+        if (response && Array.isArray(response.data)) {
+          const userBookings = response.data.filter((booking) => booking.idUser === userId);
+
+          // Lấy chi tiết phòng cho từng đặt phòng
+          const bookingsWithDetails = await Promise.all(
+            userBookings.map(async (booking) => {
+              const detailsResponse = await getBookingDetailsByBookingId(booking.idBooking); // Gọi API đúng
+              return {
+                ...booking,
+                bookingDetails: detailsResponse.data || [], // Gắn chi tiết phòng vào từng đặt phòng
+              };
+            })
+          );
+
+          setBookings(bookingsWithDetails);
+        } else {
+          setBookings([]);
+        }
+      } catch (err) {
+        console.error('Lỗi khi lấy lịch sử đặt phòng:', err);
+        setError(err.message || 'Đã xảy ra lỗi.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, []);
+
+  return (
+    <div className="booking-history-container">
+      <h2 className="booking-history-title">Lịch sử Đặt Phòng</h2>
+      {loading ? (
+        <p className="loading-message">Đang tải dữ liệu...</p>
+      ) : error ? (
+        <p className="error-message">{error}</p>
+      ) : bookings.length > 0 ? (
+        <table className="booking-history-table">
+          <thead>
+            <tr>
+              <th>Mã Đặt Phòng</th>
+              <th>Trạng Thái</th>
+              <th>Tổng Tiền</th>
+              <th>Ngày Đặt</th>
+              <th>Ngày Check-In</th>
+              <th>Ngày Check-Out</th>
+              <th>Chi Tiết Phòng</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bookings.map((booking) => (
+              <tr key={booking.idBooking}>
+                <td>{booking.idBooking}</td>
+                <td>
+                  <span className={`status ${booking.status.toLowerCase().replace(' ', '-')}`}>
+                    {booking.status}
+                  </span>
+                </td>
+                <td>{new Intl.NumberFormat().format(booking.total)} đ</td>
+                <td>{new Date(booking.createAt).toLocaleDateString()}</td>
+                <td>
+                  {booking.bookingDetails.length > 0
+                    ? new Date(booking.bookingDetails[0].checkInDate).toLocaleDateString()
+                    : 'Chưa xác định'}
+                </td>
+                <td>
+                  {booking.bookingDetails.length > 0
+                    ? new Date(booking.bookingDetails[0].checkOutDate).toLocaleDateString()
+                    : 'Chưa xác định'}
+                </td>
+                <td>
+                  <ul className="room-details-list">
+                    {booking.bookingDetails.map((detail, index) => (
+                      <li key={index}>
+                        {detail.roomName} - SL: {detail.quantity} - Giá: {new Intl.NumberFormat().format(detail.totalPrice)} đ
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="no-bookings-message">Chưa có lịch sử đặt phòng.</p>
+      )}
+    </div>
+  );
+};
 
 export default BookingHistory;

@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\40.jpg",
+      "PackagePath": "staticwebassets\\images\\40.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Quan_Ly_HomeStay.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.Quan_Ly_HomeStay.props",
+      "PackagePath": "build\\Quan_Ly_HomeStay.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.Quan_Ly_HomeStay.props",
+      "PackagePath": "buildMultiTargeting\\Quan_Ly_HomeStay.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.Quan_Ly_HomeStay.props",
+      "PackagePath": "buildTransitive\\Quan_Ly_HomeStay.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

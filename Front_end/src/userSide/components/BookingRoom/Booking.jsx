@@ -49,67 +49,87 @@ const Booking = ({
     checkRoomStatus();  // Gọi hàm kiểm tra khi component load
   }, [roomId]);
 
-  const handleBooking = async () => {
-    if (!userId) {
-      setNotificationMessage("Vui lòng đăng nhập trước khi đặt phòng.");
-      setShowNotification(true);
+// ...existing code...
+const handleBooking = async () => {
+  if (!userId) {
+    setNotificationMessage("Vui lòng đăng nhập trước khi đặt phòng.");
+    setShowNotification(true);
 
-      // Chờ 6 giây rồi chuyển hướng tới trang login
-      setTimeout(() => {
-        navigate("/login");
-      }, 6000); // 6 giây = 6000ms
+    setTimeout(() => {
+      navigate("/login");
+    }, 6000);
+    return;
+  }
 
-      return;
-    }
+  if (!isRoomAvailable) {
+    setNotificationMessage("Phòng này đã được đặt hoặc không còn trống.");
+    setShowNotification(true);
+    return;
+  }
 
-    if (!isRoomAvailable) {
-      setNotificationMessage("Phòng này đã được đặt hoặc không còn trống.");
-      setShowNotification(true);
-      return;
-    }
+  try {
+    // 1. Gọi API tạo đơn Booking
+    const bookingPayload = {
+      idUser: userId,
+      status: 'chờ xác nhận',
+      total: totalPrice,
+      paymentMethod: 'Đã thanh toán VNPay'
+    };
 
-    try {
-      // 1. Gọi API tạo đơn Booking
-      const bookingPayload = {
-        idUser: userId,
-        status: 'chờ xác nhận',
-        total: totalPrice,
-        paymentMethod: 'chưa chọn'
-      };
+const bookingRes = await addBooking(bookingPayload);
+console.log('bookingRes:', bookingRes);
+const bookingId = bookingRes.data?.idBooking;
+if (!bookingId) {
+  setNotificationMessage('Không lấy được mã đặt phòng từ server!');
+  setShowNotification(true);
+  return;
+}
+    // 2. Gọi API tạo chi tiết BookingDetail
+    const detailPayload = {
+      idBooking: bookingId,
+      idRoom: roomId,
+      checkInDate,
+      checkOutDate,
+      totalPrice,
+      note
+    };
 
-      const bookingRes = await addBooking(bookingPayload);
-      const bookingId = bookingRes.id; // hoặc bookingRes.data.id tùy theo backend
+    await addBookingDetail(detailPayload);
 
-      // 2. Gọi API tạo chi tiết BookingDetail
-      const detailPayload = {
-        idBooking: bookingId,
-        idRoom: roomId,
-        checkInDate,
-        checkOutDate,
-        totalPrice,
-        note
-      };
-
-      await addBookingDetail(detailPayload);
-
-      // 3. Điều hướng sang trang thanh toán
-      navigate('/paymentMethod', {
-        state: {
-          roomId,
+    // 3. Tạo bookingData để lưu vào localStorage
+    const bookingData = {
+      bookingId,
+      idUser: userId,
+      roomId,
+      checkInDate,
+      checkOutDate,
+      total: totalPrice,
+      note,
+      bookingDetails: [
+        {
+          idRoom: roomId,
           checkInDate,
           checkOutDate,
           totalPrice,
-          note,
-          bookingId
+          note
         }
-      });
-    } catch (error) {
-      console.error('Lỗi khi đặt phòng:', error);
-      setNotificationMessage('Đặt phòng thất bại. Vui lòng thử lại.');
-      setShowNotification(true);
-    }
-  };
+      ]
+    };
 
+    // Lưu vào localStorage
+    localStorage.setItem('bookingData', JSON.stringify(bookingData));
+
+    // 4. Điều hướng sang trang thanh toán
+    navigate('/paymentMethod', {
+      state: { bookingData }
+    });
+  } catch (error) {
+    console.error('Lỗi khi đặt phòng:', error);
+    setNotificationMessage('Đặt phòng thất bại. Vui lòng thử lại.');
+    setShowNotification(true);
+  }
+};
+// ...existing code...
 
   return (
     <div className="booking-box">

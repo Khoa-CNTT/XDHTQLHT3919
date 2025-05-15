@@ -101,6 +101,7 @@ const RoomNew = () => {
                   <h3>{room.name}</h3>
                   <h3>{room.detail}</h3>
                   <h3>{room.status}</h3>
+                  <h3>Loại phòng: {room.category?.name || room.categoryName || '---'}</h3>
                   <p className="room-price">{formatPrice(room.price)}</p>
                   <button className="btn btn--primary" onClick={() => handleRoomClick(room)}>
                     Chi tiết

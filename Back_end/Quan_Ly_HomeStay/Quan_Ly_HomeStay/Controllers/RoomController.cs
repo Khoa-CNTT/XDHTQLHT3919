@@ -85,12 +85,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 }
             });
         }
-
-
-
-
-
-        // POST: api/room/add
+         // POST: api/room/add
 
         [HttpPost("add")]
         public async Task<ActionResult> AddRoom([FromBody] RoomDto roomDto)

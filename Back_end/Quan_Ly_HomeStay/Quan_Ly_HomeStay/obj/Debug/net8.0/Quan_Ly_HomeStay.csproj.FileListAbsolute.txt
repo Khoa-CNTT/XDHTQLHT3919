@@ -296,3 +296,4 @@ D:\4_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\scopedcss\
 D:\4_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.csproj.CopyComplete
 D:\4_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\Quan_Ly_HomeStay.genruntimeconfig.cache
 D:\4_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\obj\Debug\net8.0\ref\Quan_Ly_HomeStay.dll
+D:\4_DoAn\Back_end\Quan_Ly_HomeStay\Quan_Ly_HomeStay\bin\Debug\net8.0\Quan_Ly_HomeStay.staticwebassets.runtime.json

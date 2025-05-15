@@ -16,9 +16,7 @@ const RoomInfo = ({ room }) => {
       </div>
       <h1 className="room-title">{name}</h1>
       <div className="room-overview">
-        {category && (
-          <p><strong>Loại phòng:</strong> {category.name}</p>
-        )}
+        <p><strong>Loại phòng:</strong> {category || room.categoryName || '---'}</p>
         <p><strong>Giá:</strong> {formatPrice(price)}</p>
         <p><strong>Trạng thái:</strong> {status}</p>
         <p><strong>Ngày tạo:</strong> {formatDate(createAt)}</p>
@@ -28,6 +26,7 @@ const RoomInfo = ({ room }) => {
         {detail && (
           <p><strong>Chi tiết:</strong> {detail}</p>
         )}
+
 
         {/* Hiển thị tiện nghi */}
         {Array.isArray(amenities) && amenities.length > 0 && (

@@ -86,6 +86,15 @@ namespace Quan_Ly_HomeStay.Data
                 .HasOne(bds => bds.Service)
                 .WithMany(s => s.BookingDetailServices)
                 .HasForeignKey(bds => bds.ServiceId);
+            modelBuilder.Entity<Room>()
+                .HasMany(r => r.Amenities)
+                .WithMany(a => a.Rooms)
+                .UsingEntity<Dictionary<string, object>>(
+                         "RoomAmenity",
+                     j => j.HasOne<AmenityModel>().WithMany().HasForeignKey("AmenityId"),
+                     j => j.HasOne<Room>().WithMany().HasForeignKey("RoomId")
+                );
         }
     }
+
 }

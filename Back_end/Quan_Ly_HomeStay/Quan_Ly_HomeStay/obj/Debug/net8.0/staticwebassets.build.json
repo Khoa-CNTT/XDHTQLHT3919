@@ -1,11 +1,39 @@
 {
   "Version": 1,
-  "Hash": "i3dskoCqXDUBZMpqkQC57cqPt1TYJd3cCwPnbFSwJrY=",
+  "Hash": "+BjNBjV7QvwLdyNLi7LZ3kGV0+ywIWQcF4YdBeBSxtg=",
   "Source": "Quan_Ly_HomeStay",
   "BasePath": "_content/Quan_Ly_HomeStay",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "Quan_Ly_HomeStay\\wwwroot",
+      "Source": "Quan_Ly_HomeStay",
+      "ContentRoot": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\",
+      "BasePath": "_content/Quan_Ly_HomeStay",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\40.jpg",
+      "SourceId": "Quan_Ly_HomeStay",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\",
+      "BasePath": "_content/Quan_Ly_HomeStay",
+      "RelativePath": "images/40.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\40.jpg"
+    }
+  ]
 }

@@ -137,13 +137,13 @@ namespace Quan_Ly_HomeStay.Controllers
             user.CreateAt ??= DateTime.Now;
             user.PathImg ??= "default-avatar.png"; // Avatar mặc định nếu không có
 
-            // 6. Gán vai trò mặc định "Customer"
-            var role = await db.Roles.FirstOrDefaultAsync(x => x.Name == "Customer");
+            // 6. Gán vai trò mặc định "Member"
+            var role = await db.Roles.FirstOrDefaultAsync(x => x.Name == "Member");
             if (role == null)
             {
                 return StatusCode(500, new
                 {
-                    message = "Không tìm thấy vai trò mặc định 'Customer'",
+                    message = "Không tìm thấy vai trò mặc định 'Member'",
                     status = 500
                 });
             }

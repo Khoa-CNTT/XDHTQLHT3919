@@ -1,17 +1,19 @@
 import axios from 'axios';
 
 const API_URL = 'https://localhost:7154/api/booking';
-const API_DETAIL_URL = 'https://localhost:7154/api/booking/detail';
 
-// ====================== ĐƠN ĐẶT PHÒNG ======================
-
-// Thêm đơn đặt phòng
+// Tạo đơn đặt phòng (BookingModel)
 export const addBooking = async (bookingData) => {
   try {
-    const response = await axios.post(`${API_URL}/add`, bookingData);
-    return response.data;
+    const response = await axios.post(`${API_URL}/add`, bookingData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data; // Trả về object chứa id Booking
   } catch (error) {
-    console.error('Lỗi khi thêm đơn đặt phòng:', error);
+    console.error("Lỗi khi thêm đơn đặt phòng:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -20,9 +22,9 @@ export const addBooking = async (bookingData) => {
 export const getAllBookings = async () => {
   try {
     const response = await axios.get(`${API_URL}/all`);
-    return response.data.data;
+    return response.data;
   } catch (error) {
-    console.error('Lỗi khi lấy danh sách đặt phòng:', error);
+    console.error("Lỗi khi lấy danh sách đơn đặt phòng:", error);
     throw error;
   }
 };
@@ -31,65 +33,46 @@ export const getAllBookings = async () => {
 export const getBookingById = async (id) => {
   try {
     const response = await axios.get(`${API_URL}/${id}`);
-    return response.data.data;
+    return response.data;
   } catch (error) {
-    console.error('Lỗi khi lấy đơn đặt phòng theo ID:', error);
+    console.error("Lỗi khi lấy chi tiết đơn đặt phòng:", error);
     throw error;
   }
 };
 
-// Lấy đơn theo user
+// Lấy các đơn đặt phòng theo ID người dùng
 export const getBookingsByUserId = async (userId) => {
   try {
     const response = await axios.get(`${API_URL}/user/${userId}`);
-    return response.data.data;
-  } catch (error) {
-    console.error('Lỗi khi lấy đơn theo user:', error);
-    throw error;
-  }
-};
-
-// Xác nhận đơn
-export const confirmBooking = async (id) => {
-  try {
-    const response = await axios.put(`${API_URL}/confirm/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Lỗi khi xác nhận đơn:', error);
+    console.error("Lỗi khi lấy đơn đặt phòng của người dùng:", error);
     throw error;
   }
 };
 
-// Hủy đơn
-export const cancelBooking = async (id) => {
+// Cập nhật trạng thái đơn đặt phòng
+export const updateBookingEdit = async (id, edit) => {
   try {
-    const response = await axios.put(`${API_URL}/cancel/${id}`);
+    const response = await axios.put(`${API_URL}/edit`, { id, edit }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Lỗi khi hủy đơn:', error);
+    console.error("Lỗi khi cập nhật trạng thái đơn đặt phòng:", error.response?.data || error.message);
     throw error;
   }
 };
-// Cập nhật API để lấy tất cả thông tin booking cùng với chi tiết
-export const getAllBookingsWithDetails = async () => {
+
+// Xóa đơn đặt phòng theo ID
+export const deleteBooking = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/all-with-details`);
+    const response = await axios.delete(`${API_URL}/delete/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Lỗi khi lấy tất cả thông tin booking và chi tiết:', error);
-    throw error;
-  }
-};
-
-// ====================== CHI TIẾT ĐẶT PHÒNG ======================
-
-// Lấy toàn bộ chi tiết đơn đặt phòng
-export const getAllBookingDetails = async () => {
-  try {
-    const response = await axios.get(`${API_DETAIL_URL}/all`);
-    return response.data.data;
-  } catch (error) {
-    console.error('Lỗi khi lấy tất cả chi tiết đặt phòng:', error);
+    console.error("Lỗi khi xóa đơn đặt phòng:", error.response?.data || error.message);
     throw error;
   }
 };

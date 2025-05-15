@@ -1,114 +1,113 @@
 .booking-history-container {
-    font-family: 'Arial', sans-serif;
-    padding: 30px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
-    margin: 0 auto;
+  max-width: 1100px;
+  margin: 40px auto 0 auto;
+  padding: 32px 24px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+}
+
+.booking-history-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #1976d2;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+}
+
+.booking-history-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fafbfc;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.06);
+}
+
+.booking-history-table th,
+.booking-history-table td {
+  padding: 16px 14px;
+  text-align: left;
+  border-bottom: 1px solid #e3e8ee;
+  font-size: 1rem;
+}
+
+.booking-history-table th {
+  background: #e3f0fc;
+  color: #1565c0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.booking-history-table tr:last-child td {
+  border-bottom: none;
+}
+
+.booking-history-table tr:hover {
+  background: #f0f7ff;
+  transition: background 0.2s;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+.status.chờ-xác-nhận {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.đã-xác-nhận {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.đã-hủy {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.room-details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.room-details-list li {
+  margin-bottom: 6px;
+  background: #f5faff;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.97rem;
+  color: #333;
+  box-shadow: 0 1px 2px rgba(25, 118, 210, 0.03);
+}
+
+.loading-message,
+.error-message,
+.no-bookings-message {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #888;
+  margin: 32px 0 0 0;
+}
+
+@media (max-width: 900px) {
+  .booking-history-container {
+    padding: 12px 2vw;
   }
-  
-  .booking-history-container h2 {
-    font-size: 2rem;
-    color: #333;
-    text-align: center;
-    margin-bottom: 30px;
+  .booking-history-table th,
+  .booking-history-table td {
+    padding: 10px 6px;
+    font-size: 0.95rem;
   }
-  
-  .booking-item {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  .booking-item h3 {
-    font-size: 1.6rem;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .booking-item p {
-    font-size: 1rem;
-    color: #666;
-    margin: 5px 0;
-  }
-  
-  .booking-item table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .booking-item table th, .booking-item table td {
-    padding: 15px;
-    text-align: left;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .booking-item table th {
-    background-color: #4caf50;
-    color: white;
-    font-size: 1.1rem;
-  }
-  
-  .booking-item table td {
-    background-color: #f9f9f9;
-    color: #333;
-  }
-  
-  .booking-item table tr:nth-child(even) td {
-    background-color: #f1f1f1;
-  }
-  
-  .booking-item table tr:hover {
-    background-color: #e0e0e0;
-  }
-  
-  .booking-item .total {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #4caf50;
-    margin-top: 15px;
-  }
-  
-  .booking-item .status {
-    display: inline-block;
-    padding: 5px 10px;
-    background-color: #ffeb3b;
-    color: #333;
-    border-radius: 5px;
-    font-weight: bold;
-  }
-  
-  .booking-item .status.confirmed {
-    background-color: #4caf50;
-    color: white;
-  }
-  
-  .booking-item .status.pending {
-    background-color: #ff9800;
-    color: white;
-  }
-  
-  .booking-item .status.unconfirmed {
-    background-color: #f44336;
-    color: white;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .booking-history-container {
-      padding: 15px;
-    }
-  
-    .booking-item table th, .booking-item table td {
-      padding: 10px;
-    }
-  
-    .booking-item h3 {
-      font-size: 1.4rem;
-    }
-  }
-  
+}

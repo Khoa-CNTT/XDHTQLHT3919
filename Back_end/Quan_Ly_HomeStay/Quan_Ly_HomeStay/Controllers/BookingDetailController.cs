@@ -92,12 +92,11 @@ namespace Quan_Ly_HomeStay.Controllers
 
             return Ok(new { message = "Xóa thành công!", status = 200 });
         }
-
         [HttpGet("getAllByBooking/{idBooking}")]
         public async Task<IActionResult> GetAllByBooking(Guid idBooking)
         {
             var details = await _db.BookingDetails
-                .Where(x => x.Id == idBooking)
+                .Where(x => x.IdBooking == idBooking) // Lọc theo IdBooking
                 .Include(x => x.IdRoomNavigation)
                 .Select(x => new
                 {
@@ -112,9 +111,13 @@ namespace Quan_Ly_HomeStay.Controllers
                 })
                 .ToListAsync();
 
+            if (!details.Any())
+            {
+                return Ok(new { message = "Không tìm thấy chi tiết đặt phòng!", status = 404, data = details });
+            }
+
             return Ok(new { message = "Lấy dữ liệu thành công!", status = 200, data = details });
         }
-
         // THÊM API cập nhật ngày CheckIn và CheckOut(có thể bỏ)
         [HttpPut("update-dates/{id}")]
         public async Task<IActionResult> UpdateDates(Guid id, [FromBody] UpdateDatesRequest request)

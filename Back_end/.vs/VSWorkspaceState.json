@@ -3,8 +3,9 @@
     "",
     "\\Quan_Ly_HomeStay",
     "\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay",
+    "\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Controllers",
     "\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Helpers"
   ],
-  "SelectedNode": "\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Helpers\\TokenHelper.cs",
+  "SelectedNode": "\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Controllers\\BookingDetailController.cs",
   "PreviewInSolutionExplorer": false
 }

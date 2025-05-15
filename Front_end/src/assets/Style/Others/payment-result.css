@@ -1,0 +1,36 @@
+.payment-result-container {
+  max-width: 400px;
+  margin: 80px auto 0 auto;
+  padding: 32px 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.payment-result-container h2 {
+  color: #219653;
+  font-size: 2rem;
+  margin-bottom: 24px;
+  font-weight: bold;
+}
+
+.payment-result-container h2:not(:contains('thành công')) {
+  color: #e74c3c;
+}
+
+.payment-result-container button {
+  margin-top: 16px;
+  padding: 10px 28px;
+  background: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.payment-result-container button:hover {
+  background: #1769aa;
+}

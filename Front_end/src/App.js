@@ -18,7 +18,7 @@ import Booking from "./userSide/components/BookingRoom/Booking";
 import RoomDetail from "./userSide/components/BookingRoom/RoomDetail";
 import RoomInfo from "./userSide/components/BookingRoom/RoomInfo";
 import BookingHistory from "./userSide/components/BookingRoom/BookingHistory";
-
+import PaymentResult from "./userSide/components/BookingRoom/PaymentResult";
 // Auth
 import Login from "./userSide/components/Auths/Login";
 import Register from "./userSide/components/Auths/Register";
@@ -122,6 +122,7 @@ const App = () => {
                 } />
                 
                 <Route path="/paymentMethod" element={<PaymentMethod />} />
+                <Route path="/payment-result" element={<PaymentResult />} />
 
 
                 <Route path="/adminlayout" element={<AdminLayout />} />
