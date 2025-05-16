@@ -126,7 +126,7 @@ function Login() {
             Đăng ký ngay
           </button>
         </p>
-        <p className="auth-footer" onClick={() => navigate("/forgot")}>
+        <p className="btn" onClick={() => navigate("/forgot")}>
           Quên mật khẩu?
         </p>
       </div>

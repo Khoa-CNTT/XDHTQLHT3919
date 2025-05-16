@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchRoomsData } from '../../../services/api/userAPI/room';
-import { getAllCategories } from '../../../services/api/adminAPI/roomCategory'; // Sửa lại import này
+import { getAllCategories } from '../../../services/api/adminAPI/roomCategory';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../../../assets/Style/home-css/Room.css';
@@ -20,6 +20,7 @@ const Rooms = () => {
       try {
         const response = await fetchRoomsData();
         const rooms = Array.isArray(response) ? response : response.data || [];
+        console.log('ROOMS:', rooms);
         setRoomsData(rooms);
       } catch (err) {
         setError(err.message || 'Có lỗi xảy ra');
@@ -28,13 +29,12 @@ const Rooms = () => {
       }
     };
 
-    // Gọi API lấy danh sách category
     const getCategories = async () => {
       try {
         const res = await getAllCategories();
         setCategories(res.data || []);
       } catch (err) {
-        // Nếu lỗi thì giữ nguyên categories cũ
+        // Giữ nguyên categories cũ nếu lỗi
       }
     };
 
@@ -45,6 +45,7 @@ const Rooms = () => {
   const formatPrice = (price) =>
     typeof price === 'number' ? price.toLocaleString() + ' VND' : 'Đang cập nhật';
 
+  // Lọc phòng theo giá và danh mục
   const filteredRooms = roomsData.filter((room) => {
   const matchPrice =
     priceFilter === '' ||
@@ -52,12 +53,14 @@ const Rooms = () => {
     (priceFilter === '500to1000' && room.price >= 500000 && room.price <= 1000000) ||
     (priceFilter === 'gt1000' && room.price > 1000000);
 
-  const matchCategory =
-    categoryFilter === '' ||
-    String(room.category?.id) === String(categoryFilter);
+  const categoryId = room.category?.id || room.idCategory || room.categoryId || '';
+  const matchCategory = categoryFilter === '' || String(categoryId) === String(categoryFilter);
+
+  console.log(`Room: ${room.name}, Price: ${room.price}, CategoryId: ${categoryId}, matchPrice: ${matchPrice}, matchCategory: ${matchCategory}`);
 
   return matchPrice && matchCategory;
 });
+
 
   const handleRoomClick = (room) => {
     navigate(`/room/${room.id}`);
@@ -113,31 +116,29 @@ const Rooms = () => {
 
         {/* Danh sách phòng */}
         <div className="rooms__grid">
-  
-{loading ? (
-  renderSkeletonRooms(6)
-) : filteredRooms.length === 0 ? (
-  <p>Không tìm thấy phòng phù hợp.</p>
-) : (
-  filteredRooms.map((room) => (
-    <div className="room-card" key={room.id}>
-      <div className="room-card__image">
-        <img src={room.pathImg} alt={room.name} />
-      </div>
-      <div className="room-card__content">
-        <h3>{room.name}</h3>
-        <h3>{room.detail}</h3>
-        <h3>{room.status}</h3>
-        <h3>Loại phòng: {room.category?.name || room.categoryName || '---'}</h3>
-        <p className="room-price">{formatPrice(room.price)}</p>
-        <button className="btn btn--primary" onClick={() => handleRoomClick(room)}>
-          Chi tiết
-        </button>
-      </div>
-    </div>
-  ))
-)}
-
+          {loading ? (
+            renderSkeletonRooms(6)
+          ) : filteredRooms.length === 0 ? (
+            <p>Không tìm thấy phòng phù hợp.</p>
+          ) : (
+            filteredRooms.map((room) => (
+              <div className="room-card" key={room.id}>
+                <div className="room-card__image">
+                  <img src={room.pathImg} alt={room.name} />
+                </div>
+                <div className="room-card__content">
+                  <h3>{room.name}</h3>
+                  <h3>{room.detail}</h3>
+                  <h3>{room.status}</h3>
+                  <h3>Loại phòng: {room.category?.name || room.categoryName || '---'}</h3>
+                  <p className="room-price">{formatPrice(room.price)}</p>
+                  <button className="btn btn--primary" onClick={() => handleRoomClick(room)}>
+                    Chi tiết
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </section>

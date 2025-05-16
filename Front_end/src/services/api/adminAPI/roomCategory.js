@@ -6,6 +6,10 @@ export const getAllCategories = async () => {
   const res = await axios.get(`${API_BASE}/all`);
   return res.data;
 };
+export const getCategoryById = async (id) => {
+  const res = await axios.get(`${API_BASE}/${id}`);
+  return res.data;
+};
 
 export const addCategory = async (category) => {
   const res = await axios.post(`${API_BASE}/add`, category);

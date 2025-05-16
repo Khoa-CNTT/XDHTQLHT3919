@@ -1,3 +1,43 @@
+⚙️ Hướng dẫn chạy hệ thống Homestay
+📁 1. Import dữ liệu ban đầu
+Sử dụng file SQL.sql để tạo database và thêm dữ liệu mẫu cho website.
+
+File này bao gồm: tài khoản mẫu, danh sách phòng, danh mục, dịch vụ...
+
+👉 Import file vào SQL Server trước khi chạy backend.
+
+🧾 2. Thanh toán Online (VNPay Sandbox - Thẻ test)
+Để test thanh toán online, sử dụng thông tin thẻ test từ VNPay:
+
+Số thẻ: 9704198526191432198
+
+Tên chủ thẻ: NGUYEN VAN A
+
+Ngày phát hành: 07/15
+
+OTP: 123456
+
+✅ Đây là thẻ giả lập dùng trong môi trường sandbox của VNPay.
+
+🚀 3. Chạy hệ thống
+Backend:
+
+Mở solution ASP.NET Core bằng Visual Studio.
+
+Chạy HomestayManagementAPI để khởi động API (https://localhost:xxxx).
+
+Frontend:
+
+Mở folder giao diện (React) bằng VS Code.
+Chạy lệnh:
+npm install
+npm start
+Website sẽ hoạt động ở http://localhost:3000.
+
+⚠️ Lưu ý: Backend cần chạy trước để các API hoạt động khi frontend gọi dữ liệu.
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

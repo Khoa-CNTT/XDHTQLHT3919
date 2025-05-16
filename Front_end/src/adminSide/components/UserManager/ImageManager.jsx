@@ -1,71 +1,116 @@
 import React, { useEffect, useState } from 'react';
-import { getGalleryImages, uploadImageFile, uploadImageUrl, deleteImage } from '../../../services/api/userAPI/gallery';
+import { getGalleryImages, uploadImage, deleteImage } from '../../../services/api/userAPI/gallery';
 import '../../../assets/Style/admin-css/ImageManager.css'
+import Notification from '../../../userSide/components/Other/Notification';
 
 const ImageManager = () => {
-    const [images, setImages] = useState([]);
-    const [file, setFile] = useState(null);
-    const [url, setUrl] = useState('');
+  const [images, setImages] = useState([]);
+  const [file, setFile] = useState(null);
+  const [url, setUrl] = useState('');
 
-    useEffect(() => {
-        fetchImages();
-    }, []);
+  // State cho notification
+  const [notif, setNotif] = useState({ show: false, message: '' });
 
-    const fetchImages = async () => {
-        const data = await getGalleryImages();
-        setImages(data);
-    };
+  useEffect(() => {
+    fetchImages();
+  }, []);
 
-    const handleFileUpload = async () => {
-        if (!file) return alert("Chọn tệp trước!");
-        await uploadImageFile(file);
-        setFile(null);
-        fetchImages();
-    };
+  const showNotification = (message) => {
+    setNotif({ show: true, message });
+  };
 
-    const handleUrlUpload = async () => {
-        if (!url) return alert("Nhập URL trước!");
-        await uploadImageUrl(url);
-        setUrl('');
-        fetchImages();
-    };
+  const hideNotification = () => {
+    setNotif({ show: false, message: '' });
+  };
 
-    const handleDelete = async (id) => {
-        await deleteImage(id);
-        fetchImages();
-    };
+  const fetchImages = async () => {
+    const data = await getGalleryImages();
+    setImages(data);
+  };
 
-    return (
-        <div className="image-manager">
-            <h2>Quản lý thư viện ảnh</h2>
+  const handleFileUpload = async () => {
+    if (!file) {
+      showNotification("Vui lòng chọn tệp trước!");
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', file);
 
-            <div>
-                <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-                <button onClick={handleFileUpload}>Tải ảnh lên từ máy</button>
-            </div>
+    try {
+      await uploadImage(formData);
+      showNotification("Tải ảnh thành công!");
+      setFile(null);
+      fetchImages();
+    } catch (error) {
+      showNotification("Lỗi khi tải ảnh từ máy!");
+    }
+  };
 
-            <div>
-                <input
-                    type="text"
-                    placeholder="Dán đường dẫn ảnh..."
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                />
-                <button onClick={handleUrlUpload}>Thêm ảnh từ URL</button>
-            </div>
+  const handleUrlUpload = async () => {
+    if (!url) {
+      showNotification("Vui lòng nhập URL ảnh!");
+      return;
+    }
+    const formData = new FormData();
+    formData.append('imageUrl', url);
 
-            <hr />
+    try {
+      await uploadImage(formData);
+      showNotification("Thêm ảnh từ URL thành công!");
+      setUrl('');
+      fetchImages();
+    } catch (error) {
+      showNotification("Lỗi khi thêm ảnh từ URL!");
+    }
+  };
 
-            <div className="gallery__grid">
-                {images.map((img) => (
-                    <div className="gallery-item" key={img.id}>
-                        <img src={img.src} alt={img.alt} width="150" />
-                        <button onClick={() => handleDelete(img.id)}>Xoá</button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+  const handleDelete = async (id) => {
+    try {
+      await deleteImage(id);
+      showNotification("Đã xoá ảnh!");
+      fetchImages();
+    } catch (error) {
+      showNotification("Lỗi khi xoá ảnh!");
+    }
+  };
+
+  return (
+    <div className="image-manager">
+      <h2>Quản lý thư viện ảnh</h2>
+
+      <div>
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <button className='btnImage' onClick={handleFileUpload}>Tải ảnh lên từ máy</button>
+      </div>
+
+      <div>
+        <input
+          type="text"
+          placeholder="Dán đường dẫn ảnh..."
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+        <button className='btnImage' onClick={handleUrlUpload}>Thêm ảnh từ URL</button>
+      </div>
+
+      <hr />
+
+      <div className="gallery__grid">
+        {images.map((img) => (
+          <div className="gallery-item" key={img.id}>
+            <img
+              src={img.src.startsWith('http') ? img.src : `https://localhost:7154${img.src}`}
+              alt={img.alt || 'Ảnh'}
+              width="150"
+            />
+            <button className='btnImage' onClick={() => handleDelete(img.id)}>Xoá</button>
+          </div>
+        ))}
+      </div>
+
+      <Notification message={notif.message} show={notif.show} onClose={hideNotification} />
+    </div>
+  );
 };
 
 export default ImageManager;

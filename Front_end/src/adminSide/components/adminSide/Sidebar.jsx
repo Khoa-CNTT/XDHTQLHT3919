@@ -26,7 +26,7 @@ const Sidebar = () => {
           <li>Quản lý đặt phòng</li>
         </Link>
         <Link to="/amenitymanager" className={isActive('/amenitymanager')}>
-          <li>Quản lý tiện nghi</li>
+          <li>Quản lý tiện ích</li>
         </Link>
         <Link to="/imagemanager" className={isActive('/imagemanager')}>
           <li>Quản lý ảnh home</li>
