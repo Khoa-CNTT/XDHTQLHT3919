@@ -94,6 +94,11 @@ namespace Quan_Ly_HomeStay.Data
                      j => j.HasOne<AmenityModel>().WithMany().HasForeignKey("AmenityId"),
                      j => j.HasOne<Room>().WithMany().HasForeignKey("RoomId")
                 );
+            modelBuilder.Entity<Review>()
+     .HasMany(r => r.Replies)
+     .WithOne(r => r.ParentReview)
+     .HasForeignKey(r => r.ParentReviewId)
+     .OnDelete(DeleteBehavior.Restrict);
         }
     }
 

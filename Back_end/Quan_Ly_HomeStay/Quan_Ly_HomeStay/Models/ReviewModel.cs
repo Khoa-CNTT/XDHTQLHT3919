@@ -8,14 +8,24 @@ namespace Quan_Ly_HomeStay.Models
         [Key]
         public Guid Id { get; set; }
 
-        public string? Comment { get; set; }
+        [Required]
+        public string Comment { get; set; }
 
-        public DateTime? CreateAt { get; set; } = DateTime.Now;
+        [Range(1, 5, ErrorMessage = "Rating phải từ 1 đến 5.")]
+        public int Rating { get; set; }
+
+        public DateTime CreateAt { get; set; } = DateTime.Now;
 
         public Guid? IdUser { get; set; }
-        
+
         [ForeignKey("IdUser")]
         public virtual User? IdUserNavigation { get; set; }
 
+        public Guid? ParentReviewId { get; set; }
+
+        [ForeignKey("ParentReviewId")]
+        public virtual Review? ParentReview { get; set; }
+
+        public virtual ICollection<Review>? Replies { get; set; }
     }
 }
