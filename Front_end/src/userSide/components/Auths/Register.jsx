@@ -91,22 +91,23 @@ function Register() {
     setIsSubmitting(true);
 
     try {
-      const response = await register(registerData);
-      console.log("Phản hồi từ backend:", response);
+  const response = await register(registerData);
+  console.log("Phản hồi từ backend:", response);
 
-      showNotification("Đăng ký thành công!");
-      setTimeout(() => navigate("/login"), 3000);
-    } catch (error) {
-      console.error("Lỗi đăng ký:", error);
-      const errors = error.response?.data?.errors;
-      const message =
-        (errors && Object.values(errors)[0]?.[0]) ||
-        error.response?.data?.message ||
-        "Lỗi đăng ký! Vui lòng thử lại.";
-      showNotification(message);
-    } finally {
-      setIsSubmitting(false);
-    }
+  showNotification("Đăng ký thành công!");
+  setTimeout(() => navigate("/login"), 3000);
+} catch (error) {
+  console.error("Lỗi đăng ký:", error);
+  
+  const message =
+    error.response?.data?.message ||
+    "Lỗi đăng ký! Vui lòng thử lại.";
+
+  showNotification(message);
+} finally {
+  setIsSubmitting(false);
+}
+
   };
 
   return (
@@ -128,7 +129,7 @@ function Register() {
 
             {isEmail ? (
               <div>
-                <label>Email</label>
+                <label className="label_text">Email</label>
                 <input
                   type="email"
                   placeholder="your.email@example.com"
@@ -140,7 +141,7 @@ function Register() {
               </div>
             ) : (
               <div>
-                <label>Số điện thoại</label>
+                <label className="label_text">Số điện thoại</label>
                 <input
                   type="tel"
                   placeholder="Nhập số điện thoại"
@@ -153,7 +154,7 @@ function Register() {
             )}
 
             <div>
-              <label>Tên người dùng</label>
+              <label className="label_text">Tên người dùng</label>
               <input
                 type="text"
                 placeholder="Nhập tên"
@@ -165,7 +166,7 @@ function Register() {
             </div>
 
             <div>
-              <label>Mật khẩu</label>
+              <label className="label_text">Mật khẩu</label>
               <div className="password-container">
                 <input
                   type={isPasswordVisible ? "text" : "password"}
@@ -186,7 +187,7 @@ function Register() {
             </div>
 
             <div>
-              <label>Xác nhận mật khẩu</label>
+              <label className="label_text">Xác nhận mật khẩu</label>
               <div className="password-container">
                 <input
                   type={isConfirmPasswordVisible ? "text" : "password"}

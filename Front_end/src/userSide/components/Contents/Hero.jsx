@@ -1,42 +1,37 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-// Import các ảnh
+// Import ảnh nền
 import logoBg1 from '../../../images/logo-bg1.jpg';
 import logoBg2 from '../../../images/logo-bg2.jpg';
 import logoBg3 from '../../../images/logo-bg3.jpg';
 import logoBg4 from '../../../images/logo-bg4.jpg';
 import logoBg5 from '../../../images/logo-bg5.png';
-import { Link } from 'react-router-dom';
+
+import '../../../assets/Style/home-css/hero.css'
 
 const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFadingOut, setIsFadingOut] = useState(false);
-
-  // Mảng chứa các ảnh đã import
   const images = [logoBg1, logoBg2, logoBg3, logoBg4, logoBg5];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Bắt đầu hiệu ứng fade-out
-      setIsFadingOut(true);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 5000);
 
-      // Đợi cho hiệu ứng fade-out hoàn thành rồi thay đổi ảnh
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        setIsFadingOut(false); // Sau khi thay đổi ảnh, bắt đầu fade-in
-      }, 1000); // Đợi 1s để hoàn thành fade-out trước khi thay đổi ảnh
-    }, 5000); // Chuyển ảnh mỗi 5 giây
-
-    return () => clearInterval(interval); // Dọn dẹp interval khi component unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <section className="hero">
       <div className="hero__background-container">
-        <div
-          className={`hero__background ${isFadingOut ? 'fade-out' : 'fade-in'}`}
-          style={{ backgroundImage: `url(${images[currentIndex]})` }}
-        />
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className={`hero__background ${index === currentIndex ? 'active' : ''}`}
+            style={{ backgroundImage: `url(${image})` }}
+          />
+        ))}
       </div>
 
       <div className="container2">
@@ -44,8 +39,8 @@ const Hero = () => {
           <h1 className="hero__title">MTX-N54 Homestay</h1>
           <p className="hero__subtitle">Trải nghiệm sang trọng bậc nhất tại trung tâm thành phố</p>
           <div className="hero__buttons">
-            <Link to="/room" className="btn btn--primary1">Đặt phòng ngay</Link>
-            <Link to="/room" className="btn btn--outline">Khám phá phòng</Link>
+            <Link to="/room" className=" btn--primary1">Đặt phòng ngay</Link>
+            <Link to="/room" className=" btn--outline">Khám phá phòng</Link>
           </div>
         </div>
       </div>

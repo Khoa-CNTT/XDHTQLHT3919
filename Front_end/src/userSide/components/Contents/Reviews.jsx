@@ -4,12 +4,13 @@ import {
   createReview,
   replyToReview,
   updateReview,
-  deleteReview
+  deleteReview,
 } from '../../../services/api/userAPI/ReviewAPI';
 import Notification from '../../../userSide/components/Other/Notification';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../../../assets/Style/home-css/Reviews.css';
+
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -18,9 +19,12 @@ const Reviews = () => {
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editForm, setEditForm] = useState({ comment: '', rating: 1 });
   const [notification, setNotification] = useState({ message: '', show: false, type: '' });
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
-  const [submitting, setSubmitting] = useState(false); // Thêm trạng thái đang gửi đánh giá
-  const [replying, setReplying] = useState({}); // Trạng thái trả lời
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [replying, setReplying] = useState({});
+  const [editingReplyId, setEditingReplyId] = useState(null);
+  const [editReplyForm, setEditReplyForm] = useState({ comment: '' });
+
 
   const currentUserId = localStorage.getItem('idUser');
   const currentUserRole = localStorage.getItem('role');
@@ -30,87 +34,15 @@ const Reviews = () => {
   }, []);
 
   const loadReviews = async () => {
-    setLoading(true); // Bắt đầu loading
+    setLoading(true);
     try {
       const data = await getAllReviews();
-      setReviews(data.sort((a, b) => new Date(b.createAt) - new Date(a.createAt))); // Sắp xếp đánh giá mới nhất lên trên
-    } catch (err) {
+      // Sắp xếp mới nhất lên đầu
+      setReviews(data.sort((a, b) => new Date(b.createAt) - new Date(a.createAt)));
+    } catch (error) {
       showNotification('Lỗi tải đánh giá', 'error');
     } finally {
-      setLoading(false); // Hoàn tất loading
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.comment.trim()) {
-      showNotification('Bình luận không thể trống', 'error');
-      return;
-    }
-    if (form.rating < 1 || form.rating > 5) {
-      showNotification('Điểm đánh giá không hợp lệ', 'error');
-      return;
-    }
-
-    setSubmitting(true); // Bắt đầu gửi đánh giá
-    try {
-      await createReview({
-        comment: form.comment,
-        rating: form.rating,
-        userId: currentUserId, // Lấy userId từ localStorage hoặc auth
-      });
-      showNotification('Gửi đánh giá thành công', 'success');
-      setForm({ comment: '', rating: 1 });
-      loadReviews();
-    } catch (err) {
-      showNotification('Gửi đánh giá thất bại', 'error');
-    } finally {
-      setSubmitting(false); // Hoàn tất gửi đánh giá
-    }
-  };
-
-  const handleReplySubmit = async (e, reviewId) => {
-    e.preventDefault();
-    const replyText = replyForms[reviewId];
-    if (!replyText?.trim()) return;
-
-    setReplying((prev) => ({ ...prev, [reviewId]: true })); // Bắt đầu gửi trả lời
-    try {
-      await replyToReview(reviewId, { comment: replyText });
-      setReplyForms({ ...replyForms, [reviewId]: '' });
-      showNotification('Trả lời thành công', 'success');
-      loadReviews();
-    } catch {
-      showNotification('Trả lời thất bại', 'error');
-    } finally {
-      setReplying((prev) => ({ ...prev, [reviewId]: false })); // Hoàn tất gửi trả lời
-    }
-  };
-
-  const handleEdit = (review) => {
-    setEditingReviewId(review.id);
-    setEditForm({ comment: review.comment, rating: review.rating });
-  };
-
-  const handleUpdate = async (reviewId) => {
-    try {
-      await updateReview(reviewId, editForm);
-      showNotification('Cập nhật thành công', 'success');
-      setEditingReviewId(null);
-      loadReviews();
-    } catch {
-      showNotification('Cập nhật thất bại', 'error');
-    }
-  };
-
-  const handleDelete = async (reviewId) => {
-    if (!window.confirm('Bạn chắc chắn muốn xóa đánh giá này?')) return;
-    try {
-      await deleteReview(reviewId);
-      showNotification('Xóa thành công', 'success');
-      loadReviews();
-    } catch {
-      showNotification('Xóa thất bại', 'error');
+      setLoading(false);
     }
   };
 
@@ -118,13 +50,138 @@ const Reviews = () => {
     setNotification({ message, type, show: true });
   };
 
-  const StarRating = ({ rating }) => (
-    <span className="stars">
-      {[...Array(5)].map((_, i) => (
-        <span key={i} className={i < rating ? 'filled' : ''}>★</span>
-      ))}
-    </span>
-  );
+  // Tạo đánh giá mới
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.comment.trim()) {
+      showNotification('Bình luận không được để trống', 'error');
+      return;
+    }
+    if (form.rating < 1 || form.rating > 5) {
+      showNotification('Điểm đánh giá phải từ 1 đến 5', 'error');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await createReview({ comment: form.comment, rating: form.rating });
+      showNotification('Gửi đánh giá thành công', 'success');
+      setForm({ comment: '', rating: 1 });
+      loadReviews();
+    } catch (error) {
+      showNotification('Gửi đánh giá thất bại', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Trả lời đánh giá
+  const handleReplySubmit = async (e, reviewId) => {
+    e.preventDefault();
+    const replyText = replyForms[reviewId];
+    if (!replyText?.trim()) {
+      showNotification('Nội dung trả lời không được để trống', 'error');
+      return;
+    }
+
+    setReplying((prev) => ({ ...prev, [reviewId]: true }));
+    try {
+      await replyToReview(reviewId, { comment: replyText });
+      setReplyForms((prev) => ({ ...prev, [reviewId]: '' }));
+      showNotification('Trả lời thành công', 'success');
+      loadReviews();
+    } catch (error) {
+      showNotification('Trả lời thất bại', 'error');
+    } finally {
+      setReplying((prev) => ({ ...prev, [reviewId]: false }));
+    }
+  };
+  const handleEditReply = (reply) => {
+    setEditingReplyId(reply.id);
+    setEditReplyForm({ comment: reply.comment });
+  };
+
+  const handleUpdateReply = async (replyId) => {
+  if (!editReplyForm.comment.trim()) {
+    showNotification('Nội dung trả lời không được để trống', 'error');
+    return;
+  }
+
+  try {
+    await updateReview(replyId, { comment: editReplyForm.comment, rating: 1 });
+    showNotification('Cập nhật trả lời thành công', 'success');
+    setEditingReplyId(null);
+    loadReviews();
+  } catch (error) {
+    showNotification('Cập nhật trả lời thất bại', 'error');
+  }
+};
+  const handleDeleteReply = async (replyId) => {
+    if (!window.confirm('Bạn chắc chắn muốn xóa trả lời này?')) return;
+
+    try {
+      await deleteReview(replyId);
+      showNotification('Xóa trả lời thành công', 'success');
+      loadReviews();
+    } catch (error) {
+      showNotification('Xóa trả lời thất bại', 'error');
+    }
+  };
+
+
+  // Bắt đầu chỉnh sửa
+  const handleEdit = (review) => {
+    setEditingReviewId(review.id);
+    setEditForm({ comment: review.comment, rating: review.rating });
+  };
+
+  // Lưu cập nhật đánh giá
+  const handleUpdate = async (reviewId) => {
+    if (!editForm.comment.trim()) {
+      showNotification('Bình luận không được để trống', 'error');
+      return;
+    }
+    if (editForm.rating < 1 || editForm.rating > 5) {
+      showNotification('Điểm đánh giá phải từ 1 đến 5', 'error');
+      return;
+    }
+
+    try {
+      await updateReview(reviewId, { comment: editForm.comment, rating: editForm.rating });
+      showNotification('Cập nhật thành công', 'success');
+      setEditingReviewId(null);
+      loadReviews();
+    } catch (error) {
+      showNotification('Cập nhật thất bại', 'error');
+    }
+  };
+
+  // Xóa đánh giá
+  const handleDelete = async (reviewId) => {
+    if (!window.confirm('Bạn chắc chắn muốn xóa đánh giá này?')) return;
+    try {
+      await deleteReview(reviewId);
+      showNotification('Xóa thành công', 'success');
+      loadReviews();
+    } catch (error) {
+      showNotification('Xóa thất bại', 'error');
+    }
+  };
+
+  const StarRating = ({ rating }) => {
+    const ratingNumber = Number(rating);
+    return (
+      <span className="stars">
+        {[...Array(5)].map((_, i) => (
+          <span key={i} className={i < ratingNumber ? 'filled' : ''}>
+            ★
+          </span>
+        ))}
+      </span>
+    );
+  };
+
+
 
   return (
     <div className="review-user-modern">
@@ -153,7 +210,12 @@ const Reviews = () => {
                 key={i}
                 className={i < form.rating ? 'star selected' : 'star'}
                 onClick={() => setForm({ ...form, rating: i + 1 })}
-              >★</span>
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && setForm({ ...form, rating: i + 1 })}
+              >
+                ★
+              </span>
             ))}
           </div>
         </label>
@@ -165,21 +227,30 @@ const Reviews = () => {
       <h3>Danh sách đánh giá</h3>
       <div className="review-list">
         {loading ? (
-          // Hiển thị Skeleton khi đang tải
-          [...Array(3)].map((_, index) => (
-            <div key={index} className="review-card">
+          [...Array(3)].map((_, idx) => (
+            <div key={idx} className="review-card">
               <Skeleton height={40} width="60%" />
               <Skeleton count={2} />
               <Skeleton height={50} />
             </div>
           ))
         ) : reviews.length === 0 ? (
-          <p>Không có đánh giá nào.</p>
+          <p>Chưa có đánh giá nào.</p>
         ) : (
           reviews.map((review) => (
+
             <div key={review.id} className="review-card">
+
               <div className="review-top">
-                <strong>{review.userName || 'Ẩn danh'}</strong>
+                <div className="user-info">
+                  <img
+                    src={review.userAvatar || '/default-avatar.png'}
+                    alt="avatar"
+                    className="avatar"
+                  />
+                  <strong>{review.userName || (review.idUser === currentUserId ? 'Bạn' : 'Ẩn danh')}</strong>
+                </div>
+
                 <StarRating rating={review.rating} />
                 <span className="date">{new Date(review.createAt).toLocaleString()}</span>
               </div>
@@ -196,11 +267,19 @@ const Reviews = () => {
                         key={i}
                         className={i < editForm.rating ? 'star selected' : 'star'}
                         onClick={() => setEditForm({ ...editForm, rating: i + 1 })}
-                      >★</span>
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && setEditForm({ ...editForm, rating: i + 1 })}
+                      >
+                        ★
+                      </span>
                     ))}
                   </div>
-                  <button onClick={() => handleUpdate(review.id)}>Lưu</button>
-                  <button onClick={() => setEditingReviewId(null)}>Hủy</button>
+                  <div className="review-actions">
+                      <button onClick={() => handleUpdate(review.id)}>Lưu</button>
+                      <button onClick={() => setEditingReviewId(null)}>Hủy</button>
+                  </div>
+
                 </div>
               ) : (
                 <>
@@ -214,27 +293,59 @@ const Reviews = () => {
                 </>
               )}
 
-              {review.replies?.length > 0 && (
-                <div className="reply-list">
-                  {review.replies.map((reply) => (
-                    <div key={reply.id} className="reply-item">
-                      <strong>{reply.userName || 'Ẩn danh'}</strong>: {reply.comment}
-                      <div className="date-reply">{new Date(reply.createAt).toLocaleString()}</div>
+              {review.replies.map((reply) => (
+                <div key={reply.id} className="reply-item">
+                  <div className="user-info">
+                    <img
+                      src={reply.userAvatar || '/default-avatar.png'}
+                      alt="avatar"
+                      className="avatar"
+                    />
+                    <strong>{reply.userName || (reply.idUser === currentUserId ? 'Bạn' : 'Ẩn danh')}</strong>
+                  </div>
+
+                  {editingReplyId === reply.id ? (
+                    <div className="edit-form">
+                      <textarea
+                        value={editReplyForm.comment}
+                        onChange={(e) => setEditReplyForm({ comment: e.target.value })}
+                      />
+                      <div className="review-actions">
+                      <button onClick={() => handleUpdateReply(reply.id)}>Lưu</button>
+                      <button onClick={() => setEditingReplyId(null)}>Hủy</button>
+                      </div>
                     </div>
-                  ))}
+
+                    
+                  ) : (
+                    <>
+                      <p className="comment">{reply.comment}</p>
+                      {(reply.idUser === currentUserId || currentUserRole === 'Admin') && (
+                        <div className="review-actions">
+                          <button onClick={() => handleEditReply(reply)}>Sửa</button>
+                          <button onClick={() => handleDeleteReply(reply.id)}>Xóa</button>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  <div className="date-reply">{new Date(reply.createAt).toLocaleString()}</div>
                 </div>
-              )}
+              ))}
+
 
               <form onSubmit={(e) => handleReplySubmit(e, review.id)} className="reply-form">
                 <textarea
-                  placeholder="Trả lời đánh giá..."
+                  placeholder="Viết trả lời..."
                   value={replyForms[review.id] || ''}
                   onChange={(e) =>
-                    setReplyForms({ ...replyForms, [review.id]: e.target.value })
+                    setReplyForms((prev) => ({ ...prev, [review.id]: e.target.value }))
                   }
+                  disabled={replying[review.id]}
+                  required
                 />
                 <button type="submit" disabled={replying[review.id]}>
-                  {replying[review.id] ? 'Đang trả lời...' : 'Trả lời'}
+                  {replying[review.id] ? 'Đang gửi...' : 'Trả lời'}
                 </button>
               </form>
             </div>

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getGalleryImages } from '../../../services/api/userAPI/gallery';
 import "../../../assets/Style/home-css/gallery.css";
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 
 const Gallery = () => {
     const [galleryImages, setGalleryImages] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [fade, setFade] = useState(false);
 
     useEffect(() => {
         const fetchGalleryImages = async () => {
@@ -19,19 +21,20 @@ const Gallery = () => {
         fetchGalleryImages();
     }, []);
 
-    const prevImage = () => {
-        setCurrentIndex((prev) =>
-            prev === 0 ? galleryImages.length - 1 : prev - 1
-        );
+    const handleImageChange = (direction) => {
+        setFade(true); // bắt đầu hiệu ứng
+        setTimeout(() => {
+            setCurrentIndex((prev) => {
+                if (direction === 'prev') {
+                    return prev === 0 ? galleryImages.length - 1 : prev - 1;
+                } else {
+                    return (prev + 1) % galleryImages.length;
+                }
+            });
+            setFade(false); // kết thúc hiệu ứng
+        }, 300); // thời gian trùng với CSS animation
     };
 
-    const nextImage = () => {
-        setCurrentIndex((prev) =>
-            (prev + 1) % galleryImages.length
-        );
-    };
-
-    // Lấy ảnh theo vị trí (vòng lặp)
     const getImageAt = (index) => {
         const length = galleryImages.length;
         return galleryImages[(index + length) % length];
@@ -42,32 +45,35 @@ const Gallery = () => {
             <h2 className="section-title">Thư viện ảnh</h2>
             <p className="section-subtitle">Khám phá không gian sang trọng của chúng tôi</p>
 
-            <div className="carousel">
-    {/* Thêm container cho các nút điều hướng */}
-    <div className="nav-btn-container">
-        <button className="nav-btn" onClick={prevImage}>←</button>
-        <button className="nav-btn" onClick={nextImage}>→</button>
-    </div>
+            <div className="carousel-container">
+                <div className="carousel">
+                    <button className="nav-btn prev" onClick={() => handleImageChange('prev')}>
+                        <IoChevronBack size={24} />
+                    </button>
 
-    <div className="carousel-images">
-        <img
-            src={getImageAt(currentIndex - 1)?.src}
-            alt=""
-            className="side-image left"
-        />
-        <img
-            src={getImageAt(currentIndex)?.src}
-            alt=""
-            className="main-image"
-        />
-        <img
-            src={getImageAt(currentIndex + 1)?.src}
-            alt=""
-            className="side-image right"
-        />
-    </div>
-</div>
+                    <div className={`carousel-images ${fade ? 'fade' : ''}`}>
+                        <img
+                            src={getImageAt(currentIndex - 1)?.src}
+                            alt=""
+                            className="side-image left"
+                        />
+                        <img
+                            src={getImageAt(currentIndex)?.src}
+                            alt=""
+                            className="main-image"
+                        />
+                        <img
+                            src={getImageAt(currentIndex + 1)?.src}
+                            alt=""
+                            className="side-image right"
+                        />
+                    </div>
 
+                    <button className="nav-btn next" onClick={() => handleImageChange('next')}>
+                        <IoChevronForward size={24} />
+                    </button>
+                </div>
+            </div>
         </section>
     );
 };
