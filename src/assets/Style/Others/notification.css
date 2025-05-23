@@ -1,0 +1,45 @@
+.notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    z-index: 9999;
+    animation: slide-in 0.3s ease-out;
+    min-width: 250px;
+  }
+  
+  .notification-icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  
+  .notification-message {
+    flex-grow: 1;
+  }
+  
+  .notification-close {
+    background: none;
+    border: none;
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  

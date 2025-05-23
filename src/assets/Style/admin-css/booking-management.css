@@ -1,0 +1,183 @@
+.booking-management-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.booking-management-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.booking-management-filter {
+  margin-bottom: 20px;
+}
+
+.booking-management-filter-inputs {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.booking-management-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 250px;
+}
+
+.booking-management-button {
+  padding: 0 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+  height: 40px;
+  font-size: 15px;
+}
+
+.booking-management-button:hover {
+  background-color: #0056b3;
+}
+
+.booking-management-table-section {
+  overflow-x: auto;
+}
+
+.booking-management-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.booking-management-table th,
+.booking-management-table td {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.booking-management-table th {
+  background-color: #f1f1f1;
+  font-weight: 600;
+  color: #333;
+}
+
+.booking-management-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.booking-management-image {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.booking-management-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.booking-management-input.search-input {
+  flex: 1;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.booking-management-input.search-input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Action Buttons - TO HƠN */
+.booking-management-actions button {
+  margin: 0 4px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Các nút riêng */
+.booking-edit-btn {
+  background-color: #ffc107;
+}
+
+.booking-edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.booking-delete-btn {
+  background-color: #dc3545;
+}
+
+.booking-delete-btn:hover {
+  background-color: #c82333;
+}
+
+.booking-confirm-btn {
+  background-color: #28a745;
+}
+
+.booking-confirm-btn:hover {
+  background-color: #218838;
+}
+
+.booking-cancel-btn {
+  background-color: #6c757d;
+}
+
+.booking-cancel-btn:hover {
+  background-color: #5a6268;
+}
+
+.edit-btn {
+  background-color: #f39c12;
+  margin-right: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.cancel-btn {
+  background-color: #e74c3c;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.cancel-btn,
+.edit-btn,
+.delete-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}

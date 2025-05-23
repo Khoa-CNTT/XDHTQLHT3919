@@ -1,0 +1,113 @@
+.booking-history-container {
+  max-width: 1100px;
+  margin: 40px auto 40px auto;
+  padding: 32px 24px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+}
+
+.booking-history-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #1976d2;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+}
+
+.booking-history-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fafbfc;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.06);
+}
+
+.booking-history-table th,
+.booking-history-table td {
+  padding: 16px 14px;
+  text-align: left;
+  border-bottom: 1px solid #e3e8ee;
+  font-size: 1rem;
+}
+
+.booking-history-table th {
+  background: #e3f0fc;
+  color: #1565c0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.booking-history-table tr:last-child td {
+  border-bottom: none;
+}
+
+.booking-history-table tr:hover {
+  background: #f0f7ff;
+  transition: background 0.2s;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+.status.chờ-xác-nhận {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.đã-xác-nhận {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.đã-hủy {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.room-details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.room-details-list li {
+  margin-bottom: 6px;
+  background: #f5faff;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.97rem;
+  color: #333;
+  box-shadow: 0 1px 2px rgba(25, 118, 210, 0.03);
+}
+
+.loading-message,
+.error-message,
+.no-bookings-message {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #888;
+  margin: 32px 0 0 0;
+}
+
+@media (max-width: 900px) {
+  .booking-history-container {
+    padding: 12px 2vw;
+  }
+  .booking-history-table th,
+  .booking-history-table td {
+    padding: 10px 6px;
+    font-size: 0.95rem;
+  }
+}

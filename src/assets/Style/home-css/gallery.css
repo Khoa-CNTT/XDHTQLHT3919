@@ -1,0 +1,152 @@
+/* Gallery Section */
+.gallery.section-padding {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* Carousel Container */
+.carousel-container {
+    max-width: 1160px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Carousel Layout */
+.carousel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+}
+
+/* Carousel Images */
+.carousel-images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    padding-bottom: 40px;
+}
+
+/* Main Image */
+.main-image {
+    width: 600px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: transform 1.5s ease, opacity 1.5s ease;
+    z-index: 2;
+}
+
+/* Side Images */
+.side-image {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    opacity: 0.4;
+    filter: blur(2px);
+    transition: transform 1.5s ease, opacity 1.5s ease, filter 1.5s ease;
+    z-index: 1;
+}
+
+.side-image.left {
+    margin-right: 20px;
+    transform: scale(0.95) translateX(-10px);
+}
+
+.side-image.right {
+    margin-left: 20px;
+    transform: scale(0.95) translateX(10px);
+}
+
+/* Hover Effects */
+.carousel-images:hover .side-image {
+    opacity: 0.7;
+    filter: blur(1px);
+}
+
+.carousel-images:hover .main-image {
+    transform: scale(1.05);
+}
+
+/* Navigation Buttons - Đè lên ảnh hai bên */
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 3;
+}
+
+.nav-btn:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.nav-btn.prev {
+    left: 10px;
+}
+
+.nav-btn.next {
+    right: 10px;
+}
+
+/* Ẩn phần nav-btn-container cũ nếu có */
+.nav-btn-container {
+    display: none;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 992px) {
+    .main-image {
+        width: 90%;
+        height: auto;
+    }
+
+    .side-image {
+        display: none;
+    }
+
+    .carousel-container {
+        width: 100%;
+    }
+
+    .nav-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+}
+/* Fade effect */

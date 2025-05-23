@@ -1,0 +1,57 @@
+/* Amenities Section */
+.amenities__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+  }
+  
+  .amenity-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #eee;
+    min-width: 120px;
+    height: 150px;
+  }
+  
+  
+  .amenity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  .amenity-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-color: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    transition: all 0.4s ease;
+  }
+  
+  .amenity-card:hover .amenity-icon {
+    background-color: var(--secondary);
+    transform: rotateY(180deg);
+  }
+  
+  .amenity-card h3 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: var(--secondary);
+  }
+  
+  .amenity-card p {
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+  
