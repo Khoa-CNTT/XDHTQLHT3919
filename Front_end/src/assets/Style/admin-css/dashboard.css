@@ -1,6 +1,5 @@
 .dashboard-container {
     background-color: #0d1b4c;
-    height: 100vh;
     padding: 30px;
     color: white;
   }
@@ -12,4 +11,22 @@
     color: black;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   }
-  
+  .toggle-button {
+  padding: 10px 20px;
+  background-color: #e6b209;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.toggle-button:hover {
+  background-color: #baa02d;
+}
+.chart-box div select{
+  padding: 7px;
+  border-radius: 8px;
+}

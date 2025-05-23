@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addBooking } from '../../../services/api/userAPI/bookingAPI';
-import { addBookingDetail } from '../../../services/api/userAPI/bookingDetail';
-import { fetchRoomDetails } from '../../../services/api/userAPI/room';
+import { addBookingDetail } from '../../../services/api/userAPI/bookingDetailAPI';
+import { fetchRoomDetails } from '../../../services/api/adminAPI/roomAPI';
 import Notification from '../../../userSide/components/Other/Notification';
 
 const Booking = ({

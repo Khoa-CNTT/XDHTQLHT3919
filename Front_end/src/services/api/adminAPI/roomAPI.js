@@ -8,6 +8,10 @@ const headers = {
   'Content-Type': 'application/json',
   ...(token && { 'Authorization': `Bearer ${token}` })  // Thêm Authorization Header nếu có token
 };
+const handleError = (error, message) => {
+  console.error(message, error);
+  throw new Error(`${message}: ${error.response?.data || error.message}`);
+};
 
 // Lấy danh sách phòng
 export const getRooms = async () => {
@@ -70,5 +74,13 @@ export const deleteRoom = async (id) => {
       console.error('Lỗi từ server:', error.response.data);
     }
     throw error;
+  }
+};
+export const fetchRoomDetails = async (roomId) => {
+  try {
+    const response = await axios.get(`${API_URL}/${roomId}`);
+    return response.data;
+  } catch (error) {
+    handleError(error, 'Không thể lấy chi tiết phòng');
   }
 };

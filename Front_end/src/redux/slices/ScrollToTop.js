@@ -5,7 +5,6 @@ const ScrollToTop = ({ children }) => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Scroll lên ngay lập tức, tránh nháy
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname]);
 

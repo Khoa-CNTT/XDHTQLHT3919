@@ -115,6 +115,7 @@ const changePassword = async (data) => {
     throw error;
   }
 };
+// Quên mật khẩu
 const forgotPassword = async (email) => {
   try {
     const response = await axios.post(`${API_URL}/forgot-password`, { email });

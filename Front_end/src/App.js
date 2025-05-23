@@ -32,29 +32,27 @@ import Profile from "./userSide/components/Other/Profile";
 import PrivacyPolicy from "./userSide/components/Other/PrivacyPolicy";
 import TermsOfService from "./userSide/components/Other/TermsOfService";
 import PaymentMethod from "./userSide/components/BookingRoom/PaymentMethod";
+import MovingText from "./userSide/components/Other/MovingText";
 
 // Admin side
-import AdminLayout from "./adminSide/components/adminSide/AdminLayout";
-import Sidebar from "./adminSide/components/adminSide/Sidebar";
-import Dashboard from "./adminSide/components/adminSide/Dashboard";
-import ProductList from "./adminSide/components/productManager/RoomList";
-import UserList from "./adminSide/components/UserManager/UserList";
-import RoomCategory from "./adminSide/components/productManager/RoomCategoryList";
+import AdminLayout from "./adminSide/components/headerAdmin/AdminLayout";
+import Sidebar from "./adminSide/components/headerAdmin/Sidebar";
+import Dashboard from "./adminSide/components/productManager/Dashboard";
+import RoomManager from "./adminSide/components/productManager/RoomManager";
+import UserManager from "./adminSide/components/userManager/UserManager";
+import RoomCategoryManager from "./adminSide/components/productManager/RoomCategoryManager";
 import BookingManagement from "./adminSide/components/productManager/BookingManagement";
-import AmenityManager from "./adminSide/components/UserManager/AmenityManager";
-import ImageManager from "./adminSide/components/UserManager/ImageManager";
+import AmenityManager from "./adminSide/components/productManager/AmenityManager";
+import ImageManager from "./adminSide/components/productManager/ImageManager";
 import ServiceManager from "./adminSide/components/productManager/ServiceManagement";
 
 
 
-import "./assets/Style/Auth-css/auth.css";
+import "./assets/Style/auth-css/auth.css";
 import "./assets/Style/admin-css/adminLayout.css";
 import "./assets/Style/home-css/indexx.css";
 
-
-
 // import "./assets/Style/roomDetail/RoomDetailPage.css";
-
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -92,6 +90,7 @@ const App = () => {
                     element={
                         <>
                             <Hero />
+                            <MovingText />
                             <RoomNew  onRoomClick={handleRoomClick} />
                             <Amenity />
                             <Gallery />
@@ -136,19 +135,19 @@ const App = () => {
                         <Dashboard />
                     </AdminLayout>
                 } />
-                <Route path="/productlist" element={
+                <Route path="/roommanager" element={
                     <AdminLayout>
-                        <ProductList />
+                        <RoomManager />
                     </AdminLayout>
                 } />
-                <Route path="/roomcategorylist" element={
+                <Route path="/roomcategorymanager" element={
                     <AdminLayout>
-                        <RoomCategory />
+                        <RoomCategoryManager />
                     </AdminLayout>
                 } />
-                <Route path="/userlist" element={
+                <Route path="/usermanager" element={
                     <AdminLayout>
-                        <UserList />
+                        <UserManager />
                     </AdminLayout>
                 } />
                 <Route path="/bookingmanagement" element={

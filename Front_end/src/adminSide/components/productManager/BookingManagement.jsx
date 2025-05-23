@@ -89,7 +89,7 @@ export default function BookingManagement() {
 
   const filteredAndSortedBookings = bookingDetails
     .filter((item) =>
-      (item.userEmail || '').toLowerCase().includes(searchKeyword.toLowerCase())
+(item.userEmail || '').toLowerCase().includes(searchKeyword.toLowerCase())
     )
     .sort((a, b) =>
       sortOrder === 'asc' ? a.total - b.total : b.total - a.total
@@ -124,6 +124,9 @@ export default function BookingManagement() {
                 <th>Tổng tiền</th>
                 <th>Ngày tạo</th>
                 <th>Hành động</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Tên phòng</th>
               </tr>
             </thead>
             <tbody>
@@ -135,6 +138,9 @@ export default function BookingManagement() {
                     <td>{item.paymentMethod}</td>
                     <td>{item.total?.toLocaleString()} đ</td>
                     <td>{new Date(item.createAt).toLocaleDateString()}</td>
+                    <td>{new Date(item.checkIn).toLocaleDateString()}</td>
+                    <td>{new Date(item.checkOut).toLocaleDateString()}</td>
+                    <td>{item.roomName}</td>
                     <td>
                       <button
                         className="booking-edit-btn"

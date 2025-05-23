@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchRoomDetails } from '../../../services/api/userAPI/room';
+import { fetchRoomDetails } from '../../../services/api/adminAPI/roomAPI';
 import RoomInfo from './RoomInfo';
 import BookingBox from './Booking';
 import { ArrowLeft } from 'lucide-react';

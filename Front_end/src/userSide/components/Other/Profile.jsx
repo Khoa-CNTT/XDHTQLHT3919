@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userApi from "../../../services/api/AuthAPI/user";
-import "../../../assets/Style/Auth-css/profile.css";
+import userApi from "../../../services/api/AuthAPI/userAPI";
+import "../../../assets/Style/auth-css/profile.css";
 import Notification from "./Notification";
 
 const Profile = () => {

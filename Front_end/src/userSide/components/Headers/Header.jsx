@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaSearch, FaBars, FaHeart } from "react-icons/fa";
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import Notification from "../Other/Notification";
 import "../../../images/avatar.jpg";
 
 const Header = () => {
@@ -15,10 +16,22 @@ const Header = () => {
     const [showSearch, setShowSearch] = useState(false);
     const [showRoomList, setShowRoomList] = useState(false);
 
+    const [notificationMessage, setNotificationMessage] = useState("");
+    const [showNotification, setShowNotification] = useState(false);
+
     const isMobile = useIsMobile();
     const navigate = useNavigate();
     const searchRef = useRef(null);
     const roomListRef = useRef(null);
+    const location = useLocation();
+
+    useEffect(() => {
+        const emaill = localStorage.getItem('email');
+        if (!emaill) {
+           setNotificationMessage("Vui lòng thêm email của bạn để có thể đổi mật khẩu của mình khi quên!");
+           setShowNotification(true);
+        }
+    }, []);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -33,7 +46,7 @@ const Header = () => {
             setIsAdmin(userRole === "Admin");
             setAvatarUrl(avatar);
         }
-    }, []);
+    }, [location.pathname]);
 
     useEffect(() => {
         const handleUserLoggedIn = () => {
@@ -46,6 +59,8 @@ const Header = () => {
             setRole(userRole);
             setIsAdmin(userRole === "Admin");
             setAvatarUrl(avatar);
+            setNotificationMessage("Đăng nhập thành công!");
+            setShowNotification(true);
         };
 
         window.addEventListener("userLoggedIn", handleUserLoggedIn);
@@ -73,6 +88,8 @@ const Header = () => {
         setAvatarUrl('');
         setRole('');
         localStorage.clear();
+        setNotificationMessage("Bạn đã đăng xuất thành công.");
+        setShowNotification(true);
         navigate('/login');
     };
 
@@ -93,7 +110,6 @@ const Header = () => {
             {isAdmin && (
                 <li><Link to="/adminlayout">Quản lý</Link></li>
             )}
-
         </ul>
     );
 
@@ -117,6 +133,11 @@ const Header = () => {
 
     return (
         <header className="header">
+            <Notification
+                message={notificationMessage}
+                show={showNotification}
+                onClose={() => setShowNotification(false)}
+            />
             <div className="container1">
                 <div className="header__logo">
                     <img src="/logo.png" alt="Logo" />

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import userApi from "../../../services/api/AuthAPI/user";
+import userApi from "../../../services/api/AuthAPI/userAPI";
 import { useNavigate } from "react-router-dom";
 import Notification from "../Other/Notification"; 
 

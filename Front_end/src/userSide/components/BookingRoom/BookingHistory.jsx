@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getBookingsByUserId } from '../../../services/api/userAPI/bookingAPI';
-import { getBookingDetailsByBookingId } from '../../../services/api/userAPI/bookingDetail'; // Sử dụng API đúng
-import '../../../assets/Style/Others/booking-history.css';
+import { getBookingDetailsByBookingId } from '../../../services/api/userAPI/bookingDetailAPI'; // Sử dụng API đúng
+import '../../../assets/Style/others-css/booking-history.css';
 
 const BookingHistory = () => {
   const [bookings, setBookings] = useState([]);

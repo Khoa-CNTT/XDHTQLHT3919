@@ -13,13 +13,13 @@ const Sidebar = () => {
         <Link to="/dashboard" className={isActive('/dashboard')}>
           <li>Thống kê</li>
         </Link>
-        <Link to="/productlist" className={isActive('/productlist')}>
+        <Link to="/roommanager" className={isActive('/roommanager')}>
           <li>Quản lý phòng</li>
         </Link>
-        <Link to="/roomcategorylist" className={isActive('/roomcategorylist')}>
+        <Link to="/roomcategorymanager" className={isActive('/roomcategorymanager')}>
           <li>Quản lý danh mục</li>
         </Link>
-        <Link to="/userlist" className={isActive('/userlist')}>
+        <Link to="/usermanager" className={isActive('/usermanager')}>
           <li>Quản lý tài khoản</li>
         </Link>
         <Link to="/bookingmanagement" className={isActive('/bookingmanagement')}>

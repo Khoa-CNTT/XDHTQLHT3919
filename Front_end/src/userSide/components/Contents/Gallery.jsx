@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getGalleryImages } from '../../../services/api/userAPI/gallery';
+import { getGalleryImages } from '../../../services/api/userAPI/galleryAPI';
 import "../../../assets/Style/home-css/gallery.css";
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 

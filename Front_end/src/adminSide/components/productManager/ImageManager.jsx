@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getGalleryImages, uploadImage, deleteImage } from '../../../services/api/userAPI/gallery';
+import { getGalleryImages, uploadImage, deleteImage } from '../../../services/api/userAPI/galleryAPI';
 import '../../../assets/Style/admin-css/ImageManager.css'
 import Notification from '../../../userSide/components/Other/Notification';
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userApi from "../../../services/api/AuthAPI/user";
+import userApi from "../../../services/api/AuthAPI/userAPI";
 import Notification from "../Other/Notification";
 
 function ChangePassword() {

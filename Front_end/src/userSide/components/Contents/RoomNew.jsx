@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchRoomsData } from '../../../services/api/userAPI/room';
+import { getRooms } from '../../../services/api/adminAPI/roomAPI';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../../../assets/Style/home-css/Room.css';
@@ -17,7 +17,7 @@ const RoomNew = () => {
   useEffect(() => {
     const getRoomsData = async () => {
       try {
-        const response = await fetchRoomsData();
+        const response = await getRooms();
         const rooms = Array.isArray(response) ? response : response.data || [];
         setRoomsData(rooms);
 

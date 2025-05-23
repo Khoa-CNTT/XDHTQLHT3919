@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import userApi from '../../../services/api/AuthAPI/user';
-import roleApi from '../../../services/api/AuthAPI/roleApi';
+import userApi from '../../../services/api/AuthAPI/userAPI';
+import roleApi from '../../../services/api/AuthAPI/roleAPI';
 import Notification from '../../../userSide/components/Other/Notification';
 import "../../../assets/Style/admin-css/userList.css";
 

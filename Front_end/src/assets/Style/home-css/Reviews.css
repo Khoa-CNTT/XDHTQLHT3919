@@ -40,6 +40,7 @@
   border: 1px solid #ccc;
   resize: vertical;
   transition: border-color 0.2s ease;
+  margin-top: 10px;
 }
 
 .review-form textarea:focus,
@@ -189,6 +190,7 @@
 }
 
 .reply-item {
+  margin-top: 8px;
   background-color: #eaf2f8;
   border-radius: 8px;
   padding: 0.5rem 1rem;

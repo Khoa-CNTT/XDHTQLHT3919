@@ -5,7 +5,7 @@ import {
   replyToReview,
   updateReview,
   deleteReview,
-} from '../../../services/api/userAPI/ReviewAPI';
+} from '../../../services/api/userAPI/reviewAPI';
 import Notification from '../../../userSide/components/Other/Notification';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -244,7 +244,7 @@ const Reviews = () => {
               <div className="review-top">
                 <div className="user-info">
                   <img
-                    src={review.userAvatar || '/default-avatar.png'}
+                    src={review.avatarUrl || '/default-avatar.png'}
                     alt="avatar"
                     className="avatar"
                   />
@@ -297,7 +297,7 @@ const Reviews = () => {
                 <div key={reply.id} className="reply-item">
                   <div className="user-info">
                     <img
-                      src={reply.userAvatar || '/default-avatar.png'}
+                      src={reply.avatarUrl || '/default-avatar.png'}
                       alt="avatar"
                       className="avatar"
                     />

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../../services/api/AuthAPI/Login";
+import { login } from "../../../services/api/AuthAPI/loginAPI";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import Notification from "../../components/Other/Notification";
 

@@ -70,7 +70,7 @@
 }
 
 .profile-container button:hover {
-  background-color: #0056b3;
+  background-color: #e4a70e;
   transform: translateY(-2px);
 }
 
@@ -78,6 +78,27 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+.btnprofile {
+  margin-top: 10px;
+  color: rgb(0, 0, 0);
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+
+.btnprofile:active {
+  background-color: #c69312; /* màu xanh đậm hơn khi nhấn */
+}
+
+.btnprofile:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(216, 174, 7, 0.5);
+}
+
 
 @media (max-width: 480px) {
   .profile-container {

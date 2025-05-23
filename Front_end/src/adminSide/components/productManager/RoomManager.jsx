@@ -4,13 +4,13 @@ import {
   addRoom,
   updateRoom,
   deleteRoom,
-} from '../../../services/api/adminAPI/productApi';
-import { getAllCategories } from '../../../services/api/adminAPI/roomCategory';
+} from '../../../services/api/adminAPI/roomAPI';
+import { getAllCategories } from '../../../services/api/adminAPI/roomcategoryAPI';
 import { getAllAmenities } from '../../../services/api/userAPI/amenityAPI';
 import Notification from '../../../userSide/components/Other/Notification';
 import "../../../assets/Style/admin-css/roomList.css";
 
-const RoomList = () => {
+const RoomManager = () => {
   const [rooms, setRooms] = useState([]);
   const [roomTypes, setRoomTypes] = useState([]);
   const [amenities, setAmenities] = useState([]);
@@ -230,11 +230,11 @@ const RoomList = () => {
             {isAmenitiesVisible ? 'Ẩn tiện nghi' : 'Hiển thị tiện nghi'}
           </button>
           {isAmenitiesVisible && (
-            <div className="amenity-list">
+            <div className="amenity-lisst">
               {amenities.map((amenity) => (
                 <div key={amenity.id} className="amenity-option">
                   <input
-                    className='roomlist-select'
+                    className='roomlisst-sellect'
                     type="checkbox"
                     id={amenity.id}
                     checked={selectedAmenities.includes(amenity.id)}
@@ -292,4 +292,4 @@ const RoomList = () => {
   );
 };
 
-export default RoomList;
+export default RoomManager;

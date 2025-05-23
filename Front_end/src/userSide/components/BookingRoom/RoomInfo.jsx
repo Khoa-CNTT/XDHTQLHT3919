@@ -26,6 +26,7 @@ const RoomInfo = ({ room }) => {
         {detail && (
           <p><strong>Chi tiết:</strong> {detail}</p>
         )}
+        <p><strong>Giờ Checkin - Checkout:</strong> 14h - 12h</p>
 
 
         {/* Hiển thị tiện nghi */}
@@ -41,6 +42,8 @@ const RoomInfo = ({ room }) => {
             </div>
           </div>
         )}
+
+
 
       </div>
     </div>

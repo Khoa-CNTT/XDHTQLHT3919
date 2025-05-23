@@ -37,9 +37,7 @@ function Contact() {
               <p>info@homestay.com</p>
             </div>
           </div>
-        </div>
-
-        
+        </div>        
 
         <div className="map-container">
           <h2>Vị trí Homestay</h2>

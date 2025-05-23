@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getAllServices, addService, updateService, deleteService } from '../../../services/api/userAPI/serviceAPI';
+import {
+    getAllServices,
+    addService,
+    updateService,
+    deleteService
+} from '../../../services/api/userAPI/serviceAPI';
 import '../../../assets/Style/admin-css/serviceManager.css';
+import Notification from '../../../userSide/components/Other/Notification';
 
 const ServiceManager = () => {
     const [services, setServices] = useState([]);
@@ -50,7 +56,9 @@ const ServiceManager = () => {
 
         try {
             const updatedService = await updateService(editingService.id, editingService);
-            const updatedList = services.map(service => service.id === updatedService.id ? updatedService : service);
+            const updatedList = services.map(service =>
+                service.id === updatedService.id ? updatedService : service
+            );
             setServices(updatedList);
             setEditingService(null);
             setMessage('Cập nhật dịch vụ thành công.');
@@ -82,77 +90,81 @@ const ServiceManager = () => {
 
     return (
         <div className="service-manager-container">
-            <h2>Quản lý Dịch Vụ</h2>
+            <h2>Quản Lý Dịch Vụ</h2>
 
-            {message && <div className="success-message">{message}</div>}
-            {error && <div className="error-message">{error}</div>}
+            <Notification message={message} show={!!message} onClose={() => setMessage(null)} />
+            <Notification message={error} show={!!error} onClose={() => setError(null)} />
 
-            <div className="add-service-form">
-                <h3>Thêm Dịch Vụ Mới</h3>
+            <div className="card form-card">
+                <h3>{editingService ? 'Chỉnh sửa Dịch Vụ' : 'Thêm Dịch Vụ Mới'}</h3>
                 <input
                     type="text"
-                    value={newService.serviceName}
-                    onChange={(e) => setNewService({ ...newService, serviceName: e.target.value })}
                     placeholder="Tên dịch vụ"
+                    value={editingService ? editingService.serviceName : newService.serviceName}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        editingService
+                            ? setEditingService({ ...editingService, serviceName: value })
+                            : setNewService({ ...newService, serviceName: value });
+                    }}
                 />
-                <input
-                    type="text"
-                    value={newService.description}
-                    onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+                <textarea
                     placeholder="Mô tả"
+                    value={editingService ? editingService.description : newService.description}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        editingService
+                            ? setEditingService({ ...editingService, description: value })
+                            : setNewService({ ...newService, description: value });
+                    }}
                 />
                 <input
                     type="number"
-                    value={newService.price}
-                    onChange={(e) => setNewService({ ...newService, price: parseFloat(e.target.value) })}
                     placeholder="Giá"
+                    value={editingService ? editingService.price : newService.price}
+                    onChange={(e) => {
+                        const value = parseFloat(e.target.value);
+                        editingService
+                            ? setEditingService({ ...editingService, price: value })
+                            : setNewService({ ...newService, price: value });
+                    }}
                 />
-                <button onClick={handleAddService} disabled={isSubmitting}>
-                    {isSubmitting ? 'Đang thêm...' : 'Thêm Dịch Vụ'}
-                </button>
+                {editingService ? (
+                    <div className="form-buttons">
+                        <button onClick={handleEditService} disabled={isSubmitting}>
+                            {isSubmitting ? 'Đang cập nhật...' : 'Cập nhật Dịch Vụ'}
+                        </button>
+                        <button onClick={() => setEditingService(null)} disabled={isSubmitting}>
+                            Hủy
+                        </button>
+                    </div>
+
+                ) : (
+                    <button onClick={handleAddService} disabled={isSubmitting}>
+                        {isSubmitting ? 'Đang thêm...' : 'Thêm Dịch Vụ'}
+                    </button>
+                )}
             </div>
 
-            {editingService && (
-                <div className="edit-service-form">
-                    <h3>Sửa Dịch Vụ</h3>
-                    <input
-                        type="text"
-                        value={editingService.serviceName}
-                        onChange={(e) => setEditingService({ ...editingService, serviceName: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        value={editingService.description}
-                        onChange={(e) => setEditingService({ ...editingService, description: e.target.value })}
-                    />
-                    <input
-                        type="number"
-                        value={editingService.price}
-                        onChange={(e) => setEditingService({ ...editingService, price: parseFloat(e.target.value) })}
-                    />
-                    <button onClick={handleEditService} disabled={isSubmitting}>
-                        {isSubmitting ? 'Đang cập nhật...' : 'Cập Nhật'}
-                    </button>
-                </div>
-            )}
-
-            <div>
+            <div className="service-list-section">
                 <h3>Danh Sách Dịch Vụ</h3>
-                <ul className="service-list">
+                <div className="service-grid">
                     {services.length > 0 ? (
                         services.map(service => (
-                            <li key={service.id}>
+                            <div key={service.id} className="card service-card">
                                 <h4>{service.serviceName}</h4>
                                 <p>{service.description}</p>
-                                <p>Giá: {service.price}</p>
-                                <button onClick={() => setEditingService(service)}>Sửa</button>
-                                <button onClick={() => handleDeleteService(service.id)}>Xóa</button>
-                            </li>
+                                <p><strong>Giá:</strong> {service.price.toLocaleString()} VND</p>
+                                <div className="card-actions">
+                                    <button className="edit-btn" onClick={() => setEditingService(service)}>Sửa</button>
+                                    <button className="delete-btn" onClick={() => handleDeleteService(service.id)}>Xóa</button>
+                                </div>
+                            </div>
                         ))
                     ) : (
                         <p>Không có dịch vụ nào để hiển thị.</p>
                     )}
-                </ul>
+                </div>
             </div>
         </div>
     );

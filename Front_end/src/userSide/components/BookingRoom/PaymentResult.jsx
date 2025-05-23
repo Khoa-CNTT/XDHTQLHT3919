@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../../../assets/Style/Others/payment-result.css';
+import '../../../assets/Style/others-css/payment-result.css';
 const PaymentResult = () => {
   const location = useLocation();
   const navigate = useNavigate();

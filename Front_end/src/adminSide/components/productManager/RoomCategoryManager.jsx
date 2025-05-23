@@ -4,7 +4,7 @@ import {
   addCategory,
   updateCategory,
   deleteCategory
-} from '../../../services/api/adminAPI/roomCategory';
+} from '../../../services/api/adminAPI/roomcategoryAPI';
 import "../../../assets/Style/admin-css/roomCategoryList.css";
 import Notification from '../../../userSide/components/Other/Notification';
 
