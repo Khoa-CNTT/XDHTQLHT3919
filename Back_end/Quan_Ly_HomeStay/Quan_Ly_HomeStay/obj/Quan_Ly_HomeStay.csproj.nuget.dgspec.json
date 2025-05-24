@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {}
+    "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {}
   },
   "projects": {
-    "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {
+    "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
+        "projectUniqueName": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
         "projectName": "Quan_Ly_HomeStay",
-        "projectPath": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
+        "projectPath": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay.csproj",
         "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\obj\\",
+        "outputPath": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 24.1\\Components\\Offline Packages",
@@ -47,6 +47,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Google.Apis.Core": {
+              "target": "Package",
+              "version": "[1.68.0, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.12.0, )"
@@ -74,6 +78,10 @@
             "MimeKit": {
               "target": "Package",
               "version": "[4.12.0, )"
+            },
+            "Mscc.GenerativeAI": {
+              "target": "Package",
+              "version": "[2.5.6, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

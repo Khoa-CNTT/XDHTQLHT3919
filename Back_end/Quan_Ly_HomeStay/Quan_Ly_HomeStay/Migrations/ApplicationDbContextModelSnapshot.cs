@@ -170,17 +170,26 @@ namespace Quan_Ly_HomeStay.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreateAt")
+                    b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("IdUser")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ParentReviewId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdUser");
+
+                    b.HasIndex("ParentReviewId");
 
                     b.ToTable("Reviews");
                 });
@@ -387,7 +396,14 @@ namespace Quan_Ly_HomeStay.Migrations
                         .WithMany("Reviews")
                         .HasForeignKey("IdUser");
 
+                    b.HasOne("Quan_Ly_HomeStay.Models.Review", "ParentReview")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentReviewId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("IdUserNavigation");
+
+                    b.Navigation("ParentReview");
                 });
 
             modelBuilder.Entity("Quan_Ly_HomeStay.Models.Room", b =>
@@ -456,6 +472,11 @@ namespace Quan_Ly_HomeStay.Migrations
             modelBuilder.Entity("Quan_Ly_HomeStay.Models.Category", b =>
                 {
                     b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("Quan_Ly_HomeStay.Models.Review", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("Quan_Ly_HomeStay.Models.Role", b =>

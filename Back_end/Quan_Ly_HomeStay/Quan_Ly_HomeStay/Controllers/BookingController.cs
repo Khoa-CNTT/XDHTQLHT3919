@@ -188,56 +188,28 @@ namespace Quan_Ly_HomeStay.Controllers
                 data = _data
             });
         }
-        /*  [HttpGet("details/{idBooking}")]
-          public async Task<ActionResult> GetBookingDetailsByBookingId(Guid idBooking)
-          {
-              try
-              {
-                  var booking = await db.Bookings
-                      .Include(b => b.BookingDetails)
-                      .ThenInclude(d => d.IdRoom) // Nếu có liên kết đến Room (phòng)
-                      .FirstOrDefaultAsync(b => b.IdBooking == idBooking);
+        [HttpPut("confirm/{id}")]
+        public async Task<ActionResult> ConfirmBooking(Guid id)
+        {
+            var booking = await db.Bookings.FindAsync(id);
+            if (booking == null)
+            {
+                return Ok(new
+                {
+                    message = "Không tìm thấy đơn đặt phòng!",
+                    status = 404
+                });
+            }
 
-                  if (booking == null)
-                  {
-                      return NotFound(new
-                      {
-                          message = "Không tìm thấy đơn đặt phòng!",
-                          status = 404
-                      });
-                  }
+            booking.Status = "Đã xác nhận";
+            await db.SaveChangesAsync();
 
-                  var detailList = booking.BookingDetails.Select(d => new
-                  {
-                      d.Id,
-                      d.IdBooking,
-                      d.IdRoom,
-                      d.CheckInDate,
-                      d.CheckOutDate,
-                      d.TotalPrice,
-                      d.Note,
-                      d.CreateAt,
-                      RoomName = d.IdRoom != null ? d.IdRoom. : "Không rõ"
-                  }).ToList();
-
-                  return Ok(new
-                  {
-                      message = "Lấy chi tiết đơn đặt phòng thành công!",
-                      status = 200,
-                      count = detailList.Count,
-                      data = detailList
-                  });
-              }
-              catch (Exception ex)
-              {
-                  return StatusCode(500, new
-                  {
-                      message = "Đã xảy ra lỗi khi lấy dữ liệu!",
-                      status = 500,
-                      error = ex.Message
-                  });
-              }
-          }*/
+            return Ok(new
+            {
+                message = "Xác nhận đơn đặt phòng thành công!",
+                status = 200
+            });
+        }
 
     }
 }

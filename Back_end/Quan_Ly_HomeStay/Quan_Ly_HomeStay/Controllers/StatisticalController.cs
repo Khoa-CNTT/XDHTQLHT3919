@@ -1,44 +1,70 @@
-﻿
-using Quan_Ly_HomeStay.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Quan_Ly_HomeStay.Models;
 using Microsoft.AspNetCore.Mvc;
 using Quan_Ly_HomeStay.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Final.Controllers
 {
     [ApiController]
     [Route("api/thongke")]
-
     public class ThongKeController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
+
         public ThongKeController(ApplicationDbContext db)
         {
             _db = db;
         }
+
+        // Thống kê doanh thu theo tháng
         [HttpGet("doanhthu")]
         public async Task<ActionResult> DoanhThu()
         {
             List<decimal> listTotal = new List<decimal>();
-            DateTime day = DateTime.Now;
-            int year = day.Year;
+            DateTime now = DateTime.Now;
+            int year = now.Year;
+
             for (int i = 1; i <= 12; i++)
             {
-                decimal total = 0;
-                total = Convert.ToDecimal((from order in _db.Bookings
-                                           where order.CreateAt.Month == i
-                                           where order.CreateAt.Year == year
-                                           select order.Total).Sum());
+                decimal total = await _db.Bookings
+                    .Where(b => b.CreateAt.Month == i && b.CreateAt.Year == year && b.Total.HasValue)
+                    .SumAsync(b => b.Total ?? 0);
+
                 listTotal.Add(total);
             }
-            decimal min = 0;
-            decimal max = ((listTotal.Max()) * 120) / 100;
+
             return Ok(new
             {
                 status = 200,
-                message = "Thống kê doanh thu thành công!",
+                message = "Thống kê doanh thu theo tháng thành công!",
                 data = listTotal
             });
         }
+
+        // Thống kê top 5 phòng được đặt nhiều nhất
+        [HttpGet("topphong")]
+        public async Task<ActionResult> TopPhong()
+        {
+            var result = await _db.BookingDetails
+                .Where(bd => bd.IdRoom != null)
+                .GroupBy(bd => bd.IdRoom)
+                .Select(g => new
+                {
+                    RoomId = g.Key,
+                    SoLanDat = g.Count(),
+                    TenPhong = g.First().IdRoomNavigation.Name // assuming RoomName exists
+                })
+                .OrderByDescending(x => x.SoLanDat)
+                .Take(5)
+                .ToListAsync();
+
+            return Ok(new
+            {
+                status = 200,
+                message = "Top 5 phòng được đặt nhiều nhất",
+                data = result
+            });
+        }
+
     }
 }

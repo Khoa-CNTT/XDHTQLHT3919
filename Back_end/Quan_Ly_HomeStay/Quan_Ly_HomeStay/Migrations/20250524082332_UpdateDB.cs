@@ -179,13 +179,21 @@ namespace Quan_Ly_HomeStay.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ParentReviewId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Reviews_ParentReviewId",
+                        column: x => x.ParentReviewId,
+                        principalTable: "Reviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reviews_Users_IdUser",
                         column: x => x.IdUser,
@@ -297,6 +305,11 @@ namespace Quan_Ly_HomeStay.Migrations
                 name: "IX_Reviews_IdUser",
                 table: "Reviews",
                 column: "IdUser");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_ParentReviewId",
+                table: "Reviews",
+                column: "ParentReviewId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoomAmenity_RoomId",

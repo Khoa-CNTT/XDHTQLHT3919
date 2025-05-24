@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "+BjNBjV7QvwLdyNLi7LZ3kGV0+ywIWQcF4YdBeBSxtg=",
+  "Hash": "1ExWjelbg4mtQ6ZhgPGGgmsxxL3jmZq8Gh/TYyLtxZI=",
   "Source": "Quan_Ly_HomeStay",
   "BasePath": "_content/Quan_Ly_HomeStay",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "Quan_Ly_HomeStay\\wwwroot",
       "Source": "Quan_Ly_HomeStay",
-      "ContentRoot": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\",
+      "ContentRoot": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\",
       "BasePath": "_content/Quan_Ly_HomeStay",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\40.jpg",
+      "Identity": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\40.jpg",
       "SourceId": "Quan_Ly_HomeStay",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\4_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\",
+      "ContentRoot": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\",
       "BasePath": "_content/Quan_Ly_HomeStay",
       "RelativePath": "images/40.jpg",
       "AssetKind": "All",

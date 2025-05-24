@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Quan_Ly_HomeStay.Data;
 using Quan_Ly_HomeStay.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
 
 namespace Quan_Ly_HomeStay.Controllers
 {
@@ -86,7 +83,6 @@ namespace Quan_Ly_HomeStay.Controllers
         {
             if (reply == null)
                 return BadRequest("Dữ liệu gửi lên không hợp lệ.");
-
             if (string.IsNullOrWhiteSpace(reply.Comment))
                 return BadRequest("Bình luận trả lời không hợp lệ.");
 
