@@ -177,9 +177,9 @@ namespace Quan_Ly_HomeStay.Controllers
 
 
         [HttpPut("edit")]
-        public async Task<IActionResult> Edit([FromBody] UpdateUserDto model)
+        public async Task<IActionResult> Edit([FromForm] UpdateUserDto model, IFormFile avatar)
         {
-            Console.WriteLine($"Nhận được yêu cầu sửa người dùng với Id: {model.Id}"); // Thêm log để kiểm tra Id
+            Console.WriteLine($"Nhận được yêu cầu sửa người dùng với Id: {model.Id}");
 
             var user = await db.Users.FindAsync(model.Id);
             if (user == null)
@@ -192,7 +192,23 @@ namespace Quan_Ly_HomeStay.Controllers
             user.Phone = model.Phone;
             user.Address = model.Address;
             user.Email = model.Email;
-            user.PathImg = model.PathImg;
+
+            // Xử lý ảnh nếu có upload
+            if (avatar != null)
+            {
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(avatar.FileName)}";
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await avatar.CopyToAsync(stream);
+
+                user.PathImg = fileName;  // Lưu tên file ảnh vào DB
+            }
+            else if (!string.IsNullOrEmpty(model.PathImg))
+            {
+                // Giữ tên ảnh cũ nếu không upload file mới
+                user.PathImg = model.PathImg;
+            }
 
             if (model.IdRole.HasValue)
             {
