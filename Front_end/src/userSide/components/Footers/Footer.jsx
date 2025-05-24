@@ -3,20 +3,23 @@ import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaPaperPlane } from 'react-icons/fa';
 
 const Footer = () => {
-    useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://app.preny.ai/embed-global.js";
-        script.async = true;
-        script.defer = true;
-        script.setAttribute("data-button-style", "width:200px;height:200px");
-        script.setAttribute("data-preny-bot-id", "68183e57a705cfd56ee4b0a7");
-        document.body.appendChild(script);
+    // ...existing code...
+useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://app.preny.ai/embed-global.js";
+    script.async = true;
+    script.defer = true;
+    script.setAttribute("data-button-style", "width:100px;height:100px");
+    script.setAttribute("data-preny-bot-id", "68318baff5e74137d3a9fcdd");
+    script.setAttribute("data-image", "https://i.pinimg.com/originals/e8/0e/0d/e80e0dd3e9f3fea6eff0599dcc8334e5.gif");
+    document.body.appendChild(script);
 
-        // Cleanup script when component unmounts (optional)
-        return () => {
-            document.body.removeChild(script);
-        };
-    }, []);
+    // Cleanup script when component unmounts (optional)
+    return () => {
+        document.body.removeChild(script);
+    };
+}, []);
+// ...existing code...
 
     return (
         <footer className="footer">

@@ -34,6 +34,7 @@ import TermsOfService from "./userSide/components/Other/TermsOfService";
 import PaymentMethod from "./userSide/components/BookingRoom/PaymentMethod";
 import MovingText from "./userSide/components/Other/MovingText";
 
+
 // Admin side
 import AdminLayout from "./adminSide/components/headerAdmin/AdminLayout";
 import Sidebar from "./adminSide/components/headerAdmin/Sidebar";
@@ -48,7 +49,7 @@ import ServiceManager from "./adminSide/components/productManager/ServiceManagem
 
 
 
-import "./assets/Style/auth-css/auth.css";
+import "./assets/Style/Auth-css/auth.css";
 import "./assets/Style/admin-css/adminLayout.css";
 import "./assets/Style/home-css/indexx.css";
 
@@ -91,7 +92,7 @@ const App = () => {
                         <>
                             <Hero />
                             <MovingText />
-                            <RoomNew  onRoomClick={handleRoomClick} />
+                            <RoomNew onRoomClick={handleRoomClick} />
                             <Amenity />
                             <Gallery />
                             <Reviews />
@@ -119,7 +120,7 @@ const App = () => {
                         <RoomInfo />
                     </RoomDetail>
                 } />
-                
+
                 <Route path="/paymentMethod" element={<PaymentMethod />} />
                 <Route path="/payment-result" element={<PaymentResult />} />
 

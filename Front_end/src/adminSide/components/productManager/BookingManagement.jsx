@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {
   getAllBookings,
   updateBookingEdit,
-  deleteBooking, // Import hàm xóa
+  deleteBooking,
+  confirmBooking,
 } from '../../../services/api/userAPI/bookingAPI';
+import { getBookingDetailsByBookingId } from '../../../services/api/userAPI/bookingDetailAPI';
 import '../../../assets/Style/admin-css/booking-management.css';
 
 export default function BookingManagement() {
@@ -11,14 +13,13 @@ export default function BookingManagement() {
   const [loading, setLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
-  const [editingBooking, setEditingBooking] = useState(null);
+  const [bookingDetailMap, setBookingDetailMap] = useState({});
 
-  // Lấy dữ liệu từ API booking
+  // Lấy danh sách booking
   const fetchData = async () => {
     setLoading(true);
     try {
       const bookingResult = await getAllBookings();
-
       if (bookingResult && bookingResult.status === 200 && Array.isArray(bookingResult.data)) {
         setBookingDetails(bookingResult.data);
       } else {
@@ -37,16 +38,36 @@ export default function BookingManagement() {
     fetchData();
   }, []);
 
+  // Lấy chi tiết booking cho từng booking
+  useEffect(() => {
+    bookingDetails.forEach((item) => {
+      if (!bookingDetailMap[item.idBooking]) {
+        getBookingDetailsByBookingId(item.idBooking)
+          .then((res) => {
+            setBookingDetailMap((prev) => ({
+              ...prev,
+              [item.idBooking]: Array.isArray(res.data) ? res.data : [],
+            }));
+          })
+          .catch(() => {
+            setBookingDetailMap((prev) => ({
+              ...prev,
+              [item.idBooking]: [],
+            }));
+          });
+      }
+    });
+    // eslint-disable-next-line
+  }, [bookingDetails]);
+
   const handleConfirm = async (id) => {
     try {
-      const result = await updateBookingEdit(id, 'Đã xác nhận');
-      if (result) {
-        const updatedBookings = bookingDetails.map((item) =>
-          item.idBooking === id ? { ...item, status: 'Đã xác nhận' } : item
-        );
-        setBookingDetails(updatedBookings);
-        alert('Trạng thái đã được cập nhật thành "Đã xác nhận".');
-      }
+      await confirmBooking(id);
+      const updatedBookings = bookingDetails.map((item) =>
+        item.idBooking === id ? { ...item, status: 'Đã xác nhận' } : item
+      );
+      setBookingDetails(updatedBookings);
+      alert('Trạng thái đã được cập nhật thành "Đã xác nhận".');
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
       alert('Cập nhật trạng thái thất bại.');
@@ -55,14 +76,12 @@ export default function BookingManagement() {
 
   const handleCancel = async (id) => {
     try {
-      const result = await updateBookingEdit(id, 'Chưa xác nhận');
-      if (result) {
-        const updatedBookings = bookingDetails.map((item) =>
-          item.idBooking === id ? { ...item, status: 'Chưa xác nhận' } : item
-        );
-        setBookingDetails(updatedBookings);
-        alert('Trạng thái đã được cập nhật thành "Chưa xác nhận".');
-      }
+      await updateBookingEdit({ idBooking: id, status: 'Chưa xác nhận' });
+      const updatedBookings = bookingDetails.map((item) =>
+        item.idBooking === id ? { ...item, status: 'Chưa xác nhận' } : item
+      );
+      setBookingDetails(updatedBookings);
+      alert('Trạng thái đã được cập nhật thành "Chưa xác nhận".');
     } catch (error) {
       console.error('Lỗi khi hủy trạng thái:', error);
       alert('Hủy thất bại.');
@@ -123,6 +142,9 @@ export default function BookingManagement() {
                 <th>Phương thức thanh toán</th>
                 <th>Tổng tiền</th>
                 <th>Ngày tạo</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Tên phòng</th>
                 <th>Hành động</th>
                 <th>Check-in</th>
                 <th>Check-out</th>
@@ -131,41 +153,55 @@ export default function BookingManagement() {
             </thead>
             <tbody>
               {filteredAndSortedBookings.length > 0 ? (
-                filteredAndSortedBookings.map((item) => (
-                  <tr key={item.idBooking}>
-                    <td>{item.userEmail}</td>
-                    <td>{item.status}</td>
-                    <td>{item.paymentMethod}</td>
-                    <td>{item.total?.toLocaleString()} đ</td>
-                    <td>{new Date(item.createAt).toLocaleDateString()}</td>
-                    <td>{new Date(item.checkIn).toLocaleDateString()}</td>
-                    <td>{new Date(item.checkOut).toLocaleDateString()}</td>
-                    <td>{item.roomName}</td>
-                    <td>
-                      <button
-                        className="booking-edit-btn"
-                        onClick={() => handleConfirm(item.idBooking)}
-                      >
-                        Xác nhận
-                      </button>
-                      <button
-                        className="booking-cancel-btn"
-                        onClick={() => handleCancel(item.idBooking)}
-                      >
-                        Hủy
-                      </button>
-                      <button
-                        className="booking-delete-btn"
-                        onClick={() => handleDelete(item.idBooking)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                ))
+
+                filteredAndSortedBookings.map((item) => {
+                  const details = bookingDetailMap[item.idBooking] || [];
+                  // Nếu có nhiều phòng, bạn có thể hiển thị tất cả, ở đây lấy phòng đầu tiên
+                  const firstDetail = details[0] || {};
+                  const roomName = firstDetail.roomName || firstDetail.name || '---';
+                  const checkIn = firstDetail.checkInDate
+                    ? new Date(firstDetail.checkInDate).toLocaleDateString()
+                    : '---';
+                  const checkOut = firstDetail.checkOutDate
+                    ? new Date(firstDetail.checkOutDate).toLocaleDateString()
+                    : '---';
+
+                  return (
+                    <tr key={item.idBooking}>
+                      <td>{item.userEmail}</td>
+                      <td>{item.status}</td>
+                      <td>{item.paymentMethod}</td>
+                      <td>{item.total?.toLocaleString()} đ</td>
+                      <td>{new Date(item.createAt).toLocaleDateString()}</td>
+                      <td>{checkIn}</td>
+                      <td>{checkOut}</td>
+                      <td>{roomName}</td>
+                      <td>
+                        <button
+                          className="edit-btn"
+                          onClick={() => handleConfirm(item.idBooking)}
+                        >
+                          Xác nhận
+                        </button>
+                        <button
+                          className="cancel-btn"
+                          onClick={() => handleCancel(item.idBooking)}
+                        >
+                          Hủy
+                        </button>
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDelete(item.idBooking)}
+                        >
+                          Xóa
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center' }}>
+                  <td colSpan="9" style={{ textAlign: 'center' }}>
                     Không có dữ liệu
                   </td>
                 </tr>

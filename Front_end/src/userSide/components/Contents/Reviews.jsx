@@ -5,7 +5,7 @@ import {
   replyToReview,
   updateReview,
   deleteReview,
-} from '../../../services/api/userAPI/reviewAPI';
+} from '../../../services/api/userAPI/ReviewAPI';
 import Notification from '../../../userSide/components/Other/Notification';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';

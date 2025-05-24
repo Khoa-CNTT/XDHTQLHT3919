@@ -76,3 +76,7 @@ export const deleteBooking = async (id) => {
     throw error;
   }
 };
+export const confirmBooking = async (idBooking) => {
+  const response = await axios.put(`${API_URL}/confirm/${idBooking}`);
+  return response.data;
+};
