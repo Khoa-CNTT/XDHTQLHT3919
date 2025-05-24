@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import userApi from '../../../services/api/AuthAPI/userAPI';
-import roleApi from '../../../services/api/AuthAPI/roleApi';
+import roleApi from '../../../services/api/AuthAPI/roleAPI';
 import Notification from '../../../userSide/components/Other/Notification';
 import "../../../assets/Style/admin-css/userList.css";
 
@@ -83,15 +83,15 @@ const UserList = () => {
   }, []);
 
   const handleAddOrUpdate = async () => {
-    // Kiểm tra điều kiện nhập liệu
+    // Kiểm tra điều kiện nhập liệu cơ bản
     if (!form.name || (!form.email && !form.phone) || (!isEditMode && !form.password)) {
       setNotification({ message: 'Vui lòng nhập đầy đủ tên, email/điện thoại và mật khẩu (nếu thêm mới)', show: true });
       return;
     }
-  
+
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const phoneRegex = /^[0-9]{10,11}$/;
-  
+
     if (form.email && !emailRegex.test(form.email)) {
       setNotification({ message: 'Email không hợp lệ', show: true });
       return;
@@ -100,45 +100,51 @@ const UserList = () => {
       setNotification({ message: 'Số điện thoại không hợp lệ', show: true });
       return;
     }
-  
+
     const selectedRole = roles.find(r => r.name === form.role);
-  
     if (!selectedRole) {
       setNotification({ message: 'Vai trò không hợp lệ', show: true });
       return;
     }
-  
-    // Tạo đối tượng payload cho yêu cầu API
-    const userPayload = {
-      name: form.name,
-      email: form.email,
-      address: form.address,
-      phone: form.phone,
-      pathImg: form.img,
-      idRole: selectedRole ? selectedRole.id : null,
-    };
-  
-    // Kiểm tra xem nếu đang ở chế độ chỉnh sửa thì thêm `id`
-    if (isEditMode && form.id) {
-      userPayload.id = form.id; // Chỉ thêm id khi ở chế độ chỉnh sửa
-    } else if (!isEditMode && form.password) {
-      userPayload.password = form.password; // Chỉ gửi password khi thêm mới
+
+    // Tạo đối tượng FormData để gửi lên server
+    const formData = new FormData();
+    if (isEditMode && form.id) formData.append('Id', form.id);
+    formData.append('Name', form.name);
+    formData.append('Email', form.email);
+    formData.append('Phone', form.phone);
+    formData.append('Address', form.address);
+    formData.append('PathImg', form.img);
+    formData.append('IdRole', selectedRole.id);
+    
+    if (form.selectedFile) {
+      formData.append('avatar', form.selectedFile);
     }
-  
+
+    if (!isEditMode && form.password) {
+      formData.append('Password', form.password);
+    }
+
     setLoading(true);
     try {
       if (isEditMode) {
-        // Cập nhật người dùng
-        await userApi.updateUser(token, userPayload);
+        await userApi.updateUser(token, formData);
         setNotification({ message: 'Cập nhật thành công!', show: true });
       } else {
-        // Thêm mới người dùng
+
+        const userPayload = {
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          address: form.address,
+          phone: form.phone,
+          pathImg: form.img,
+          idRole: selectedRole.id,
+        };
         await userApi.addUser(userPayload);
         setNotification({ message: 'Thêm mới thành công!', show: true });
       }
-      // Lấy lại danh sách người dùng
       await fetchUsers();
-      // Reset form
       resetForm();
     } catch (error) {
       console.error('Lỗi khi thêm/sửa người dùng:', error);
@@ -150,9 +156,8 @@ const UserList = () => {
       setLoading(false);
     }
   };
-  
-  
-  
+
+
 
   const handleEdit = (user) => {
     const role = roles.find(r => r.name.toLowerCase() === user.nameRole?.toLowerCase());
@@ -160,7 +165,7 @@ const UserList = () => {
       id: user.id,
       name: user.name,
       email: user.email,
-      password: '', // Không cần giữ mật khẩu khi chỉnh sửa
+      password: '',
       address: user.address,
       phone: user.phone,
       img: user.img,
@@ -249,10 +254,9 @@ const UserList = () => {
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
         />
         <input
-          type="text"
-          placeholder="Ảnh đại diện (link)"
-          value={form.img}
-          onChange={(e) => setForm({ ...form, img: e.target.value })}
+          type="file"
+          accept="image/*"
+          onChange={(e) => setForm({ ...form, selectedFile: e.target.files[0] })}
         />
 
         <select
@@ -288,7 +292,7 @@ const UserList = () => {
               <tr key={user.id}>
                 <td>
                   <img
-                    src={user.img || 'https://via.placeholder.com/40'}
+                    src={user.img ? `https://localhost:7154/images/${user.pathImg}` : 'https://via.placeholder.com/40'}
                     alt="avatar"
                     style={{ width: 40, height: 40, borderRadius: '50%' }}
                   />

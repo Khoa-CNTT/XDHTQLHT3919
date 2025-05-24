@@ -28,8 +28,8 @@ const Header = () => {
     useEffect(() => {
         const emaill = localStorage.getItem('email');
         if (!emaill) {
-           setNotificationMessage("Vui lòng thêm email của bạn để có thể đổi mật khẩu của mình khi quên!");
-           setShowNotification(true);
+            setNotificationMessage("Vui lòng thêm email của bạn để có thể đổi mật khẩu của mình khi quên!");
+            setShowNotification(true);
         }
     }, []);
 
@@ -37,30 +37,45 @@ const Header = () => {
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("username");
         const userRole = localStorage.getItem("role");
-        const avatar = localStorage.getItem("img") || "/images/avatar.jpg";
+        const avatarFromStorage = localStorage.getItem("img") || "";
+        const avatarPath = avatarFromStorage
+            ? `https://localhost:7154/images/${avatarFromStorage}`
+            : "/images/avatar.jpg";
+
+        setAvatarUrl(avatarPath);
+
 
         if (token && user) {
             setIsLoggedIn(true);
             setUsername(user);
             setRole(userRole);
             setIsAdmin(userRole === "Admin");
-            setAvatarUrl(avatar);
+            setAvatarUrl(avatarPath);
         }
     }, [location.pathname]);
+    console.log({ avatarUrl })
 
     useEffect(() => {
         const handleUserLoggedIn = () => {
             const user = localStorage.getItem("username");
             const userRole = localStorage.getItem("role");
-            const avatar = localStorage.getItem("pathImg") || "";
+            const avatarFromStorage = localStorage.getItem("img") || "";
+            const avatarPath = avatarFromStorage
+                ? `https://localhost:7154/images/${avatarFromStorage}`
+                : "/images/avatar.jpg";
+
+            setAvatarUrl(avatarPath);
+
+
 
             setIsLoggedIn(true);
             setUsername(user);
             setRole(userRole);
             setIsAdmin(userRole === "Admin");
-            setAvatarUrl(avatar);
+            setAvatarUrl(avatarPath);
             setNotificationMessage("Đăng nhập thành công!");
             setShowNotification(true);
+
         };
 
         window.addEventListener("userLoggedIn", handleUserLoggedIn);
@@ -130,6 +145,7 @@ const Header = () => {
             )}
         </div>
     );
+    console.log({ avatarUrl })
 
     return (
         <header className="header">
@@ -167,10 +183,11 @@ const Header = () => {
                             <div className="user-menu">
                                 <div className="user-avatar">
                                     <img
-                                        src={avatarUrl || "../../../images/avatar.jpg"}
+                                        src={avatarUrl}
                                         alt="Avatar"
                                         className="avatar-img"
                                     />
+
                                 </div>
                                 <div className="user-info">
                                     <span>{username}</span>

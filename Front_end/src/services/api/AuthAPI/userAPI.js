@@ -17,15 +17,22 @@ const getAllUsers = async () => {
 
 const addUser = async (user) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/register`,
-      user,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const formData = new FormData();
+    formData.append('name', user.name);
+    formData.append('email', user.email);
+    formData.append('phone', user.phone);
+    formData.append('password', user.password);
+    formData.append('address', user.address);
+    if (user.avatar) {
+      formData.append('avatar', user.avatar);
+    }
+
+    const response = await axios.post(`${API_URL}/register`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return response.data;
   } catch (error) {
     console.error('Lỗi khi thêm người dùng:', error);
@@ -34,17 +41,15 @@ const addUser = async (user) => {
 };
 
 
+
 // Cập nhật thông tin người dùng (bao gồm cả thay đổi vai trò)
-const updateUser = async (token, data) => {
-  console.log('Updating user with ID:', data.id); // Log ID để kiểm tra
+const updateUser = async (token, formData) => {
   try {
-    const response = await axios.put(`${API_URL}/edit`, data, {
+    const response = await axios.put(`${API_URL}/edit`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        
+        'Content-Type': 'multipart/form-data', // quan trọng
       },
-      
     });
     return response.data;
   } catch (error) {
@@ -91,7 +96,7 @@ const updateProfile = async (token, data) => {
     const response = await axios.put(`${API_URL}/edit`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+
       },
     });
     return response.data;
@@ -100,6 +105,7 @@ const updateProfile = async (token, data) => {
     throw error;
   }
 };
+
 
 // Đổi mật khẩu
 const changePassword = async (data) => {
