@@ -13,6 +13,7 @@ const Rooms = () => {
   const [priceFilter, setPriceFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [categories, setCategories] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,10 +56,15 @@ const Rooms = () => {
 
   const categoryId = room.category?.id || room.idCategory || room.categoryId || '';
   const matchCategory = categoryFilter === '' || String(categoryId) === String(categoryFilter);
+  const status = (room.status || '').toLowerCase();
+  const matchStatus =
+    statusFilter === '' ||
+    (statusFilter === 'available' && (status === 'còn trống' || status === 'còn phòng')) ||
+    (statusFilter === 'booked' && (status === 'đã đặt' || status === 'hết phòng'));
 
-  console.log(`Room: ${room.name}, Price: ${room.price}, CategoryId: ${categoryId}, matchPrice: ${matchPrice}, matchCategory: ${matchCategory}`);
+  console.log(`Room: ${room.name}, Price: ${room.price}, CategoryId: ${categoryId}, matchPrice: ${matchPrice}, matchCategory: ${matchCategory}, matchStatus: ${matchStatus}`);
 
-  return matchPrice && matchCategory;
+  return matchPrice && matchCategory && matchStatus;
 });
 
 
@@ -112,6 +118,15 @@ const Rooms = () => {
               ))}
             </select>
           </label>
+
+          <label>
+  Lọc theo tình trạng:{' '}
+  <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+    <option value="">Tất cả</option>
+    <option value="available">Còn trống</option>
+    <option value="booked">Đã đặt</option>
+  </select>
+</label>
         </div>
 
         {/* Danh sách phòng */}

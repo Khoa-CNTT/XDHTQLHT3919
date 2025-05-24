@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import userApi from '../../../services/api/AuthAPI/userAPI';
-import roleApi from '../../../services/api/AuthAPI/roleAPI';
+import roleApi from '../../../services/api/AuthAPI/roleApi';
 import Notification from '../../../userSide/components/Other/Notification';
 import "../../../assets/Style/admin-css/userList.css";
 
@@ -116,7 +116,7 @@ const UserList = () => {
     formData.append('Address', form.address);
     formData.append('PathImg', form.img);
     formData.append('IdRole', selectedRole.id);
-    
+
     if (form.selectedFile) {
       formData.append('avatar', form.selectedFile);
     }

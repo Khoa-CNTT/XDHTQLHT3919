@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Quan_Ly_HomeStay")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3fe7933dd7312424413fe631e7683b9cf2e14710")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee578928e50eb434faebcd2832de144962d5c013")]
 [assembly: System.Reflection.AssemblyProductAttribute("Quan_Ly_HomeStay")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Quan_Ly_HomeStay")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

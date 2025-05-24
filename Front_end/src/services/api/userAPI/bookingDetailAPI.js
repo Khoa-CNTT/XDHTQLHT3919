@@ -32,13 +32,13 @@ export const deleteBookingDetail = async (id) => {
   return response.data;
 };
 
-// Xác nhận chi tiết
+// ✅ Xác nhận chi tiết
 export const confirmBookingDetail = async (id) => {
   const response = await axios.put(`${BASE_URL}/confirm/${id}`);
   return response.data;
 };
 
-// Hủy chi tiết
+// ✅ Hủy chi tiết
 export const cancelBookingDetail = async (id) => {
   const response = await axios.put(`${BASE_URL}/cancel/${id}`);
   return response.data;

@@ -4,11 +4,10 @@ import {
   BarChart, Bar, Cell
 } from 'recharts';
 
-
 import {
   getMonthlyRevenue,
   getTopBookedRooms
-} from '../../../services/api/adminAPI/dashboardAPI'; // LẤY TOP PHÒNG
+} from '../../../services/api/adminAPI/dashboardAPI';
 
 import "../../../assets/Style/admin-css/dashboard.css";
 
@@ -18,24 +17,33 @@ const Dashboard = () => {
   const [showTopRooms, setShowTopRooms] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      // Lấy doanh thu
-      const res = await getMonthlyRevenue();
-      if (res && Array.isArray(res.data)) {
-        const chartData = res.data.map((total, idx) => ({
-          month: idx + 1,
-          total
-        }));
-        setData(chartData);
-      }
+  const fetchData = async () => {
+    // Lấy doanh thu
+    const res = await getMonthlyRevenue();
+    if (res && Array.isArray(res.data)) {
+      const chartData = res.data.map((total, idx) => ({
+        month: idx + 1,
+        total
+      }));
+      setData(chartData);
+    }
 
-      // Lấy top 5 phòng
-      const roomData = await getTopBookedRooms();
-      setTopRooms(roomData);
-    };
+    // Lấy top 5 phòng
+    const roomData = await getTopBookedRooms();
+    // Chuẩn hóa dữ liệu cho chart
+    let rooms = [];
+    if (roomData && Array.isArray(roomData.data)) {
+      rooms = roomData.data.map(item => ({
+        roomId: item.roomId || item.RoomId,
+        roomName: item.tenPhong || item.TenPhong,
+        totalBookings: item.soLanDat || item.SoLanDat
+      }));
+    }
+    setTopRooms(rooms);
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   return (
     <div className="dashboard-container">
@@ -73,22 +81,22 @@ const Dashboard = () => {
           <h2>Top 5 phòng được đặt nhiều nhất</h2>
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={topRooms} layout="vertical" margin={{ top: 20, right: 30, left: 100, bottom: 5 }}>
-              <XAxis type="number" />
-              <YAxis dataKey="roomName" type="category" />
-              <Tooltip
-                formatter={(value, name, props) =>
-                  [`${value} lượt đặt`, `${props.payload.roomName} (ID: ${props.payload.roomId})`]
-                }
-              />
-              <Bar dataKey="totalBookings" fill="#82ca9d">
-                {topRooms.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={['#4facfe', '#00f2fe', '#2ed8b6', '#59e0c5', '#66d9e8'][index % 5]}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
+  <XAxis type="number" />
+  <YAxis dataKey="roomName" type="category" />
+  <Tooltip
+    formatter={(value, name, props) =>
+      [`${value} lượt đặt`, `${props.payload.roomName} (ID: ${props.payload.roomId})`]
+    }
+  />
+  <Bar dataKey="totalBookings" fill="#82ca9d">
+    {topRooms.map((entry, index) => (
+      <Cell
+        key={`cell-${index}`}
+        fill={['#4facfe', '#00f2fe', '#2ed8b6', '#59e0c5', '#66d9e8'][index % 5]}
+      />
+    ))}
+  </Bar>
+</BarChart>
           </ResponsiveContainer>
         </div>
       )}

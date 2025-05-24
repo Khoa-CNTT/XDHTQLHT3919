@@ -96,7 +96,7 @@ namespace Quan_Ly_HomeStay.Controllers
         public async Task<IActionResult> GetAllByBooking(Guid idBooking)
         {
             var details = await _db.BookingDetails
-                .Where(x => x.IdBooking == idBooking) // Lọc theo IdBooking
+                .Where(x => x.IdBooking == idBooking)
                 .Include(x => x.IdRoomNavigation)
                 .Select(x => new
                 {

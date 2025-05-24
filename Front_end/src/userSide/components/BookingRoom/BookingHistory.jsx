@@ -61,50 +61,48 @@ const BookingHistory = () => {
         <p className="error-message">{error}</p>
       ) : bookings.length > 0 ? (
         <table className="booking-history-table">
-          <thead>
-            <tr>
-              <th>Mã Đặt Phòng</th>
-              <th>Trạng Thái</th>
-              <th>Tổng Tiền</th>
-              <th>Ngày Đặt</th>
-              <th>Ngày Check-In</th>
-              <th>Ngày Check-Out</th>
-              <th>Chi Tiết Phòng</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking.idBooking}>
-                <td>{booking.idBooking}</td>
-                <td>
-                  <span className={`status ${booking.status.toLowerCase().replace(' ', '-')}`}>
-                    {booking.status}
-                  </span>
-                </td>
-                <td>{new Intl.NumberFormat().format(booking.total)} đ</td>
-                <td>{new Date(booking.createAt).toLocaleDateString()}</td>
-                <td>
-                  {booking.bookingDetails.length > 0
-                    ? new Date(booking.bookingDetails[0].checkInDate).toLocaleDateString()
-                    : 'Chưa xác định'}
-                </td>
-                <td>
-                  {booking.bookingDetails.length > 0
-                    ? new Date(booking.bookingDetails[0].checkOutDate).toLocaleDateString()
-                    : 'Chưa xác định'}
-                </td>
-                <td>
-                  <ul className="room-details-list">
-                    {booking.bookingDetails.map((detail, index) => (
-                      <li key={index}>
-                        {detail.roomName} - SL: {detail.quantity} - Giá: {new Intl.NumberFormat().format(detail.totalPrice)} đ
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+        
+<thead>
+  <tr>
+    <th>Tên Phòng</th>
+    <th>Trạng Thái</th>
+    <th>Tổng Tiền</th>
+    <th>Ngày Đặt</th>
+    <th>Ngày Check-In</th>
+    <th>Ngày Check-Out</th>
+    <th>Giá Đã Thanh Toán</th>
+  </tr>
+</thead>
+<tbody>
+  {bookings.map((booking) => (
+    booking.bookingDetails.map((detail, idx) => (
+      <tr key={booking.idBooking + '-' + idx}>
+        <td>{detail.roomName}</td>
+        <td>
+          <span className={`status ${booking.status.toLowerCase().replace(' ', '-')}`}>
+            {booking.status}
+          </span>
+        </td>
+        <td>{new Intl.NumberFormat().format(booking.total)} đ</td>
+        <td>{new Date(booking.createAt).toLocaleDateString()}</td>
+        <td>
+          {detail.checkInDate
+            ? new Date(detail.checkInDate).toLocaleDateString()
+            : 'Chưa xác định'}
+        </td>
+        <td>
+          {detail.checkOutDate
+            ? new Date(detail.checkOutDate).toLocaleDateString()
+            : 'Chưa xác định'}
+        </td>
+        <td>
+          Giá: {new Intl.NumberFormat().format(detail.totalPrice)} đ
+        </td>
+      </tr>
+    ))
+  ))}
+</tbody>
+
         </table>
       ) : (
         <p className="no-bookings-message">Chưa có lịch sử đặt phòng.</p>
