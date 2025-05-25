@@ -4,6 +4,8 @@ import { addBooking } from '../../../services/api/userAPI/bookingAPI';
 import { addBookingDetail } from '../../../services/api/userAPI/bookingDetailAPI';
 import { fetchRoomDetails } from '../../../services/api/adminAPI/roomAPI';
 import Notification from '../../../userSide/components/Other/Notification';
+import { checkRoomBooked } from '../../../services/api/adminAPI/roomAPI';
+// ...các import khác...
 
 const Booking = ({
   price,
@@ -61,8 +63,15 @@ const handleBooking = async () => {
     return;
   }
 
-  if (!isRoomAvailable) {
-    setNotificationMessage("Phòng này đã được đặt hoặc không còn trống.");
+   try {
+    const isBooked = await checkRoomBooked(roomId, checkInDate, checkOutDate);
+    if (isBooked) {
+      setNotificationMessage("Phòng đã có người đặt trong khoảng thời gian này.");
+      setShowNotification(true);
+      return;
+    }
+  } catch (error) {
+    setNotificationMessage("Không kiểm tra được trạng thái phòng. Vui lòng thử lại.");
     setShowNotification(true);
     return;
   }

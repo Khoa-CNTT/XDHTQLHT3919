@@ -124,9 +124,13 @@ const RoomManager = () => {
       setImageFile(null);
       setSelectedAmenities([]);
     } catch (error) {
-      console.error("Lỗi khi lưu phòng:", error);
-      showNotification("Có lỗi khi lưu phòng!", "error");
-    }
+  const message =
+    error?.response?.data?.message ||
+    error.message ||
+    "Có lỗi khi lưu phòng!";
+  console.error("Lỗi khi lưu phòng:", error);
+  showNotification(message, "error");
+}
   };
 
   const handleEdit = (room) => {
@@ -143,18 +147,32 @@ const RoomManager = () => {
     setSelectedAmenities((room.amenities || []).map(a => a.id));
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa phòng này không?')) {
-      try {
-        await deleteRoom(id);
-        await fetchRoomData();
-        showNotification("Xóa phòng thành công", "success");
-      } catch (error) {
-        console.error(error);
-        showNotification('Không thể xóa phòng', "error");
-      }
+const handleDelete = async (id) => {
+  // Kiểm tra id hợp lệ (UUID)
+  if (!id || typeof id !== 'string' || id.length < 10) {
+    showNotification('ID phòng không hợp lệ!', "error");
+    console.error('ID phòng không hợp lệ:', id);
+    return;
+  }
+  console.log('Xóa phòng với id:', id);
+
+  // Log endpoint thực tế sẽ gọi
+  const endpoint = `https://localhost:7154/api/room/${id}`;
+  console.log('Endpoint gọi xóa:', endpoint);
+
+  if (window.confirm('Bạn có chắc chắn muốn xóa phòng này không?')) {
+    try {
+      await deleteRoom(id);
+      await fetchRoomData();
+      showNotification("Xóa phòng thành công", "success");
+    } catch (error) {
+      // Hiển thị thông báo chi tiết từ backend nếu có
+      const message = error?.response?.data?.message || error.message || 'Không thể xóa phòng';
+      showNotification(message, "error");
+      console.error('Lỗi khi xóa phòng:', error);
     }
-  };
+  }
+};
 
   const handleAmenityChange = (amenityId) => {
     setSelectedAmenities((prevSelected) => {
@@ -288,7 +306,7 @@ const RoomManager = () => {
         <thead>
           <tr>
             <th>Hình ảnh</th>
-            <th>Mã phòng</th>
+            <th>Số phòng</th>
             <th>Loại</th>
             <th>Giá</th>
             <th>Chi tiết</th>

@@ -85,7 +85,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 }
             });
         }
-         // POST: api/room/add
+        // POST: api/room/add
 
         [HttpPost("add")]
         public async Task<ActionResult> AddRoom([FromBody] RoomDto roomDto)
@@ -93,6 +93,13 @@ namespace Quan_Ly_HomeStay.Controllers
             if (string.IsNullOrEmpty(roomDto.Name) || roomDto.Price == 0 || string.IsNullOrEmpty(roomDto.PathImg))
             {
                 return BadRequest(new { message = "Vui lòng điền đầy đủ thông tin.", status = 400 });
+            }
+
+            // Kiểm tra trùng tên phòng (không phân biệt hoa thường)
+            var isExist = await _db.Rooms.AnyAsync(r => r.Name.ToLower() == roomDto.Name.Trim().ToLower());
+            if (isExist)
+            {
+                return BadRequest(new { message = "Tên phòng đã tồn tại, vui lòng chọn tên khác.", status = 400 });
             }
 
             var room = new Room
@@ -117,7 +124,6 @@ namespace Quan_Ly_HomeStay.Controllers
 
             return Ok(new { message = "Tạo phòng thành công!", status = 200, data = room });
         }
-
 
         // PUT: api/room/edit
         [HttpPut("edit")]
@@ -225,6 +231,16 @@ namespace Quan_Ly_HomeStay.Controllers
                     error = ex.Message
                 });
             }
+        }
+        [HttpGet("is-booked")]
+        public async Task<IActionResult> IsRoomBooked(Guid roomId, DateTime checkIn, DateTime checkOut)
+        {
+            // Kiểm tra có booking nào giao thoa với khoảng ngày này không
+            var isBooked = await _db.BookingDetails.AnyAsync(b =>
+                b.IdRoom == roomId &&
+                !(b.CheckOutDate <= checkIn || b.CheckInDate >= checkOut) // Giao thoa ngày
+            );
+            return Ok(new { isBooked });
         }
 
     }

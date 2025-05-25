@@ -4,6 +4,7 @@ import {
   updateBookingEdit,
   deleteBooking,
   confirmBooking,
+  cancelBooking,
 } from '../../../services/api/userAPI/bookingAPI';
 import { getBookingDetailsByBookingId } from '../../../services/api/userAPI/bookingDetailAPI';
 import '../../../assets/Style/admin-css/booking-management.css';
@@ -77,14 +78,14 @@ export default function BookingManagement() {
 
   // Hủy booking
   const handleCancel = async (idBooking) => {
-    try {
-      await updateBookingEdit({ idBooking, status: 'đã hủy' });
-      alert('Đã hủy booking!');
-      fetchBookings();
-    } catch {
-      alert('Hủy thất bại!');
-    }
-  };
+  try {
+    await cancelBooking(idBooking); // Gọi API cancelBooking mới
+    alert('Đã hủy booking!');
+    fetchBookings();
+  } catch {
+    alert('Hủy thất bại!');
+  }
+};
 
   // Xóa booking
   const handleDelete = async (idBooking) => {

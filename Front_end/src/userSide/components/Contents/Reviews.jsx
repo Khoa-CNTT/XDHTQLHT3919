@@ -69,7 +69,7 @@ const Reviews = () => {
       setForm({ comment: '', rating: 1 });
       loadReviews();
     } catch (error) {
-      showNotification('Gửi đánh giá thất bại', 'error');
+      showNotification('Gửi đánh giá thất bại khi chưa đăng nhập', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -244,7 +244,7 @@ const Reviews = () => {
               <div className="review-top">
                 <div className="user-info">
                   <img
-                    src={review.avatarUrl || '/default-avatar.png'}
+                    src={review.avatarUrl ? `https://localhost:7154/images/${review.avatarUrl}` : "/images/avatar.jpg"}
                     alt="avatar"
                     className="avatar"
                   />
@@ -297,7 +297,7 @@ const Reviews = () => {
                 <div key={reply.id} className="reply-item">
                   <div className="user-info">
                     <img
-                      src={reply.avatarUrl || '/default-avatar.png'}
+                      src={reply.avatarUrl ? `https://localhost:7154/images/${reply.avatarUrl}` : "/images/avatar.jpg"}
                       alt="avatar"
                       className="avatar"
                     />

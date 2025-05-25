@@ -1,13 +1,9 @@
 .hero {
   height: 90vh;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  color: white;
-  text-align: center;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .hero__background-container {
@@ -21,30 +17,43 @@
 
 .hero__background {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 1.5s ease-in-out;
-  animation: zoomPan 30s ease-in-out infinite;
+  background-size: cover;
+  background-position: center;
+  opacity: 0; /* Ẩn tất cả ảnh ban đầu */
+  transition: opacity 1.5s ease-in-out; /* Hiệu ứng chuyển đổi mượt mà */
 }
 
 .hero__background.active {
-  opacity: 1;
-  z-index: 1;
+  opacity: 1; /* Chỉ hiển thị ảnh có lớp active */
+  z-index: 0;
 }
 
 .hero__background::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Lớp tối để làm nổi bật nội dung */
+}
+
+.container2 {
+  width: 100%;
+  padding: 0 15px;
+  margin: 0 auto;
 }
 
 .hero__content {
   max-width: 800px;
   margin: 0 auto;
   z-index: 2;
+  text-align: center;
+  color: white;
 }
 
 .hero__title {
@@ -83,6 +92,8 @@
   letter-spacing: 0.5px;
   box-shadow: 0 8px 24px rgba(184, 134, 11, 0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-block;
+  text-align: center;
 }
 
 .btn--primary1:hover {
@@ -98,6 +109,8 @@
   padding: 12px 25px;
   border-radius: 8px;
   transition: all 0.3s ease;
+  display: inline-block;
+  text-align: center;
 }
 
 .btn--outline:hover {
@@ -114,10 +127,4 @@
 @keyframes fadeInUp {
   0% { opacity: 0; transform: translateY(50px); }
   100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes zoomPan {
-  0% { transform: scale(1) translateX(0); }
-  50% { transform: scale(1.05) translateX(-1%); }
-  100% { transform: scale(1) translateX(0); }
 }

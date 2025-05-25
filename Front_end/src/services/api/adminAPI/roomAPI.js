@@ -66,7 +66,7 @@ export const updateRoom = async (room) => {
 // Xoá phòng
 export const deleteRoom = async (id) => {
   try {
-    const res = await axios.delete(`${API_URL}/delete/${id}`, { headers });
+    const res = await axios.delete(`${API_URL}/${id}`, { headers });
     return res.data;
   } catch (error) {
     console.error('Lỗi khi xoá phòng:', error);
@@ -82,5 +82,20 @@ export const fetchRoomDetails = async (roomId) => {
     return response.data;
   } catch (error) {
     handleError(error, 'Không thể lấy chi tiết phòng');
+  }
+};
+// services/api/adminAPI/roomAPI.js
+export const checkRoomBooked = async (roomId, checkInDate, checkOutDate) => {
+  try {
+    const res = await axios.get(
+      `${API_URL}/is-booked`,
+      {
+        params: { roomId, checkIn: checkInDate, checkOut: checkOutDate },
+        headers
+      }
+    );
+    return res.data.isBooked;
+  } catch (error) {
+    handleError(error, 'Không thể kiểm tra trạng thái phòng');
   }
 };

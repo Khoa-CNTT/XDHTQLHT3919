@@ -210,6 +210,28 @@ namespace Quan_Ly_HomeStay.Controllers
                 status = 200
             });
         }
+        // Hủy booking (Cancel)
+        [HttpPut("cancel/{id}")]
+        public async Task<ActionResult> CancelBooking(Guid id)
+        {
+            var booking = await db.Bookings.FindAsync(id);
+            if (booking == null)
+            {
+                return Ok(new
+                {
+                    message = "Không tìm thấy đơn đặt phòng!",
+                    status = 404
+                });
+            }
 
+            booking.Status = "Đã hủy";
+            await db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Hủy đơn đặt phòng thành công!",
+                status = 200
+            });
+        }
     }
 }

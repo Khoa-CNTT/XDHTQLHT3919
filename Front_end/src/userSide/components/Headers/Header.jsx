@@ -122,10 +122,10 @@ const Header = () => {
             <li><Link to="/room">Phòng</Link></li>
             <li><Link to="/amenities">Tiện ích</Link></li>
             <li><Link to="/contact">Liên hệ</Link></li>
-            <li><Link to="/adminlayout">Quản lý</Link></li>
-            {/* {isAdmin && (
+            {/* <li><Link to="/adminlayout">Quản lý</Link></li> */}
+            {isAdmin && (
                 <li><Link to="/adminlayout">Quản lý</Link></li>
-            )} */}
+            )}
         </ul>
     );
 

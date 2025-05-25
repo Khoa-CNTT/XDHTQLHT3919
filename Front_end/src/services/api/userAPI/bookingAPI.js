@@ -48,3 +48,7 @@ export const confirmBooking = async (idBooking) => {
   const response = await axios.put(`${API_URL}/confirm/${idBooking}`);
   return response.data;
 };
+export const cancelBooking = async (idBooking) => {
+  const response = await axios.put(`${API_URL}/cancel/${idBooking}`);
+  return response.data;
+};

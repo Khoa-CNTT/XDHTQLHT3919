@@ -53,20 +53,38 @@ const Gallery = () => {
 
                     <div className={`carousel-images ${fade ? 'fade' : ''}`}>
                         <img
-                            src={getImageAt(currentIndex - 1)?.src}
-                            alt=""
-                            className="side-image left"
-                        />
-                        <img
-                            src={getImageAt(currentIndex)?.src}
-                            alt=""
-                            className="main-image"
-                        />
-                        <img
-                            src={getImageAt(currentIndex + 1)?.src}
-                            alt=""
-                            className="side-image right"
-                        />
+  src={
+    getImageAt(currentIndex - 1)
+      ? getImageAt(currentIndex - 1).src.startsWith('http')
+        ? getImageAt(currentIndex - 1).src
+        : `https://localhost:7154${getImageAt(currentIndex - 1).src}`
+      : ''
+  }
+  alt=""
+  className="side-image left"
+/>
+<img
+  src={
+    getImageAt(currentIndex)
+      ? getImageAt(currentIndex).src.startsWith('http')
+        ? getImageAt(currentIndex).src
+        : `https://localhost:7154${getImageAt(currentIndex).src}`
+      : ''
+  }
+  alt=""
+  className="main-image"
+/>
+<img
+  src={
+    getImageAt(currentIndex + 1)
+      ? getImageAt(currentIndex + 1).src.startsWith('http')
+        ? getImageAt(currentIndex + 1).src
+        : `https://localhost:7154${getImageAt(currentIndex + 1).src}`
+      : ''
+  }
+  alt=""
+  className="side-image right"
+/>
                     </div>
 
                     <button className="nav-btn next" onClick={() => handleImageChange('next')}>

@@ -74,7 +74,7 @@ const BookingHistory = () => {
   </tr>
 </thead>
 <tbody>
-  {bookings.map((booking) => (
+  {bookings.map((booking) =>
     booking.bookingDetails.map((detail, idx) => (
       <tr key={booking.idBooking + '-' + idx}>
         <td>{detail.roomName}</td>
@@ -96,11 +96,14 @@ const BookingHistory = () => {
             : 'Chưa xác định'}
         </td>
         <td>
-          Giá: {new Intl.NumberFormat().format(detail.totalPrice)} đ
+          Giá:{" "}
+          {booking.status === "Đã hủy"
+            ? "0 đ"
+            : new Intl.NumberFormat().format(detail.totalPrice) + " đ"}
         </td>
       </tr>
     ))
-  ))}
+  )}
 </tbody>
 
         </table>

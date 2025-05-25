@@ -9,28 +9,60 @@
       "PackagePath": "staticwebassets\\images\\71a5b234-6769-4512-be84-1c4c3b55f14c.jpg"
     },
     {
+      "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\95f5767a-7867-42cc-9049-4a5ab69f24b4.jpg",
+      "PackagePath": "staticwebassets\\images\\95f5767a-7867-42cc-9049-4a5ab69f24b4.jpg"
+    },
+    {
+      "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\dc66820a-a0c8-40fa-a154-734b4d85eb72.jpg",
+      "PackagePath": "staticwebassets\\images\\dc66820a-a0c8-40fa-a154-734b4d85eb72.jpg"
+    },
+    {
       "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\04e87abd-7b0f-4ced-b266-a23043e316ca.jpg",
       "PackagePath": "staticwebassets\\images\\others\\04e87abd-7b0f-4ced-b266-a23043e316ca.jpg"
+    },
+    {
+      "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\07f521fe-111d-410f-b4f9-52f06094c5d7.jpg",
+      "PackagePath": "staticwebassets\\images\\others\\07f521fe-111d-410f-b4f9-52f06094c5d7.jpg"
     },
     {
       "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\547c3d13-4505-485a-b094-08d22baae003.jpg",
       "PackagePath": "staticwebassets\\images\\others\\547c3d13-4505-485a-b094-08d22baae003.jpg"
     },
     {
+      "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\7015435c-c2c3-4f9a-adf0-d3a3ee849c2e.jpg",
+      "PackagePath": "staticwebassets\\images\\others\\7015435c-c2c3-4f9a-adf0-d3a3ee849c2e.jpg"
+    },
+    {
       "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\ade8177d-b8ec-4bdc-b1b5-0fd6c3d9e2ea.jpg",
       "PackagePath": "staticwebassets\\images\\others\\ade8177d-b8ec-4bdc-b1b5-0fd6c3d9e2ea.jpg"
+    },
+    {
+      "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\af085e4d-f00a-4421-97cd-26b2d56a419e.jpg",
+      "PackagePath": "staticwebassets\\images\\others\\af085e4d-f00a-4421-97cd-26b2d56a419e.jpg"
     },
     {
       "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\badec137-8c8f-4127-a5ff-7badf528627d.jpg",
       "PackagePath": "staticwebassets\\images\\others\\badec137-8c8f-4127-a5ff-7badf528627d.jpg"
     },
     {
+      "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\e0be5da9-5499-474c-be79-d99847835f4e.jpg",
+      "PackagePath": "staticwebassets\\images\\others\\e0be5da9-5499-474c-be79-d99847835f4e.jpg"
+    },
+    {
       "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\e276b3d6-059e-44f4-b0d9-a233d5a622df.jpg",
       "PackagePath": "staticwebassets\\images\\others\\e276b3d6-059e-44f4-b0d9-a233d5a622df.jpg"
     },
     {
+      "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\others\\fac92379-9faa-49cb-bd13-6a568f49363c.jpg",
+      "PackagePath": "staticwebassets\\images\\others\\fac92379-9faa-49cb-bd13-6a568f49363c.jpg"
+    },
+    {
       "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\rooms\\40.jpg",
       "PackagePath": "staticwebassets\\images\\rooms\\40.jpg"
+    },
+    {
+      "Id": "D:\\5_DoAn\\Back_end\\Quan_Ly_HomeStay\\Quan_Ly_HomeStay\\wwwroot\\images\\z2788358829839_d01e8cca1b8204f6fd85957b45b603ca.jpg",
+      "PackagePath": "staticwebassets\\images\\z2788358829839_d01e8cca1b8204f6fd85957b45b603ca.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Quan_Ly_HomeStay.Microsoft.AspNetCore.StaticWebAssets.props",
