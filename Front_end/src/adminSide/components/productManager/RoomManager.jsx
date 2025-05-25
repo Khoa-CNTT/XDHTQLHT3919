@@ -24,7 +24,7 @@ const RoomManager = () => {
     detail: '',
     status: ''
   });
-
+  const [imageFile, setImageFile] = useState(null);
   const [search, setSearch] = useState('');
   const [notification, setNotification] = useState({ show: false, message: "", type: "info" });
   const [isAmenitiesVisible, setIsAmenitiesVisible] = useState(false);
@@ -72,17 +72,39 @@ const RoomManager = () => {
     }
   };
 
+  // Hàm upload ảnh lên server
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch('https://localhost:7154/api/room/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await res.json();
+    return data.fileUrl; // Lấy đúng trường fileUrl mà backend trả về
+  };
+
   const handleAddOrUpdate = async () => {
-    if (!form.name || !form.price || !form.pathImg) {
+    if (!form.name || !form.price) {
       showNotification('Vui lòng nhập đầy đủ thông tin bắt buộc', "error");
       return;
+    }
+
+    let imagePath = form.pathImg;
+    if (imageFile) {
+      try {
+        imagePath = await uploadImage(imageFile); // imagePath là fileUrl, ví dụ: /images/others/abc.jpg
+      } catch (error) {
+        showNotification('Lỗi upload ảnh', "error");
+        return;
+      }
     }
 
     const room = {
       name: form.name,
       price: +form.price,
       idCategory: form.idCategory,
-      pathImg: form.pathImg,
+      pathImg: imagePath,
       detail: form.detail,
       status: form.status,
       amenityIds: selectedAmenities
@@ -99,6 +121,7 @@ const RoomManager = () => {
 
       await fetchRoomData();
       setForm({ id: null, name: '', price: '', idCategory: '', pathImg: '', detail: '', status: '' });
+      setImageFile(null);
       setSelectedAmenities([]);
     } catch (error) {
       console.error("Lỗi khi lưu phòng:", error);
@@ -116,6 +139,7 @@ const RoomManager = () => {
       detail: room.detail || '',
       status: room.status || ''
     });
+    setImageFile(null);
     setSelectedAmenities((room.amenities || []).map(a => a.id));
   };
 
@@ -148,7 +172,14 @@ const RoomManager = () => {
 
   const handleCancel = () => {
     setForm({ id: null, name: '', price: '', idCategory: '', pathImg: '', detail: '', status: '' });
+    setImageFile(null);
     setSelectedAmenities([]);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    setForm((prev) => ({ ...prev, pathImg: file ? file.name : '' }));
   };
 
   const filteredRooms = Array.isArray(rooms)
@@ -202,10 +233,15 @@ const RoomManager = () => {
           ))}
         </select>
         <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+        <input
           type="text"
-          placeholder="URL ảnh phòng"
+          placeholder="Tên file ảnh"
           value={form.pathImg}
-          onChange={(e) => setForm({ ...form, pathImg: e.target.value })}
+          readOnly
         />
         <select
           value={form.status}
@@ -246,7 +282,6 @@ const RoomManager = () => {
             </div>
           )}
         </div>
-
       </div>
 
       <table className="product-table">
@@ -265,7 +300,19 @@ const RoomManager = () => {
         <tbody>
           {filteredRooms.map((room) => (
             <tr key={room.id}>
-              <td><img src={room.pathImg} alt="ảnh phòng" style={{ width: 50 }} /></td>
+              <td>
+                <img
+                  src={
+                    room.pathImg
+                      ? room.pathImg.startsWith('http')
+                        ? room.pathImg
+                        : `https://localhost:7154${room.pathImg}`
+                      : '/default-room.jpg'
+                  }
+                  alt="ảnh phòng"
+                  style={{ width: 50 }}
+                />
+              </td>
               <td>{room.name}</td>
               <td>{room.categoryName}</td>
               <td>{(+room.price).toLocaleString()} đ</td>

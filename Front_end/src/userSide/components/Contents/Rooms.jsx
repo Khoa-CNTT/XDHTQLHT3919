@@ -139,7 +139,16 @@ const Rooms = () => {
             filteredRooms.map((room) => (
               <div className="room-card" key={room.id}>
                 <div className="room-card__image">
-                  <img src={room.pathImg} alt={room.name} />
+                  <img
+  src={
+    room.pathImg
+      ? room.pathImg.startsWith('http')
+        ? room.pathImg
+        : `https://localhost:7154${room.pathImg}`
+      : '/default-room.jpg'
+  }
+  alt={room.name}
+/>
                 </div>
                 <div className="room-card__content">
                   <h3>{room.name}</h3>

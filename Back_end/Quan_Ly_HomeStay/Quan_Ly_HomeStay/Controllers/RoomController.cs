@@ -176,39 +176,57 @@ namespace Quan_Ly_HomeStay.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<ActionResult> UploadImage([FromForm] IFormFile file)
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] string folder = "others")
         {
             if (file == null || file.Length == 0)
             {
                 return BadRequest(new { message = "Không có tệp được tải lên", status = 400 });
             }
 
-            // Đường dẫn lưu ảnh
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "rooms", file.FileName);
-
             try
             {
-                // Kiểm tra nếu thư mục không tồn tại, tạo mới
-                var directoryPath = Path.GetDirectoryName(filePath);
-                if (!Directory.Exists(directoryPath))
+                // Tạo tên file duy nhất
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+
+                // Tạo đường dẫn thư mục lưu trữ
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", folder);
+
+                // Tạo thư mục nếu chưa có
+                if (!Directory.Exists(uploadFolder))
                 {
-                    Directory.CreateDirectory(directoryPath);
+                    Directory.CreateDirectory(uploadFolder);
                 }
 
-                // Lưu tệp vào thư mục
+                // Đường dẫn đầy đủ của file
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                // Lưu file vào thư mục
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
 
-                var fileUrl = $"/images/rooms/{file.FileName}"; // Đường dẫn ảnh
-                return Ok(new { message = "Tải ảnh thành công", status = 200, fileUrl });
+                // Đường dẫn để hiển thị file từ client
+                var fileUrl = $"/images/{folder}/{fileName}";
+
+                return Ok(new
+                {
+                    message = "Tải ảnh thành công",
+                    status = 200,
+                    fileUrl = fileUrl
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Lỗi tải ảnh", status = 500, error = ex.Message });
+                return StatusCode(500, new
+                {
+                    message = "Lỗi khi tải ảnh",
+                    status = 500,
+                    error = ex.Message
+                });
             }
         }
+
     }
     public class RoomDto
     {

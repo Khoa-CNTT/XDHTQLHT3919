@@ -12,7 +12,16 @@ const RoomInfo = ({ room }) => {
   return (
     <div className="room-info">
       <div className="room-image">
-        <img src={pathImg || "/default-room.jpg"} alt={name} />
+        <img
+  src={
+    room.pathImg
+      ? room.pathImg.startsWith('http')
+        ? room.pathImg
+        : `https://localhost:7154${room.pathImg}`
+      : '/default-room.jpg'
+  }
+  alt={room.name}
+/>
       </div>
       <h1 className="room-title">{name}</h1>
       <div className="room-overview">
