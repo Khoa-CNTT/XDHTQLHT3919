@@ -27,7 +27,7 @@ const addUser = async (user) => {
       formData.append('avatar', user.avatar);
     }
 
-    const response = await axios.post(`${API_URL}/register`, formData, {
+    const response = await axios.post(`${API_URL}/register1`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

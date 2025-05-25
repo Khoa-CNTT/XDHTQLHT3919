@@ -81,7 +81,7 @@ namespace Quan_Ly_HomeStay.Controllers
                 data = _data
             }); ;
         }
-        [HttpPost("register")]
+        [HttpPost("register1")]
         public async Task<ActionResult> AddUser([FromForm] User user, IFormFile avatar)
         {
             // 1. Kiểm tra nếu cả email và số điện thoại đều trống
@@ -172,6 +172,99 @@ namespace Quan_Ly_HomeStay.Controllers
                     user.Email,
                     user.Phone,
                     PathImg = user.PathImg,
+                    user.CreateAt,
+                    Role = role.Name
+                }
+            });
+        }
+        [HttpPost("register2")]
+        public async Task<ActionResult> AddUser([FromBody] User user)
+        {
+            // 1. Kiểm tra nếu cả email và số điện thoại đều trống
+            if (string.IsNullOrWhiteSpace(user.Email) && string.IsNullOrWhiteSpace(user.Phone))
+            {
+                return BadRequest(new
+                {
+                    message = "Vui lòng nhập Email hoặc Số điện thoại!",
+                    status = 400
+                });
+            }
+
+            // 2. Kiểm tra mật khẩu
+            if (string.IsNullOrWhiteSpace(user.Password))
+            {
+                return BadRequest(new
+                {
+                    message = "Mật khẩu không được để trống!",
+                    status = 400
+                });
+            }
+
+            // 3. Kiểm tra trùng email nếu có
+            if (!string.IsNullOrWhiteSpace(user.Email))
+            {
+                var existingEmail = await db.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
+                if (existingEmail != null)
+                {
+                    return BadRequest(new
+                    {
+                        message = "Email đã tồn tại!",
+                        status = 400
+                    });
+                }
+            }
+
+            // 4. Kiểm tra trùng số điện thoại nếu có
+            if (!string.IsNullOrWhiteSpace(user.Phone))
+            {
+                var existingPhone = await db.Users.FirstOrDefaultAsync(x => x.Phone == user.Phone);
+                if (existingPhone != null)
+                {
+                    return BadRequest(new
+                    {
+                        message = "Số điện thoại đã tồn tại!",
+                        status = 400
+                    });
+                }
+            }
+
+            // 5. Gán các giá trị mặc định
+            user.Id = Guid.NewGuid();
+            user.CreateAt ??= DateTime.Now;
+            user.PathImg ??= "default-avatar.png"; // Avatar mặc định nếu không có
+
+            // 6. Gán vai trò mặc định "Customer"
+            var role = await db.Roles.FirstOrDefaultAsync(x => x.Name == "Member");
+            if (role == null)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Không tìm thấy vai trò mặc định 'Customer'",
+                    status = 500
+                });
+            }
+            user.IdRole = role.Id;
+
+            // 7. Băm mật khẩu
+            var passwordHasher = new PasswordHasher<User>();
+            user.Password = passwordHasher.HashPassword(user, user.Password);
+
+            // 8. Lưu vào database
+            await db.Users.AddAsync(user);
+            await db.SaveChangesAsync();
+
+            // 9. Trả kết quả thành công
+            return Ok(new
+            {
+                message = "Tạo tài khoản thành công!",
+                status = 200,
+                data = new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Email,
+                    user.Phone,
+                    user.PathImg,
                     user.CreateAt,
                     Role = role.Name
                 }
